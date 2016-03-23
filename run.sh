@@ -8,4 +8,4 @@ sudo -u root -H sh -c "make install"
 sudo -u postgres -H sh -c "/bin/bash /home/postgres/reload_pg.sh"
 sleep 10
 bash /home/robins/projects/pgbench/runtests.sh $2
-expr `cat T.txt` + 1 > T.txt
+$(((`cat T.txt` + 1) % 10)) > T.txt

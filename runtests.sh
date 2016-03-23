@@ -5,10 +5,10 @@
 proj=/home/robins/projects/pgbench
 t=`cat ${proj}/T.txt`
 
-projVer=${proj}/$1
+projVer=${proj}/$1/$t
 mkdir -p ${projVer}
 cd ${projVer}
-s=50 
+s=30
 
 sleep $s; /opt/postgres/master/bin/pgbench -c4 -j4 -P1 -T100 -U postgres pgbench 				&>c4j4T100.txt
 sleep $s; /opt/postgres/master/bin/pgbench -c4 -j4 -P1 -S -T100 -U postgres pgbench 				&>c4j4ST100.txt
