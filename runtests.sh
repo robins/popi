@@ -1,15 +1,20 @@
-/opt/postgres/master/bin/dropdb --if-exists -U postgres pgbench
-/opt/postgres/master/bin/createdb -U postgres pgbench
-/opt/postgres/master/bin/pgbench -i -s8 -U postgres pgbench
 
 proj=/home/robins/projects/pgbench
 t=`cat ${proj}/T.txt`
 
+if ! [[ "$t" =~ ^[0-9]$ ]]; then
+        t=0
+fi
+
+/opt/postgres/master/bin/dropdb --if-exists -U postgres pgbench
+/opt/postgres/master/bin/createdb -U postgres pgbench
+/opt/postgres/master/bin/pgbench -i -s8 -U postgres pgbench
+
 projVer=${proj}/$1/$t
 mkdir -p ${projVer}
 cd ${projVer}
-s=10
-w=10
+s=50
+w=100
 
 sleep $s; /opt/postgres/master/bin/pgbench -c4 -j4 -P1 -T${w} -U postgres pgbench 				&>c4j4T100.txt
 sleep $s; /opt/postgres/master/bin/pgbench -c4 -j4 -P1 -S -T${w} -U postgres pgbench 				&>c4j4ST100.txt
@@ -20,7 +25,7 @@ sleep $s; /opt/postgres/master/bin/pgbench -c4 -j4 -P1 -f ../a.sql -S -T${w} -U 
 sleep $s; /opt/postgres/master/bin/pgbench -c4 -j4 -P1 -M prepared -f ../a.sql -T${w} -U postgres pgbench 	&>c4j4MFT100.txt
 sleep $s; /opt/postgres/master/bin/pgbench -c4 -j4 -P1 -M prepared -f ../a.sql -S -T${w} -U postgres pgbench 	&>c4j4MFST100.txt
 sleep $s; /opt/postgres/master/bin/pgbench -c4 -j4 -P1 -C -T${w} -U postgres pgbench 				&>c4j4CT100.txt
-sleep $s; /opt/postgres/master/bin/pgbench -c4 -j4 -P1 -C -S -T${w} -U postgres pgbench 				&>c4j4CST100.txt
+sleep $s; /opt/postgres/master/bin/pgbench -c4 -j4 -P1 -C -S -T${w} -U postgres pgbench 			&>c4j4CST100.txt
 sleep $s; /opt/postgres/master/bin/pgbench -c4 -j4 -P1 -C -M prepared -T${w} -U postgres pgbench 		&>c4j4CMT100.txt
 sleep $s; /opt/postgres/master/bin/pgbench -c4 -j4 -P1 -C -M prepared -S -T${w} -U postgres pgbench 		&>c4j4CMST100.txt
 
@@ -33,7 +38,7 @@ sleep $s; /opt/postgres/master/bin/pgbench -c8 -j4 -P1 -f ../a.sql -S -T${w} -U 
 sleep $s; /opt/postgres/master/bin/pgbench -c8 -j4 -P1 -M prepared -f ../a.sql -T${w} -U postgres pgbench 	&>c8j4MFT100.txt
 sleep $s; /opt/postgres/master/bin/pgbench -c8 -j4 -P1 -M prepared -f ../a.sql -S -T${w} -U postgres pgbench 	&>c8j4MFST100.txt
 sleep $s; /opt/postgres/master/bin/pgbench -c8 -j4 -P1 -C -T${w} -U postgres pgbench				&>c8j4CT100.txt
-sleep $s; /opt/postgres/master/bin/pgbench -c8 -j4 -P1 -C -S -T${w} -U postgres pgbench 				&>c8j4CST100.txt
+sleep $s; /opt/postgres/master/bin/pgbench -c8 -j4 -P1 -C -S -T${w} -U postgres pgbench 			&>c8j4CST100.txt
 sleep $s; /opt/postgres/master/bin/pgbench -c8 -j4 -P1 -C -M prepared -T${w} -U postgres pgbench 		&>c8j4CMT100.txt
 sleep $s; /opt/postgres/master/bin/pgbench -c8 -j4 -P1 -C -M prepared -S -T${w} -U postgres pgbench 		&>c8j4CMST100.txt
 
@@ -52,4 +57,4 @@ sleep $s; /opt/postgres/master/bin/pgbench -c64 -j4 -P1 -C -M prepared -S -T${w}
 
 /opt/postgres/master/bin/psql -U postgres -c 'SELECT version();' postgres 					> version.txt
 
-$((($t + 1) % 10)) > ${proj}/T.txt 
+echo $((($t + 1) % 10)) > ${proj}/T.txt 
