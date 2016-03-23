@@ -52,5 +52,4 @@ sleep $s; /opt/postgres/master/bin/pgbench -c64 -j4 -P1 -C -M prepared -S -T${w}
 
 /opt/postgres/master/bin/psql -U postgres -c 'SELECT version();' postgres 					> version.txt
 
-$(((`cat T.txt` + 1) % 10)) > T.txt
-
+$((($t + 1) % 10)) > ${proj}/T.txt 
