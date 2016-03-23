@@ -1,7 +1,7 @@
 cd /home/robins/projects/pg
 git checkout $1
 git pull
-./configure --prefix=/opt/postgres/master --enable-depend
+./configure --prefix=/opt/postgres/pgbench --enable-depend
 make clean 
 make -j4
 sudo -u root -H sh -c "make install"

@@ -6,9 +6,10 @@ if ! [[ "$t" =~ ^[0-9]$ ]]; then
         t=0
 fi
 
-/opt/postgres/master/bin/dropdb --if-exists -U postgres pgbench
-/opt/postgres/master/bin/createdb -U postgres pgbench
-/opt/postgres/master/bin/pgbench -i -s8 -U postgres pgbench
+bindir=/opt/postgres/pgbench
+${bindir}/bin/dropdb --if-exists -U postgres pgbench
+${bindir}/bin/createdb -U postgres pgbench
+${bindir}/bin/pgbench -i -s8 -U postgres pgbench
 
 projVer=${proj}/$1/$t
 mkdir -p ${projVer}
@@ -16,7 +17,7 @@ cd ${projVer}
 s=50
 w=100
 
-sleep $s; /opt/postgres/master/bin/pgbench -c4 -j4 -P1 -T${w} -U postgres pgbench 				&>c4j4T100.txt
+sleep $s; ${bindir}/bin/pgbench -c4 -j4 -P1 -T${w} -U postgres pgbench 				&>c4j4T100.txt
 sleep $s; /opt/postgres/master/bin/pgbench -c4 -j4 -P1 -S -T${w} -U postgres pgbench 				&>c4j4ST100.txt
 sleep $s; /opt/postgres/master/bin/pgbench -c4 -j4 -P1 -M prepared -T${w} -U postgres pgbench 			&>c4j4MT100.txt
 sleep $s; /opt/postgres/master/bin/pgbench -c4 -j4 -P1 -M prepared -S -T${w} -U postgres pgbench 		&>c4j4MST100.txt

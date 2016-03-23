@@ -40,7 +40,8 @@ function GetAverageTPSValue() {
   n=0
   for t in {0..9};
     do
-      TPSTotal=`expr $TPSTotal + $(GetTPSValue $1 $t $2)`
+      tps=$(GetTPSValue $1 $t $2)
+      TPSTotal=`expr $TPSTotal + $tps`
       n=`expr $n + 1`
     done
 
