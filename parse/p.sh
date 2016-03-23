@@ -1,4 +1,16 @@
-versions=(91 92 93 94 95 master)
+# Get all active versions from the internet
+# Ensure slow internet connections don't hold up this run
+versions=( `timeout -s SIGTERM 10 curl -so - "http://www.postgresql.org/support/versioning/" | \
+        grep -A100 "EOL" | \
+        grep -B2 "Yes" | \
+        grep "colFirst" | \
+        cut --bytes=25-27 | \
+        sed 's/\.//g' | \
+        tr '\n' ' '` master)
+
+if [ ${#versions[@]} -le 2 ]; then
+        versions=(91 92 93 94 95 master)
+fi
 
 function getDescription() {
   s="${1/C/Newconn}"
