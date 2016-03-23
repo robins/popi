@@ -8,8 +8,8 @@ t=`cat ${proj}/T.txt`
 projVer=${proj}/$1/$t
 mkdir -p ${projVer}
 cd ${projVer}
-s=30
-w=100
+s=10
+w=10
 
 sleep $s; /opt/postgres/master/bin/pgbench -c4 -j4 -P1 -T${w} -U postgres pgbench 				&>c4j4T100.txt
 sleep $s; /opt/postgres/master/bin/pgbench -c4 -j4 -P1 -S -T${w} -U postgres pgbench 				&>c4j4ST100.txt
@@ -51,3 +51,6 @@ sleep $s; /opt/postgres/master/bin/pgbench -c64 -j4 -P1 -C -M prepared -T${w} -U
 sleep $s; /opt/postgres/master/bin/pgbench -c64 -j4 -P1 -C -M prepared -S -T${w} -U postgres pgbench 		&>c64j4CMST100.txt
 
 /opt/postgres/master/bin/psql -U postgres -c 'SELECT version();' postgres 					> version.txt
+
+$(((`cat T.txt` + 1) % 10)) > T.txt
+
