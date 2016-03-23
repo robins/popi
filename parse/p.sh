@@ -14,9 +14,9 @@ function getDescription() {
 	echo $s
 }
 
-function gettpsvalue() {
+function GetTPSValue() {
 	v=0
-	f=/home/robins/projects/pgbench/$2/$1
+	f=/home/robins/projects/pgbench/$1/$2/$3
 
 	if [ -f "$f" ]; then
  		v=`grep "including connections" $f | awk '{print int($3)}'`
@@ -24,6 +24,20 @@ function gettpsvalue() {
 	echo $v
 }
 
+function GetAverageTPSValue() {
+  n=0
+  for t in {0..9};
+    do
+      TPSTotal=`expr $TPSTotal + $(GetTPSValue $1 $t $2)`
+      n=`expr $n + 1`
+    done
+
+  if [ $n -eq 0 ]; then
+    echo 0
+  else
+    echo $(($TPSTotal / $n))
+  fi
+}
 
 function iterateVer() {
 
@@ -34,7 +48,7 @@ function iterateVer() {
   
 	for i in "${versions[@]}"
 	do
-		tps=$(gettpsvalue $filename $i)
+		tps=$(GetAverageTPSValue $i $filename)
 		echo ${tps}
 	done
 }
