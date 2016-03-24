@@ -7,6 +7,7 @@ if ! [[ "$t" =~ ^[0-9]$ ]]; then
 fi
 
 bindir=/opt/postgres/pgbench
+sudo -u root -H sh -c "ln -s /opt/postgres/master/bin/pgbench /opt/postgres/pgbench/bin/pgbench"
 ${bindir}/bin/dropdb --if-exists -U postgres pgbench
 ${bindir}/bin/createdb -U postgres pgbench
 ${bindir}/bin/pgbench -i -s8 -U postgres pgbench
