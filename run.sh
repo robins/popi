@@ -9,3 +9,12 @@ sudo -u postgres -H sh -c "/bin/bash /home/postgres/reload_pg.sh pgbench"
 sleep 10
 
 bash /home/robins/projects/pgbench/runtests.sh $2
+bash /home/robins/projects/pgbench/runtests.sh $2
+bash /home/robins/projects/pgbench/runtests.sh $2
+bash /home/robins/projects/pgbench/runtests.sh $2
+bash /home/robins/projects/pgbench/runtests.sh $2
+bash /home/robins/projects/pgbench/runtests.sh $2
+bash /home/robins/projects/pgbench/runtests.sh $2
+bash /home/robins/projects/pgbench/runtests.sh $2
+bash /home/robins/projects/pgbench/runtests.sh $2
+bash /home/robins/projects/pgbench/runtests.sh $2
