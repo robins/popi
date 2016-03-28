@@ -1,3 +1,8 @@
+# lock the script so only one runs at a time
+exec 200<$0
+flock -n 200 || exit 1
+
+
 cd /home/robins/projects/pg
 git checkout $1
 git pull
