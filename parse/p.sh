@@ -34,7 +34,11 @@ function GetTPSValue() {
 	fi
 	if [[ "$v" =~ ^[0-9]+$ ]] && [ "$v" -ge 0 -a "$v" -le 1000000 ];
 	then
-		echo $v
+		if [[ $v -gt 0 ]]; then
+			echo $v
+		else
+			echo 0
+		fi
 	else
 		echo 0
 	fi
@@ -47,7 +51,9 @@ function GetAverageTPSValue() {
     do
       tps=$(GetTPSValue $1 $t $2)
       TPSTotal=`expr $TPSTotal + $tps`
-      n=`expr $n + 1`
+      if [[ $tps -gt 0 ]]; then
+        n=`expr $n + 1`
+      fi
     done
 
   if [ $n -eq 0 ]; then
