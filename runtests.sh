@@ -13,7 +13,7 @@ fi
 port=9999
 bindir=/opt/postgres/pgbench
 sudo -u root -H sh -c "ln -s /opt/postgres/master/bin/pgbench /opt/postgres/pgbench/bin/pgbench"
-${bindir}/bin/dropdb --if-exists -U postgres -p ${port} pgbench
+${bindir}/bin/dropdb -U postgres -p ${port} pgbench	# old pg versions didnt understand --if-exists and fail
 ${bindir}/bin/createdb -U postgres -p ${port} pgbench
 ${bindir}/bin/pgbench -i -s8 -U postgres -p ${port} pgbench
 
