@@ -5,12 +5,15 @@ versions=( `timeout -s SIGTERM 10 curl -so - "http://www.postgresql.org/support/
         grep -B2 "Yes" | \
         grep "colFirst" | \
         cut --bytes=25-27 | \
-        sed 's/\.//g' | \
+#        sed 's/\.//g' | \
+	sort | \
         tr '\n' ' '` master)
 
 if [ ${#versions[@]} -le 2 ]; then
-        versions=(91 92 93 94 95 master)
+        versions=(9.1 9.2 9.3 9.4 9.5 master)
 fi
+
+echo "Versions:  ${versions[@]}"
 
 function getDescription() {
   s="${1/C/Newconn}"
@@ -55,13 +58,14 @@ function GetAverageTPSValue() {
         n=`expr $n + 1`
       fi
     done
-
+#echo $TPSTotal
+#echo $n
   if [ $n -eq 0 ]; then
     echo 0
   else
     echo $(( TPSTotal / n ))
   fi
-#>&2 echo "done"
+#echo "done"
 }
 
 
@@ -91,3 +95,5 @@ function iterateVar () {
 }
 
 iterateVar
+
+#iterateVer c4j4ST100
