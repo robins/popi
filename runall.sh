@@ -5,9 +5,11 @@ flock -n 200 || exit 1
 revisions="REL9_1_STABLE REL9_2_STABLE REL9_3_STABLE REL9_4_STABLE REL9_5_STABLE master"
 rev=$(echo ${revisions[@]} | tr " " "\n" | sort -R | tr "\n" " ")
 
+echo ${rev[@]} &>/home/robins/projects/pgbench/log/runall3.log
+
 for s in $rev
 do
-	if [[ ${#s} -eq 6 ]]; then
+	if [[ ${#s} -eq 'master' ]]; then
 		s1=${s}
 		# Do nothing
 	else

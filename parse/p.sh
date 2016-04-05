@@ -5,7 +5,6 @@ versions=( `timeout -s SIGTERM 10 curl -so - "http://www.postgresql.org/support/
         grep -B2 "Yes" | \
         grep "colFirst" | \
         cut --bytes=25-27 | \
-#        sed 's/\.//g' | \
 	sort | \
         tr '\n' ' '` master)
 
