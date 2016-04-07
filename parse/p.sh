@@ -1,3 +1,6 @@
+#XXX: Sometime add a cross-check that each folder grepped should be considered only
+#     when there exists a file with the fold name in it (basically is the same major version)
+
 # Get all active versions from the internet
 # Ensure slow internet connections don't hold up this run
 versions=( `timeout -s SIGTERM 10 curl -so - "http://www.postgresql.org/support/versioning/" | \
