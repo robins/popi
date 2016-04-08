@@ -1,3 +1,8 @@
+#XXX: Pause this script if top CPU ratios are beyond 0.1 and 0.2 (for the first two numbers)
+
+#XXX: See what needs to be done for minor version change. Keep non-cycling T means the results would be broken in minor version numbers.
+#     irrespective of whether we eventually cycle T or not, we should be resetting the non-matching versions first, when re-running
+
 # lock the script so only one runs at a time
 exec 200<$0
 flock -n 200 || exit 1
