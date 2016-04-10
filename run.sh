@@ -2,6 +2,18 @@
 exec 200<$0
 flock -n 200 || exit 1
 
+while true; do
+        c1=$(uptime | awk '{print $10}' | sed s/,//g)
+	c=`echo $c1*100|bc`
+	c=${c%.*}
+
+        if [[ $c -le 5 ]]; then
+                break
+        fi
+
+        echo "Waiting for idle CPU. Currently (${c1})"
+        sleep 10
+done
 
 cd /home/robins/projects/pg
 git checkout $1
@@ -11,7 +23,6 @@ make clean
 make -j4
 sudo -u root -H sh -c "make install"
 sudo -u postgres -H sh -c "/bin/bash /home/postgres/reload_pg.sh pgbench ${3}"
-sleep 10
 
 bash /home/robins/projects/pgbench/runtests.sh $2 &>/home/robins/projects/pgbench/log/runtests0.log
 bash /home/robins/projects/pgbench/runtests.sh $2 &>/home/robins/projects/pgbench/log/runtests1.log
