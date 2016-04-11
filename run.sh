@@ -7,7 +7,7 @@ while true; do
 	c=`echo $c1*100|bc`
 	c=${c%.*}
 
-        if [[ $c -le 5 ]]; then
+        if [[ $c -le 10 ]]; then
                 break
         fi
 

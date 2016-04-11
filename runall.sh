@@ -18,7 +18,8 @@ do
 		s3=${s2/\_/\.}
 		s1=$s3
 	fi
-
+	
+	echo "RunAll: Triggering $s" >> /home/robins/projects/pgbench/log/history.log
 	bash /home/robins/projects/pgbench/run.sh $s $s1 9999 &>/home/robins/projects/pgbench/log/run.log
 
 	sleep 5s
