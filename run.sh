@@ -3,16 +3,16 @@ exec 200<$0
 flock -n 200 || exit 1
 
 while true; do
-        c1=$(uptime | awk '{print $10}' | sed s/,//g)
+  c1=$(uptime | awk '{print $10}' | sed s/,//g)
 	c=`echo $c1*100|bc`
 	c=${c%.*}
 
-        if [[ $c -le 10 ]]; then
-                break
-        fi
+  if [[ $c -le 10 ]]; then
+    break
+  fi
 
-        echo "Waiting for idle CPU. Currently (${c1})"
-        sleep 10
+  echo "Waiting for idle CPU. Currently (${c1})"
+  sleep 10
 done
 
 cd /home/robins/projects/pg
