@@ -33,9 +33,24 @@ runversion=1
 
 echo "Runtest: Triggering battery of tests T=${t}" >> /home/robins/pgbench/log/history.log
 
+function waitnwatch {
+while true; do
+  c1=$(uptime | awk '{print $10}' | sed s/,//g)
+        c=`echo $c1*100|bc`
+        c=${c%.*}
+
+  if [[ $c -le 10 ]]; then
+    break
+  fi
+
+  echo "Waiting for idle CPU. Currently (${c1})"
+  sleep $s
+done
+}
+
 if [ $runtests -eq 1 ]; then
 
-  sleep $s; ${bindir}/bin/pgbench -c4 -j4 -P1 -p ${port}                           -T${w} -U postgres pgbench &>c4j4T100.txt
+  waitnwatch; ${bindir}/bin/pgbench -c4 -j4 -P1 -p ${port}                           -T${w} -U postgres pgbench &>c4j4T100.txt
   sleep $s; ${bindir}/bin/pgbench -c4 -j4 -P1 -p ${port}                        -S -T${w} -U postgres pgbench &>c4j4ST100.txt
   sleep $s; ${bindir}/bin/pgbench -c4 -j4 -P1 -p ${port}    -M prepared            -T${w} -U postgres pgbench &>c4j4MT100.txt
   sleep $s; ${bindir}/bin/pgbench -c4 -j4 -P1 -p ${port}    -M prepared         -S -T${w} -U postgres pgbench &>c4j4MST100.txt
