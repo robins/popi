@@ -27,7 +27,7 @@ projVer=${proj}/$1/$t
 mkdir -p ${projVer}
 cd ${projVer}
 s=10
-w=100
+w=10
 runtests=1
 runversion=1
 
@@ -44,6 +44,7 @@ function waitnwatch {
     fi
 
     echo "Waiting for idle CPU. Currently (${c1})"
+    date
     sleep $s
   done
 }
