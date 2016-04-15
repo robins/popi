@@ -27,7 +27,7 @@ projVer=${proj}/$1/$t
 mkdir -p ${projVer}
 cd ${projVer}
 s=10
-w=10
+w=100
 runtests=1
 runversion=1
 
@@ -35,11 +35,11 @@ echo "Runtest: Triggering battery of tests T=${t}" >> /home/robins/pgbench/log/h
 
 function waitnwatch {
   while true; do
-    c1=$(uptime | awk '{print $10}' | sed s/,//g)
+    c1=$(uptime | awk '{print $8}' | sed s/,//g)
           c=`echo $c1*100|bc`
           c=${c%.*}
 
-    if [[ $c -le 10 ]]; then
+    if [[ $c -le 1000 ]]; then
       break
     fi
 
@@ -96,5 +96,5 @@ if [ $runversion -eq 1 ]; then
   ${bindir}/bin/psql -U postgres -p ${port} -c 'SELECT version();' postgres           > version.txt
 fi
 
-#echo $((($t + 1) % 10)) > ${proj}/$1/T.txt 
-echo $(($t + 1)) > ${proj}/$1/T.txt 
+echo $((($t + 1) % 10)) > ${proj}/$1/T.txt 
+#echo $(($t + 1)) > ${proj}/$1/T.txt 
