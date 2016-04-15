@@ -1,5 +1,3 @@
-#XXX: Pause this script if first of the CPU ratios is beyond 0.1 
-
 #XXX: See what needs to be done for minor version change. Keep non-cycling T means the results would be broken in minor version numbers.
 #     irrespective of whether we eventually cycle T or not, we should be resetting the non-matching versions first, when re-running
 
@@ -16,8 +14,15 @@ fi
 
 port=9999
 bindir=/opt/postgres/pgbench
-sudo -u root -H sh -c "ln -s /opt/postgres/master/bin/pgbench /opt/postgres/pgbench/bin/pgbench"
-${bindir}/bin/dropdb -U postgres -p ${port} pgbench  # old pg versions didnt understand --if-exists and fail
+
+#IS THIS REQUIRED?
+#This is a hack that get pgbench working for old branches.
+#/postgres/master is outside this repo, but its (effectively) a static binary that we could link with here
+#sudo -u root -H sh -c "ln -s /opt/postgres/master/bin/pgbench /opt/postgres/pgbench/bin/pgbench"
+
+# Can't do a --if-exists here, since old pg versions dont understand and bail, which is not what we want
+${bindir}/bin/dropdb -U postgres -p ${port} pgbench 2>/dev/null
+
 ${bindir}/bin/createdb -U postgres -p ${port} pgbench
 ${bindir}/bin/pgbench -i -s8 -U postgres -p ${port} pgbench
 
