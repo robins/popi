@@ -15,10 +15,9 @@ fi
 port=9999
 bindir=/opt/postgres/pgbench
 
-#IS THIS REQUIRED?
 #This is a hack that get pgbench working for old branches.
 #/postgres/master is outside this repo, but its (effectively) a static binary that we could link with here
-#sudo -u root -H sh -c "ln -s /opt/postgres/master/bin/pgbench /opt/postgres/pgbench/bin/pgbench"
+sudo -u root -H sh -c "ln -s /opt/postgres/master/bin/pgbench /opt/postgres/pgbench/bin/pgbench"
 
 # Can't do a --if-exists here, since old pg versions dont understand and bail, which is not what we want
 ${bindir}/bin/dropdb -U postgres -p ${port} pgbench 2>/dev/null
@@ -32,19 +31,23 @@ projVer=${proj}/$1/$t
 mkdir -p ${projVer}
 cd ${projVer}
 s=10
-w=100
+w=10
 runtests=1
 runversion=1
 
 echo "Runtest: Triggering battery of tests T=${t}" >> /home/robins/pgbench/log/history.log
 
 function waitnwatch {
+  max=50
   while true; do
-    c1=$(uptime | awk '{print $8}' | sed s/,//g)
+    upstr=$(uptime | grep -aob "average:" | grep -oE '[0-9]+')
+    c1=$(uptime | cut -b ${upstr}- | awk '{print $2;}' | sed s/,//g)
           c=`echo $c1*100|bc`
           c=${c%.*}
 
-    if [[ $c -le 1000 ]]; then
+    #echo "Current CPU is at ${c} compared to the allowed threshold of ${max}"
+    if [[ $c -le $max ]]; then
+      echo "Found idle CPU (Currently ${c} vs allowed threshold of ${max}). Proceeding."
       break
     fi
 
