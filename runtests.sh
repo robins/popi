@@ -31,7 +31,7 @@ projVer=${proj}/$1/$t
 mkdir -p ${projVer}
 cd ${projVer}
 s=10
-w=10
+w=100
 runtests=1
 runversion=1
 
