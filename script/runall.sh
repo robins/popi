@@ -19,5 +19,5 @@ do
 	fi
 
 	echo "RunAll: Triggering $s" >> /home/robins/projects/pgbench/log/history.log
-	bash /home/robins/projects/pgbench/run.sh $s $s1 $port &>/home/robins/projects/pgbench/log/run.log
+	bash /home/robins/projects/pgbench/script/run.sh $s $s1 $port &>/home/robins/projects/pgbench/log/run.log
 done
