@@ -6,12 +6,7 @@ exec 200<$0
 flock -n 200 || exit 1
 
 proj=/home/robins/projects/pgbench/
-obs=${proj}/obs/
-t=`cat ${obs}/$1/T.txt`
-
-if ! [[ "$t" =~ ^[0-9]$ ]]; then
-  t=0
-fi
+obs=/home/robins/projects/pgbench/obs/${1}
 
 port=9999
 bindir=/opt/postgres/pgbench
@@ -28,38 +23,40 @@ ${bindir}/bin/pgbench -i -s8 -U postgres -p ${port} pgbench
 
 
 q=${proj}/a.sql
-projVer=$t
-mkdir -p ${projVer}
-cd ${projVer}
-s=10
+s=5
 w=100
 runtests=1
-runversion=1
 
-echo "Runtest: Triggering battery of tests T=${t}" >> /home/robins/pgbench/log/history.log
 
 function waitnwatch {
-  max=50
+  max=100
   while true; do
     upstr=$(uptime | grep -aob "average:" | grep -oE '[0-9]+')
     c1=$(uptime | cut -b ${upstr}- | awk '{print $2;}' | sed s/,//g)
           c=`echo $c1*100|bc`
           c=${c%.*}
 
-    #echo "Current CPU is at ${c} compared to the allowed threshold of ${max}"
+    echo "Current CPU (${c}) vs Allowed threshold (${max})"
     if [[ $c -le $max ]]; then
-      echo "Found idle CPU (Currently ${c} vs allowed threshold of ${max}). Proceeding."
+      echo "Proceeding"
       break
     fi
 
-    echo "Waiting for idle CPU. Currently (${c1})"
     date
     sleep $s
   done
 }
 
+for t in `seq 0 9`;
+do
+
+  echo "Runtest: Triggering battery of tests T=${t}" >> /home/robins/projects/pgbench/log/history.log
+  mkdir -p ${obs}/${t}
+  cd ${obs}/${t}
+
 if [ $runtests -eq 1 ]; then
 
+  echo "Runtest: Triggering pgbench instance of c4j4T100 at (`pwd`)" >> /home/robins/projects/pgbench/log/history.log
   waitnwatch; ${bindir}/bin/pgbench -c4 -j4 -P1 -p ${port}                           -T${w} -U postgres pgbench &>c4j4T100.txt
   waitnwatch; ${bindir}/bin/pgbench -c4 -j4 -P1 -p ${port}                        -S -T${w} -U postgres pgbench &>c4j4ST100.txt
   waitnwatch; ${bindir}/bin/pgbench -c4 -j4 -P1 -p ${port}    -M prepared            -T${w} -U postgres pgbench &>c4j4MT100.txt
@@ -101,9 +98,6 @@ if [ $runtests -eq 1 ]; then
 
 fi
 
-if [ $runversion -eq 1 ]; then
-  ${bindir}/bin/psql -U postgres -p ${port} -c 'SELECT version();' postgres           > version.txt
-fi
+    ${bindir}/bin/psql -U postgres -p ${port} -c 'SELECT version();' postgres > version.txt
 
-echo $((($t + 1) % 10)) > ${obs}/$1/T.txt 
-#echo $(($t + 1)) > ${obs}/$1/T.txt 
+done
