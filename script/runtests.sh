@@ -47,6 +47,7 @@ function waitnwatch {
   done
 }
 
+#XXX Instead of looping, which is temporary. Create a logic that checks which (of 0-9) needs to be refreshed and randomize between them, if multiple candidates found
 for t in `seq 0 9`;
 do
 
@@ -99,5 +100,4 @@ if [ $runtests -eq 1 ]; then
 fi
 
     ${bindir}/bin/psql -U postgres -p ${port} -c 'SELECT version();' postgres > version.txt
-
 done
