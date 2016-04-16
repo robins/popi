@@ -14,7 +14,7 @@ sudo -u postgres -H sh -c "/bin/bash /home/robins/projects/pgbench/script/pg_sto
 sudo -u root -H sh -c "make -j4 install"
 sudo -u postgres -H sh -c "/bin/bash /home/robins/projects/pgbench/script/pg_start.sh pgbench ${3}"
 
-#Wait 5 secs. We don't want tests to fail because the IO couldnt keep up with recent DB start
-sleep 5
+#Wait some time. We don't want tests to fail because the IO couldnt keep up with recent DB start
+sleep 10
 
 bash /home/robins/projects/pgbench/script/runtests.sh $2 &>/home/robins/projects/pgbench/log/runtests.log
