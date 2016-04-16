@@ -11,7 +11,10 @@ make -j4
 
 #Before installing new PG version, we need to ensure that the old PG has been stopped
 sudo -u postgres -H sh -c "/bin/bash /home/robins/projects/pgbench/pg_stop.sh pgbench ${3}"
-sudo -u root -H sh -c "make install"
+sudo -u root -H sh -c "make -j4 install"
 sudo -u postgres -H sh -c "/bin/bash /home/robins/projects/pgbench/pg_start.sh pgbench ${3}"
+
+#Wait 5 secs. We don't want tests to fail because the IO couldnt keep up with recent DB start
+sleep 5
 
 bash /home/robins/projects/pgbench/runtests.sh $2 &>/home/robins/projects/pgbench/log/runtests.log
