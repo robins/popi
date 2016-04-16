@@ -5,8 +5,9 @@
 exec 200<$0
 flock -n 200 || exit 1
 
-proj=/home/robins/projects/pgbench
-t=`cat ${proj}/$1/T.txt`
+proj=/home/robins/projects/pgbench/
+obs=${proj}/obs/
+t=`cat ${obs}/$1/T.txt`
 
 if ! [[ "$t" =~ ^[0-9]$ ]]; then
   t=0
@@ -27,7 +28,7 @@ ${bindir}/bin/pgbench -i -s8 -U postgres -p ${port} pgbench
 
 
 q=${proj}/a.sql
-projVer=${proj}/$1/$t
+projVer=$t
 mkdir -p ${projVer}
 cd ${projVer}
 s=10
@@ -104,5 +105,5 @@ if [ $runversion -eq 1 ]; then
   ${bindir}/bin/psql -U postgres -p ${port} -c 'SELECT version();' postgres           > version.txt
 fi
 
-echo $((($t + 1) % 10)) > ${proj}/$1/T.txt 
-#echo $(($t + 1)) > ${proj}/$1/T.txt 
+echo $((($t + 1) % 10)) > ${obs}/$1/T.txt 
+#echo $(($t + 1)) > ${obs}/$1/T.txt 

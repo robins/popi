@@ -32,7 +32,7 @@ function getDescription() {
 }
 
 function GetTPSValue() {
-	f=/home/robins/projects/pgbench/$1/$2/$3
+	f=/home/robins/projects/pgbench/obs/$1/$2/$3
 
 	if [ -f "$f" ]; then
  		v=`grep "including connections" $f | awk '{print int($3)}'`
