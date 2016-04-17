@@ -1,10 +1,12 @@
+#XXX: See if we can keep separate folders for pg installed instead of reinstalling each time
+
 # lock the script so only one runs at a time
 exec 200<$0
 flock -n 200 || exit 1
 
 port=9999
-#revisions="REL9_1_STABLE REL9_2_STABLE REL9_3_STABLE REL9_4_STABLE REL9_5_STABLE master"
-revisions="master"
+revisions="REL9_1_STABLE REL9_2_STABLE REL9_3_STABLE REL9_4_STABLE REL9_5_STABLE master"
+#revisions="master"
 rev=$(echo ${revisions[@]} | tr " " "\n" | sort -R | tr "\n" " ")
 
 for s in $rev

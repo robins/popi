@@ -1,2 +1,1 @@
-SELECT 1;
-
+SELECT 1 FROM testsort ORDER BY b LIMIT 1;
