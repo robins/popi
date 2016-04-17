@@ -1,3 +1,5 @@
+#XXX: Per docs, we should be doing at least a pgbench -i s4 for a 4 connection test
+
 #XXX: See what needs to be done for minor version change. Keep non-cycling T means the results would be broken in minor version numbers.
 #     irrespective of whether we eventually cycle T or not, we should be resetting the non-matching versions first, when re-running
 
@@ -29,7 +31,7 @@ fi
 
 q=${proj}/script/a.sql
 s=1
-w=20
+w=100
 runtests=1
 
 
@@ -53,7 +55,7 @@ function waitnwatch {
 }
 
 #XXX Instead of looping, which is temporary. Create a logic that checks which (of 0-9) needs to be refreshed and randomize between them, if multiple candidates found
-for t in `seq 0 0`;
+for t in `seq 0 9`;
 do
 
   echo "Runtest: Triggering battery of tests T=${t}" >> /home/robins/projects/pgbench/log/history.log

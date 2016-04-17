@@ -6,7 +6,7 @@ flock -n 200 || exit 1
 
 port=9999
 revisions="REL9_1_STABLE REL9_2_STABLE REL9_3_STABLE REL9_4_STABLE REL9_5_STABLE master"
-#revisions="master"
+#revisions="REL9_1_STABLE master"
 rev=$(echo ${revisions[@]} | tr " " "\n" | sort -R | tr "\n" " ")
 
 for s in $rev
@@ -22,5 +22,6 @@ do
 	fi
 
 	echo "RunAll: Triggering $s" >> /home/robins/projects/pgbench/log/history.log
+	date                         >> /home/robins/projects/pgbench/log/history.log
 	bash /home/robins/projects/pgbench/script/run.sh $s $s1 $port &>/home/robins/projects/pgbench/log/run.log
 done
