@@ -5,7 +5,7 @@ flock -n 200 || exit 1
 cd /home/robins/projects/pg/${2}/
 #git checkout $1
 git pull
-#./configure --prefix=/opt/postgres/pgbench --enable-depend --with-pgport=${3}
+#./configure --prefix=/opt/postgres/${2} --enable-depend --with-pgport=${3}
 #make clean 
 make -j4
 

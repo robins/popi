@@ -1,1 +1,1 @@
-DROP TABLE testsort;
+--DROP TABLE testsort;
