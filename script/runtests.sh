@@ -8,38 +8,35 @@ exec 200<$0
 flock -n 200 || exit 1
 
 #XXX: See that no places use hardwired folder paths
-proj=/home/robins/projects/pgbench
-obs=/home/robins/projects/pgbench/obs/${1}
+proj=/home/robins/projects/popi
+obs=/home/robins/projects/popi/obs/${1}
 
 port=9999
 bindir=/opt/postgres/${1}
 
 #This is a hack that get pgbench working for old branches.
 #/postgres/master is outside this repo, but its (effectively) a static binary that we could link with here
-sudo -u root -H sh -c "ln -s /opt/postgres/master/bin/pgbench /opt/postgres/${1}/bin/pgbench"
+#rm -f /opt/postgres/${1}/bin/pgbench
+#sudo -u root -H sh -c ln -s /opt/postgres/pgbench /opt/postgres/${1}/bin/pgbench"
 
 # Can't do a --if-exists here, since old pg versions dont understand and bail, which is not what we want
 ${bindir}/bin/dropdb -U postgres -p ${port} pgbench 2>/dev/null
 
 ${bindir}/bin/createdb -U postgres -p ${port} pgbench
 
-if [[ ${1} -ne "9.1" ]]; then
-        unlogged="--unlogged-tables"
-fi
-
 # Disable Unlogged tables for now
-unlogged = ""
+unlogged=""
 
-${bindir}/bin/pgbench -i s8 -U postgres -p ${port} pgbench
+/opt/postgres/pgbench -i s8 -U postgres -p ${port} pgbench
 ${bindir}/bin/psql -1f ${proj}/script/pre.sql ${unlogged} -U postgres -p ${port} pgbench
 
 if [[ ${1} -eq "master" ]]; then
-	psql -c 'SET max_parallel_degree=4;' -U postgres -p ${port} pgbench
+	${bindir}/bin/psql -c 'SET max_parallel_processes=4;' -U postgres -p ${port} pgbench
 fi
 
 q=${proj}/script/a.sql
 s=1
-w=100
+w=10
 runtests=1
 
 
@@ -66,15 +63,15 @@ function waitnwatch {
 for t in `seq 0 9`;
 do
 
-  echo "Runtest: Triggering battery of tests T=${t}" >> /home/robins/projects/pgbench/log/history.log
+  echo "Runtest: Triggering battery of tests T=${t}" >> /home/robins/projects/popi/log/history.log
   mkdir -p ${obs}/${t}
   cd ${obs}/${t}
 
 if [ $runtests -eq 1 ]; then
 
-  echo "Runtest: Triggering pgbench instance at (`pwd`)" >> /home/robins/projects/pgbench/log/history.log
+  echo "Runtest: Triggering pgbench instance at (`pwd`)" >> /home/robins/projects/popi/log/history.log
 
-  waitnwatch; ${bindir}/bin/pgbench -n -c1 -j1 -P1 -p ${port}                -f ${q}    -T${w} -U postgres pgbench &>c1j1FT${w}.txt
+  waitnwatch; /opt/postgres/pgbench -n -c1 -j1 -P1 -p ${port}                -f ${q}    -T${w} -U postgres pgbench &>c1j1FT${w}.txt
   #waitnwatch; ${bindir}/bin/pgbench -n -c2 -j2 -P1 -p ${port}                -f ${q}    -T${w} -U postgres pgbench &>c2j2FT${w}.txt
   #waitnwatch; ${bindir}/bin/pgbench -n -c3 -j3 -P1 -p ${port}                -f ${q}    -T${w} -U postgres pgbench &>c3j3FT${w}.txt
   #waitnwatch; ${bindir}/bin/pgbench -n -c4 -j4 -P1 -p ${port}                -f ${q}    -T${w} -U postgres pgbench &>c4j4FT${w}.txt
