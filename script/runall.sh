@@ -4,6 +4,10 @@
 exec 200<$0
 flock -n 200 || exit 1
 
+basedir=/home/pi/projects/popi
+scriptdir=${basedir}/script
+bindir=/opt/postgres/${2}
+
 port=9999
 #revisions="REL9_2_STABLE REL9_3_STABLE REL9_4_STABLE REL9_5_STABLE REL9_6_STABLE master"
 revisions="master"
@@ -18,11 +22,14 @@ do
 		s1=${s#REL}
 		s2=${s1%_STABLE}
 		s3=${s2/\_/\.}
-		s1=$s3
+		folder=$s3
 	fi
 
-	echo "RunAll: Triggering $s" >> /home/robins/projects/popi/popi/log/history.log
-	date                         >> /home/robins/projects/popi/popi/log/history.log
-	bash /home/robins/projects/popi/popi/script/run.sh $s $s1 $port &>/home/robins/projects/popi/popi/log/run.log
-done
+	logdir=/opt/postgres/log/${folder}
 
+	echo "RunAll: Start run for $s branch" >> ${logdir}/history.log
+	date                         >> ${logdir}/history.log
+	bash ${scriptdir}/run.sh $s $folder $port &>${logdir}/run.log
+	echo "RunAll: Stop  run for $s branch" >> ${logdir}/history.log
+
+done

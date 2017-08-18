@@ -8,11 +8,17 @@ exec 200<$0
 flock -n 200 || exit 1
 
 #XXX: See that no places use hardwired folder paths
-proj=/home/robins/projects/popi/popi
-obs=/home/robins/projects/popi/popi/obs/${1}
+basedir=/home/pi/projects/popi
+proj=${basedir}
+scriptdir=${basedir}/script
+obs=${proj}/obs/${1}
+
+#1=folder
 
 port=9999
-bindir=/opt/postgres/${1}
+installdir=/opt/postgres
+bindir=${installdir}/${1}/bin
+logdir=${installdir}/log/${1}
 
 #This is a hack that get pgbench working for old branches.
 #/postgres/master is outside this repo, but its (effectively) a static binary that we could link with here
@@ -20,21 +26,21 @@ bindir=/opt/postgres/${1}
 #sudo -u root -H sh -c ln -s /opt/postgres/pgbench /opt/postgres/${1}/bin/pgbench"
 
 # Can't do a --if-exists here, since old pg versions dont understand and bail, which is not what we want
-${bindir}/bin/dropdb -U postgres -p ${port} pgbench 2>/dev/null
+${bindir}/dropdb -U postgres -p ${port} pgbench &>/dev/null
 
-${bindir}/bin/createdb -U postgres -p ${port} pgbench
+${bindir}/createdb -U postgres -p ${port} pgbench
 
 # Disable Unlogged tables for now
 unlogged=""
 
-/opt/postgres/pgbench -i s8 -U postgres -p ${port} pgbench
-${bindir}/bin/psql -1f ${proj}/script/pre.sql ${unlogged} -U postgres -p ${port} pgbench
+${bindir}/pgbench -i s8 -U postgres -p ${port} pgbench
+${bindir}/psql -1f ${scriptdir}/pre.sql ${unlogged} -U postgres -p ${port} pgbench
 
 if [[ ${1} -eq "master" ]]; then
 	${bindir}/bin/psql -c 'SET max_parallel_processes=4;' -U postgres -p ${port} pgbench
 fi
 
-q=${proj}/script/a.sql
+q=${scriptdir}/a.sql
 s=1
 w=10
 runtests=1
@@ -63,15 +69,15 @@ function waitnwatch {
 for t in `seq 0 9`;
 do
 
-  echo "Runtest: Triggering battery of tests T=${t}" >> /home/robins/projects/popi/log/history.log
+  echo "Runtest: Triggering battery of tests T=${t}" >> ${logdir}/history.log
   mkdir -p ${obs}/${t}
   cd ${obs}/${t}
 
 if [ $runtests -eq 1 ]; then
 
-  echo "Runtest: Triggering pgbench instance at (`pwd`)" >> /home/robins/projects/popi/log/history.log
+  echo "Runtest: Triggering pgbench instance at (`pwd`)" >> ${logdir}/history.log
 
-  waitnwatch; /opt/postgres/pgbench -n -c1 -j1 -P1 -p ${port}                -f ${q}    -T${w} -U postgres pgbench &>c1j1FT${w}.txt
+  waitnwatch; ${bindir}/pgbench -n -c1 -j1 -P1 -p ${port}                -f ${q}    -T${w} -U postgres pgbench &>${logdir}/c1j1FT${w}.txt
   #waitnwatch; ${bindir}/bin/pgbench -n -c2 -j2 -P1 -p ${port}                -f ${q}    -T${w} -U postgres pgbench &>c2j2FT${w}.txt
   #waitnwatch; ${bindir}/bin/pgbench -n -c3 -j3 -P1 -p ${port}                -f ${q}    -T${w} -U postgres pgbench &>c3j3FT${w}.txt
   #waitnwatch; ${bindir}/bin/pgbench -n -c4 -j4 -P1 -p ${port}                -f ${q}    -T${w} -U postgres pgbench &>c4j4FT${w}.txt
@@ -122,7 +128,7 @@ if [ $runtests -eq 1 ]; then
 
 fi
 
-    ${bindir}/bin/psql -U postgres -p ${port} -c 'SELECT version();' postgres > version.txt
+    ${bindir}/psql -U postgres -p ${port} -c 'SELECT version();' postgres > ${logdir}/version.txt
 done
 
-#${bindir}/bin/psql -1f ${proj}/script/post.sql -U postgres -p ${port} pgbench
+#${bindir}/psql -1f ${scriptdir}/post.sql -U postgres -p ${port} pgbench
