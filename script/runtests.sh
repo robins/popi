@@ -8,8 +8,8 @@ exec 200<$0
 flock -n 200 || exit 1
 
 #XXX: See that no places use hardwired folder paths
-proj=/home/robins/projects/popi
-obs=/home/robins/projects/popi/obs/${1}
+proj=/home/robins/projects/popi/popi
+obs=/home/robins/projects/popi/popi/obs/${1}
 
 port=9999
 bindir=/opt/postgres/${1}

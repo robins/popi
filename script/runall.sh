@@ -21,8 +21,8 @@ do
 		s1=$s3
 	fi
 
-	echo "RunAll: Triggering $s" >> /home/robins/projects/popi/log/history.log
-	date                         >> /home/robins/projects/popi/log/history.log
-	bash /home/robins/projects/popi/script/run.sh $s $s1 $port &>/home/robins/projects/popi/log/run.log
+	echo "RunAll: Triggering $s" >> /home/robins/projects/popi/popi/log/history.log
+	date                         >> /home/robins/projects/popi/popi/log/history.log
+	bash /home/robins/projects/popi/popi/script/run.sh $s $s1 $port &>/home/robins/projects/popi/popi/log/run.log
 done
 
