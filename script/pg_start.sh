@@ -1,6 +1,12 @@
-bindir=/opt/postgres/${1}
+basedir=/home/pi/projects/popi/stage
+repobasedir=${basedir}/${1}
 
-${bindir}/bin/pg_ctl -D ${bindir}/data stop &>/dev/null
-rm -rf ${bindir}/data/*
-${bindir}/bin/initdb -D ${bindir}/data
-${bindir}/bin/pg_ctl -D ${bindir}/data -l /opt/postgres/log/logfile_${1} start
+bindir=/opt/postgres/master/bin
+
+${bindir}/pg_ctl -D ${repobasedir}/data stop &>/dev/null
+rm -rf ${repobasedir}/data/*
+mkdir -p ${basedir}/log/
+mkdir -p ${repobasedir}
+
+${bindir}/initdb -D ${repobasedir}/data
+${bindir}/pg_ctl -D ${repobasedir}/data -l ${basedir}/log/logfile_${1} start

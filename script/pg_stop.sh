@@ -1,4 +1,4 @@
-bindir=/opt/postgres/${1}
+basedir=/home/pi/projects/popi/stage
+bindir=/opt/postgres/master/bin
 
-${bindir}/bin/pg_ctl -D ${bindir}/data stop
-
+${bindir}/pg_ctl -D ${basedir}/${1}/data stop

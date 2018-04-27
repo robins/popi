@@ -6,7 +6,7 @@ flock -n 200 || exit 1
 
 basedir=/home/pi/projects/popi
 scriptdir=${basedir}/script
-bindir=/opt/postgres/${2}
+bindir=${basedir}/stage/${2}
 
 port=9999
 #revisions="REL9_2_STABLE REL9_3_STABLE REL9_4_STABLE REL9_5_STABLE REL9_6_STABLE master"
@@ -25,7 +25,8 @@ do
 		folder=$s3
 	fi
 
-	logdir=/opt/postgres/log/${folder}
+	logdir=${basedir}/log/${folder}
+	mkdir -p ${logdir}
 
 	echo "RunAll: Start run for $s branch" >> ${logdir}/history.log
 	date                         >> ${logdir}/history.log

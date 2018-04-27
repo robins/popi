@@ -9,16 +9,14 @@ flock -n 200 || exit 1
 
 #XXX: See that no places use hardwired folder paths
 basedir=/home/pi/projects/popi
-proj=${basedir}
 scriptdir=${basedir}/script
-obs=${proj}/obs/${1}
+obsdir=${basedir}/obs/${1}
 
 #1=folder
 
 port=9999
-installdir=/opt/postgres
-bindir=${installdir}/${1}/bin
-logdir=${installdir}/log/${1}
+bindir=/opt/postgres/master/bin
+logdir=${basedir}/log/${1}
 
 #This is a hack that get pgbench working for old branches.
 #/postgres/master is outside this repo, but its (effectively) a static binary that we could link with here
@@ -66,12 +64,12 @@ function waitnwatch {
 }
 
 #XXX Instead of looping, which is temporary. Create a logic that checks which (of 0-9) needs to be refreshed and randomize between them, if multiple candidates found
-for t in `seq 0 9`;
+for t in `seq 0 0`;
 do
 
   echo "Runtest: Triggering battery of tests T=${t}" >> ${logdir}/history.log
-  mkdir -p ${obs}/${t}
-  cd ${obs}/${t}
+  mkdir -p ${obsdir}/${t}
+  cd ${obsdir}/${t}
 
 if [ $runtests -eq 1 ]; then
 
