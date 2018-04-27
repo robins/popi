@@ -24,18 +24,18 @@ logdir=${basedir}/log/${1}
 #sudo -u root -H sh -c ln -s /opt/postgres/pgbench /opt/postgres/${1}/bin/pgbench"
 
 # Can't do a --if-exists here, since old pg versions dont understand and bail, which is not what we want
-${bindir}/dropdb -U postgres -p ${port} pgbench &>/dev/null
+${bindir}/dropdb -h localhost -U postgres -p ${port} pgbench &>/dev/null
 
-${bindir}/createdb -U postgres -p ${port} pgbench
+${bindir}/createdb -h localhost -U postgres -p ${port} pgbench
 
 # Disable Unlogged tables for now
 unlogged=""
 
-${bindir}/pgbench -i s8 -U postgres -p ${port} pgbench
-${bindir}/psql -1f ${scriptdir}/pre.sql ${unlogged} -U postgres -p ${port} pgbench
+${bindir}/pgbench -i s8 -h localhost -U postgres -p ${port} pgbench
+${bindir}/psql -1f ${scriptdir}/pre.sql ${unlogged} -h localhost -U postgres -p ${port} pgbench
 
 if [[ ${1} -eq "master" ]]; then
-	${bindir}/bin/psql -c 'SET max_parallel_processes=4;' -U postgres -p ${port} pgbench
+	${bindir}/bin/psql -c 'SET max_parallel_processes=4;' -h localhost -U postgres -p ${port} pgbench
 fi
 
 q=${scriptdir}/a.sql
@@ -75,7 +75,7 @@ if [ $runtests -eq 1 ]; then
 
   echo "Runtest: Triggering pgbench instance at (`pwd`)" >> ${logdir}/history.log
 
-  waitnwatch; ${bindir}/pgbench -n -c1 -j1 -P1 -p ${port}                -f ${q}    -T${w} -U postgres pgbench &>${logdir}/c1j1FT${w}.txt
+  waitnwatch; ${bindir}/pgbench -n -c1 -j1 -P1 -p ${port}                -f ${q}    -T${w} -h localhost -U postgres pgbench &>${logdir}/c1j1FT${w}.txt
   #waitnwatch; ${bindir}/bin/pgbench -n -c2 -j2 -P1 -p ${port}                -f ${q}    -T${w} -U postgres pgbench &>c2j2FT${w}.txt
   #waitnwatch; ${bindir}/bin/pgbench -n -c3 -j3 -P1 -p ${port}                -f ${q}    -T${w} -U postgres pgbench &>c3j3FT${w}.txt
   #waitnwatch; ${bindir}/bin/pgbench -n -c4 -j4 -P1 -p ${port}                -f ${q}    -T${w} -U postgres pgbench &>c4j4FT${w}.txt
@@ -126,7 +126,7 @@ if [ $runtests -eq 1 ]; then
 
 fi
 
-    ${bindir}/psql -U postgres -p ${port} -c 'SELECT version();' postgres > ${logdir}/version.txt
+    ${bindir}/psql -h localhost -U postgres -p ${port} -c 'SELECT version();' postgres > ${logdir}/version.txt
 done
 
 #${bindir}/psql -1f ${scriptdir}/post.sql -U postgres -p ${port} pgbench
