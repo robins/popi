@@ -9,3 +9,4 @@ obs/parse
 T.txt
 obs_old/
 repo
+stage/master/*
