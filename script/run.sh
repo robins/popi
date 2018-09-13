@@ -5,7 +5,12 @@ flock -n 200 || exit 1
 # $1=branch
 # $2=folder
 
-port=5432 #Currently we are not geared towards changing port
+if (( $# < 2 )); then
+echo "Need at least 2 arguments (branch folder). For e.g. master master"
+exit 1
+fi
+
+port=5433 #Currently we are not geared towards changing port
 
 basedir=/home/pi/projects/popi
 srcdir=${basedir}/repo
@@ -15,26 +20,21 @@ installdir=${basedir}/stage/${2}/install
 bindir=${installdir}/bin
 datadir=${installdir}/data
 
-pg_stop () {
-	echo $bindir
-	${bindir}/pg_ctl -D ${datadir} stop
-}
-
-pg_start () {
-        echo $bindir
-        ${bindir}/pg_ctl -D ${datadir} start
-}
-
-
 cd ${srcdir}
 git checkout ${1} && \
 	git pull && \
-	make -j4 clean && \
+#	Only required if this is a new git repo
 	./configure --prefix=${installdir} --enable-depend --with-pgport=${port} && \
-	make -j4 && \
-	pg_stop  && \
+#	${bindir}/pg_ctl -D ${datadir} stop && \
 	make -j4 install && \
-	pg_start
+	cd /home/pi/projects/popi/stage/master/ && \
+	rm -rf install/data && \
+	${bindir}/initdb -D ${datadir} && \
+        ${bindir}/pg_ctl -D ${datadir} start && \
+	#Wait 5 seconds. We don't want tests to fail because the IO couldnt keep up with recent DB start
+	sleep 5 && \
+	echo "Started" && \
+	exit 1
 
 
 #Stop old instance before installing new version
@@ -45,9 +45,6 @@ git checkout ${1} && \
 #sudo -u postgres -H sh -c "/bin/bash ${scriptdir}/pg_start.sh ${2} ${3}"
 #/bin/bash ${scriptdir}/pg_start.sh ${2} ${port}
 #pg_start
-exit 1
 
-#Wait 5 seconds. We don't want tests to fail because the IO couldnt keep up with recent DB start
-sleep 5
 
 bash ${scriptdir}/runtests.sh $2 &>${logdir}/runtests.log
