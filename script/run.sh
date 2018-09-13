@@ -21,7 +21,8 @@ bindir=${installdir}/bin
 datadir=${installdir}/data
 
 cd ${srcdir}
-git checkout ${1} && \
+echo "Starting Script" && \
+	git checkout ${1} && \
 	git pull && \
 #	Only required if this is a new git repo
 	./configure --prefix=${installdir} --enable-depend --with-pgport=${port} && \
@@ -33,7 +34,7 @@ git checkout ${1} && \
         ${bindir}/pg_ctl -D ${datadir} start && \
 	#Wait 5 seconds. We don't want tests to fail because the IO couldnt keep up with recent DB start
 	sleep 5 && \
-	echo "Started" && \
+	echo "DB Started" && \
 	exit 1
 
 
