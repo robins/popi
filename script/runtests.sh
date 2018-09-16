@@ -87,8 +87,31 @@ function waitnwatch {
 runiteration() {
 #1 connections
 #2 parallel threads
-#3 additional options
-  ${bindir}/pgbench -n -c${1} -j${2} ${3} -P1 -p ${port} -T${w} -h localhost -U ${dbuser} pgbench &>${obsdir}/c${1}j${2}FT${w}.txt
+#3 is_prepared
+#4 is_select_only
+#5 is_connect_only
+
+  fname=''
+  other_options=''
+
+  if [[ $3 -eq 1 ]]; then
+    other_options=${other_options}' -M prepared '
+    fname='M'
+  fi
+
+  if [[ $4 -eq 1 ]]; then
+    other_options=${other_options}' -S '
+    fname="${fname}S"
+  fi
+
+  if [[ $5 -eq 1 ]]; then
+    other_options=${other_options}' -C '
+    fname="C${fname}"
+  fi
+
+  fname="c${1}j${2}${fname}T${w}.txt"
+
+  ${bindir}/pgbench -n -c${1} -j${2} ${other_options} -P1 -p ${port} -T${w} -h localhost -U ${dbuser} pgbench &>${obsdir}/${fname}
 }
 
   echo "Runtest: Triggering battery of tests T=${t}" >> ${logdir}/history.log
@@ -102,26 +125,20 @@ if [[ $runtests -eq 1 ]]; then
 #  ${bindir}/pgbench -n -c1 -j1 -P1 -p ${port} -T${w} -h localhost -U ${dbuser} pgbench &>${obsdir}/c1j1FT${w}.txt
   #waitnwatch; 
 
-for i in 1 2 3 4 8 12 16 32 64 ;
+#for i in 1 2 3 4 8 12 16 32 64 ;
+  for is_conn_included in 1 2;
   do
-    runiteration $i $(($i<4?1:4))
+  for is_select_only in 1 2;
+    do
+    for is_prepared in 1 2;
+      do
+        for i in 1 2;
+          do
+            runiteration $i $(($i<4?1:4)) ${is_prepared} ${is_select_only} ${is_conn_included}
+          done
+      done
+    done
   done
-
-for i in 1 2 3 4 8 12 16 32 64 ;
-  do
-    runiteration $i $(($i<4?1:4)) '-S'
-  done
-
-for i in 1 2 3 4 8 12 16 32 64 ;
-  do
-    runiteration $i $(($i<4?1:4)) '-M prepared'
-  done
-
-for i in 1 2 3 4 8 12 16 32 64 ;
-  do
-    runiteration $i $(($i<4?1:4)) '-S -M prepared'
-  done
-
 fi
 
   ${bindir}/psql -h localhost -U ${dbuser} -p ${port} -c 'SELECT version();' postgres > ${logdir}/version.txt
