@@ -22,7 +22,6 @@ stagedir=${basedir}/stage/${2}
 installdir=${stagedir}/install
 bindir=${installdir}/bin
 datadir=${installdir}/data
-stagelogdir=${stagedir}/log
 
 hash=${3}
 enable_logging=1
@@ -50,8 +49,7 @@ make -j4 install && \
 	${bindir}/initdb -D ${datadir} && \
 	#Wait 5 seconds. We don't want tests to fail because the IO couldnt keep up with recent DB start
 	sleep 5 && \
-	mkdir -p ${stagelogdir} && \
-        ${bindir}/pg_ctl -D ${datadir} -l ${stagelogdir}/logfile_master.txt start && \
+        ${bindir}/pg_ctl -D ${datadir} -l ${logdir}/logfile_master.txt start && \
 	sleep 5
 
 

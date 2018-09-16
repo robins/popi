@@ -61,7 +61,7 @@ ${bindir}/psql -1f ${scriptdir}/pre.sql ${unlogged} -h localhost -U ${dbuser} -p
 
 q=${scriptdir}/a.sql
 s=1
-w=20
+w=100
 runtests=1
 
 
@@ -146,3 +146,5 @@ fi
   ${bindir}/psql -h localhost -U ${dbuser} -p ${port} -c 'SELECT version();' postgres > ${logdir}/version.txt
 
 #${bindir}/psql -1f ${scriptdir}/post.sql -U postgres -p ${port} pgbench
+
+log "RunTests completed. Exiting"
