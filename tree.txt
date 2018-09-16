@@ -1,4 +1,4 @@
-.
+..
 ├── catalog
 │   ├── master
 │   │   └── processed_hash.txt
@@ -32,10 +32,11 @@
 │   ├── README.md
 │   ├── runall.sh
 │   ├── run.sh
-│   └── runtests.sh
+│   ├── runtests.sh
+│   └── tree.sh
 └── stage
     ├── master
     │   └── README.md
     └── README.md
 
-12 directories, 26 files
+12 directories, 27 files
