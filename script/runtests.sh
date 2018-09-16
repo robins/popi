@@ -7,8 +7,11 @@
 exec 200<$0
 flock -n 200 || exit 1
 
-if (( $# < 2 )); then
-echo "Need at least 2 arguments (folder port). For e.g. master 5433"
+if (( $# < 3 )); then
+# 1 -> folder
+# 2 -> port
+# 3 -> commit - hash
+echo "Need at least 3 arguments (folder port hash). For e.g. master 5433 14ea36520389dbb1b48524223cf09389154a0f2e"
 exit 1
 fi
 
@@ -18,7 +21,7 @@ logdir=${basedir}/log/${1}
 installdir=${basedir}/stage/${1}/install
 bindir=${installdir}/bin
 datadir=${installdir}/data
-obsdir=${basedir}/obs/${1}
+obsdir=${basedir}/obs/${1}/${3}
 port=${2}
 
 dbuser=pi
@@ -81,19 +84,15 @@ function waitnwatch {
   done
 }
 
-#XXX Instead of looping, which is temporary. Create a logic that checks which (of 0-9) needs to be refreshed and randomize between them, if multiple candidates found
-for t in `seq 0 0`;
-do
-
   echo "Runtest: Triggering battery of tests T=${t}" >> ${logdir}/history.log
-  mkdir -p ${obsdir}/${t}
-  cd ${obsdir}/${t}
+  mkdir -p ${obsdir}
 
-if [ $runtests -eq 1 ]; then
+if [[ $runtests -eq 1 ]]; then
 
   echo "Runtest: Triggering pgbench instance at (`pwd`)" >> ${logdir}/history.log
 
-  waitnwatch; ${bindir}/pgbench -n -c1 -j1 -P1 -p ${port}                -f ${q}    -T${w} -h localhost -U ${dbuser} pgbench &>${logdir}/c1j1FT${w}.txt
+#  waitnwatch; 
+  ${bindir}/pgbench -n -c1 -j1 -P1 -p ${port}                -f ${q}    -T${w} -h localhost -U ${dbuser} pgbench &>${obsdir}/c1j1FT${w}.txt
   #waitnwatch; ${bindir}/bin/pgbench -n -c2 -j2 -P1 -p ${port}                -f ${q}    -T${w} -U postgres pgbench &>c2j2FT${w}.txt
   #waitnwatch; ${bindir}/bin/pgbench -n -c3 -j3 -P1 -p ${port}                -f ${q}    -T${w} -U postgres pgbench &>c3j3FT${w}.txt
   #waitnwatch; ${bindir}/bin/pgbench -n -c4 -j4 -P1 -p ${port}                -f ${q}    -T${w} -U postgres pgbench &>c4j4FT${w}.txt
@@ -144,7 +143,6 @@ if [ $runtests -eq 1 ]; then
 
 fi
 
-    ${bindir}/psql -h localhost -U ${dbuser} -p ${port} -c 'SELECT version();' postgres > ${logdir}/version.txt
-done
+  ${bindir}/psql -h localhost -U ${dbuser} -p ${port} -c 'SELECT version();' postgres > ${logdir}/version.txt
 
 #${bindir}/psql -1f ${scriptdir}/post.sql -U postgres -p ${port} pgbench

@@ -4,7 +4,6 @@
 │       └── processed_hash.txt => File that contains git hash that was last successfully processed
 ├── log
 │   ├── master
-│   │   ├── c1j1FT10.txt =>
 │   │   ├── history.log
 │   │   ├── run.log
 │   │   ├── runtests.log
@@ -12,7 +11,8 @@
 │   └── README.md
 ├── obs
 │   ├── master
-│   │   └── 0
+│   │   └── 14ea36520389dbb1b48524223cf09389154a0f2e => Commit that was evaluated
+│   │       └── c1j1FT10.txt => Observations from evaluation (for that benchmark)
 │   ├── README.md
 │   └── results
 │       └── count_star_parallel_query.txt
