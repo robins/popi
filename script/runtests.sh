@@ -84,6 +84,13 @@ function waitnwatch {
   done
 }
 
+runiteration() {
+#1 connections
+#2 parallel threads
+#3 additional options
+  ${bindir}/pgbench -n -c${1} -j${2} ${3} -P1 -p ${port} -T${w} -h localhost -U ${dbuser} pgbench &>${obsdir}/c${1}j${2}FT${w}.txt
+}
+
   echo "Runtest: Triggering battery of tests T=${t}" >> ${logdir}/history.log
   mkdir -p ${obsdir}
 
@@ -92,55 +99,28 @@ if [[ $runtests -eq 1 ]]; then
   echo "Runtest: Triggering pgbench instance at (`pwd`)" >> ${logdir}/history.log
 
 #  waitnwatch; 
-  ${bindir}/pgbench -n -c1 -j1 -P1 -p ${port} -T${w} -h localhost -U ${dbuser} pgbench &>${obsdir}/c1j1FT${w}.txt
+#  ${bindir}/pgbench -n -c1 -j1 -P1 -p ${port} -T${w} -h localhost -U ${dbuser} pgbench &>${obsdir}/c1j1FT${w}.txt
   #waitnwatch; 
-  ${bindir}/pgbench -n -c2 -j2 -P1 -p ${port} -T${w} -h localhost -U ${dbuser} pgbench &>${obsdir}/c2j2FT${w}.txt
-  #waitnwatch; ${bindir}/pgbench -n -c3 -j3 -P1 -p ${port}                -f ${q}    -T${w} -U ${dbuser} pgbench &>c3j3FT${w}.txt
-  #waitnwatch; ${bindir}/pgbench -n -c4 -j4 -P1 -p ${port}                -f ${q}    -T${w} -U ${dbuser} pgbench &>c4j4FT${w}.txt
 
-  #waitnwatch; ${bindir}/pgbench -c2 -j4 -P1 -p ${port}                -f ${q}    -T${w} -U ${dbuser} pgbench &>c2j4FT100.txt
-  #waitnwatch; ${bindir}/pgbench -c2 -j4 -P1 -p ${port}    -M prepared -f ${q}    -T${w} -U ${dbuser} pgbench &>c2j4MFT100.txt
+for i in 1 2 3 4 8 12 16 32 64 ;
+  do
+    runiteration $i $(($i<4?1:4))
+  done
 
-  #waitnwatch; ${bindir}/pgbench -c3 -j4 -P1 -p ${port}                -f ${q}    -T${w} -U ${dbuser} pgbench &>c3j4FT100.txt
-  #waitnwatch; ${bindir}/pgbench -c3 -j4 -P1 -p ${port}    -M prepared -f ${q}    -T${w} -U ${dbuser} pgbench &>c3j4MFT100.txt
+for i in 1 2 3 4 8 12 16 32 64 ;
+  do
+    runiteration $i $(($i<4?1:4)) '-S'
+  done
 
-  #waitnwatch; ${bindir}/pgbench -c4 -j4 -P1 -p ${port}                           -T${w} -U ${dbuser} pgbench &>c4j4T100.txt
-  #waitnwatch; ${bindir}/pgbench -c4 -j4 -P1 -p ${port}                        -S -T${w} -U ${dbuser} pgbench &>c4j4ST100.txt
-  #waitnwatch; ${bindir}/pgbench -c4 -j4 -P1 -p ${port}    -M prepared            -T${w} -U ${dbuser} pgbench &>c4j4MT100.txt
-  #waitnwatch; ${bindir}/pgbench -c4 -j4 -P1 -p ${port}    -M prepared         -S -T${w} -U ${dbuser} pgbench &>c4j4MST100.txt
-  #waitnwatch; ${bindir}/pgbench -c4 -j4 -P1 -p ${port}                -f ${q}    -T${w} -U ${dbuser} pgbench &>c4j4FT100.txt
-  #waitnwatch; ${bindir}/pgbench -c4 -j4 -P1 -p ${port}                -f ${q} -S -T${w} -U ${dbuser} pgbench &>c4j4FST100.txt
-  #waitnwatch; ${bindir}/pgbench -c4 -j4 -P1 -p ${port}    -M prepared -f ${q}    -T${w} -U ${dbuser} pgbench &>c4j4MFT100.txt
-  #waitnwatch; ${bindir}/pgbench -c4 -j4 -P1 -p ${port}    -M prepared -f ${q} -S -T${w} -U ${dbuser} pgbench &>c4j4MFST100.txt
-  #waitnwatch; ${bindir}/pgbench -c4 -j4 -P1 -p ${port} -C                        -T${w} -U ${dbuser} pgbench &>c4j4CT100.txt
-  #waitnwatch; ${bindir}/pgbench -c4 -j4 -P1 -p ${port} -C                     -S -T${w} -U ${dbuser} pgbench &>c4j4CST100.txt
-  #waitnwatch; ${bindir}/pgbench -c4 -j4 -P1 -p ${port} -C -M prepared            -T${w} -U ${dbuser} pgbench &>c4j4CMT100.txt
-  #waitnwatch; ${bindir}/pgbench -c4 -j4 -P1 -p ${port} -C -M prepared         -S -T${w} -U ${dbuser} pgbench &>c4j4CMST100.txt
+for i in 1 2 3 4 8 12 16 32 64 ;
+  do
+    runiteration $i $(($i<4?1:4)) '-M prepared'
+  done
 
-  #waitnwatch; ${bindir}/pgbench -c8 -j4 -P1 -p ${port}                           -T${w} -U ${dbuser} pgbench &>c8j4T100.txt
-  #waitnwatch; ${bindir}/pgbench -c8 -j4 -P1 -p ${port}                        -S -T${w} -U ${dbuser} pgbench &>c8j4ST100.txt
-  #waitnwatch; ${bindir}/pgbench -c8 -j4 -P1 -p ${port}    -M prepared            -T${w} -U ${dbuser} pgbench &>c8j4MT100.txt
-  #waitnwatch; ${bindir}/pgbench -c8 -j4 -P1 -p ${port}    -M prepared         -S -T${w} -U ${dbuser} pgbench &>c8j4MST100.txt
-  #waitnwatch; ${bindir}/pgbench -c8 -j4 -P1 -p ${port}                -f ${q}    -T${w} -U ${dbuser} pgbench &>c8j4FT100.txt
-  #waitnwatch; ${bindir}/pgbench -c8 -j4 -P1 -p ${port}                -f ${q} -S -T${w} -U ${dbuser} pgbench &>c8j4FST100.txt
-  #waitnwatch; ${bindir}/pgbench -c8 -j4 -P1 -p ${port}    -M prepared -f ${q}    -T${w} -U ${dbuser} pgbench &>c8j4MFT100.txt
-  #waitnwatch; ${bindir}/pgbench -c8 -j4 -P1 -p ${port}    -M prepared -f ${q} -S -T${w} -U ${dbuser} pgbench &>c8j4MFST100.txt
-  #waitnwatch; ${bindir}/pgbench -c8 -j4 -P1 -p ${port} -C                        -T${w} -U ${dbuser} pgbench &>c8j4CT100.txt
-  #waitnwatch; ${bindir}/pgbench -c8 -j4 -P1 -p ${port} -C                     -S -T${w} -U ${dbuser} pgbench &>c8j4CST100.txt
-  #waitnwatch; ${bindir}/pgbench -c8 -j4 -P1 -p ${port} -C -M prepared            -T${w} -U ${dbuser} pgbench &>c8j4CMT100.txt
-  #waitnwatch; ${bindir}/pgbench -c8 -j4 -P1 -p ${port} -C -M prepared         -S -T${w} -U ${dbuser} pgbench &>c8j4CMST100.txt
-  #waitnwatch; ${bindir}/pgbench -c64 -j4 -P1 -p ${port}                           -T${w} -U ${dbuser} pgbench &>c64j4T100.txt
-  #waitnwatch; ${bindir}/pgbench -c64 -j4 -P1 -p ${port}                        -S -T${w} -U ${dbuser} pgbench &>c64j4ST100.txt
-  #waitnwatch; ${bindir}/pgbench -c64 -j4 -P1 -p ${port}    -M prepared            -T${w} -U ${dbuser} pgbench &>c64j4MT100.txt
-  #waitnwatch; ${bindir}/pgbench -c64 -j4 -P1 -p ${port}    -M prepared         -S -T${w} -U ${dbuser} pgbench &>c64j4MST100.txt
-  #waitnwatch; ${bindir}/pgbench -c64 -j4 -P1 -p ${port}                -f ${q}    -T${w} -U ${dbuser} pgbench &>c64j4FT100.txt
-  #waitnwatch; ${bindir}/pgbench -c64 -j4 -P1 -p ${port}                -f ${q} -S -T${w} -U ${dbuser} pgbench &>c64j4FST100.txt
-  #waitnwatch; ${bindir}/pgbench -c64 -j4 -P1 -p ${port}    -M prepared -f ${q}    -T${w} -U ${dbuser} pgbench &>c64j4MFT100.txt
-  #waitnwatch; ${bindir}/pgbench -c64 -j4 -P1 -p ${port}    -M prepared -f ${q} -S -T${w} -U ${dbuser} pgbench &>c64j4MFST100.txt
-  #waitnwatch; ${bindir}/pgbench -c64 -j4 -P1 -p ${port} -C                        -T${w} -U ${dbuser} pgbench &>c64j4CT100.txt
-  #waitnwatch; ${bindir}/pgbench -c64 -j4 -P1 -p ${port} -C                     -S -T${w} -U ${dbuser} pgbench &>c64j4CST100.txt
-  #waitnwatch; ${bindir}/pgbench -c64 -j4 -P1 -p ${port} -C -M prepared            -T${w} -U ${dbuser} pgbench &>c64j4CMT100.txt
-  #waitnwatch; ${bindir}/pgbench -c64 -j4 -P1 -p ${port} -C -M prepared         -S -T${w} -U ${dbuser} pgbench &>c64j4CMST100.txt
+for i in 1 2 3 4 8 12 16 32 64 ;
+  do
+    runiteration $i $(($i<4?1:4)) '-S -M prepared'
+  done
 
 fi
 
