@@ -56,12 +56,12 @@ log "Runing Pre SQL"
 ${bindir}/psql -1f ${scriptdir}/pre.sql ${unlogged} -h localhost -U ${dbuser} -p ${port} pgbench
 
 #if [[ ${1} -eq "master" ]]; then
-#	${bindir}/bin/psql -c 'ALTER USER pi SET max_parallel_processes=4;' -h localhost -U postgres -p ${port} pgbench
+#	${bindir}/bin/psql -c 'ALTER USER pi SET max_parallel_processes=4;' -h localhost -U ${dbuser} -p ${port} pgbench
 #fi
 
 q=${scriptdir}/a.sql
 s=1
-w=100
+w=20
 runtests=1
 
 
@@ -93,58 +93,59 @@ if [[ $runtests -eq 1 ]]; then
 
 #  waitnwatch; 
   ${bindir}/pgbench -n -c1 -j1 -P1 -p ${port} -T${w} -h localhost -U ${dbuser} pgbench &>${obsdir}/c1j1FT${w}.txt
-  #waitnwatch; ${bindir}/bin/pgbench -n -c2 -j2 -P1 -p ${port}                -f ${q}    -T${w} -U postgres pgbench &>c2j2FT${w}.txt
-  #waitnwatch; ${bindir}/bin/pgbench -n -c3 -j3 -P1 -p ${port}                -f ${q}    -T${w} -U postgres pgbench &>c3j3FT${w}.txt
-  #waitnwatch; ${bindir}/bin/pgbench -n -c4 -j4 -P1 -p ${port}                -f ${q}    -T${w} -U postgres pgbench &>c4j4FT${w}.txt
+  #waitnwatch; 
+  ${bindir}/pgbench -n -c2 -j2 -P1 -p ${port} -T${w} -h localhost -U ${dbuser} pgbench &>${obsdir}/c2j2FT${w}.txt
+  #waitnwatch; ${bindir}/pgbench -n -c3 -j3 -P1 -p ${port}                -f ${q}    -T${w} -U ${dbuser} pgbench &>c3j3FT${w}.txt
+  #waitnwatch; ${bindir}/pgbench -n -c4 -j4 -P1 -p ${port}                -f ${q}    -T${w} -U ${dbuser} pgbench &>c4j4FT${w}.txt
 
-  #waitnwatch; ${bindir}/bin/pgbench -c2 -j4 -P1 -p ${port}                -f ${q}    -T${w} -U postgres pgbench &>c2j4FT100.txt
-  #waitnwatch; ${bindir}/bin/pgbench -c2 -j4 -P1 -p ${port}    -M prepared -f ${q}    -T${w} -U postgres pgbench &>c2j4MFT100.txt
+  #waitnwatch; ${bindir}/pgbench -c2 -j4 -P1 -p ${port}                -f ${q}    -T${w} -U ${dbuser} pgbench &>c2j4FT100.txt
+  #waitnwatch; ${bindir}/pgbench -c2 -j4 -P1 -p ${port}    -M prepared -f ${q}    -T${w} -U ${dbuser} pgbench &>c2j4MFT100.txt
 
-  #waitnwatch; ${bindir}/bin/pgbench -c3 -j4 -P1 -p ${port}                -f ${q}    -T${w} -U postgres pgbench &>c3j4FT100.txt
-  #waitnwatch; ${bindir}/bin/pgbench -c3 -j4 -P1 -p ${port}    -M prepared -f ${q}    -T${w} -U postgres pgbench &>c3j4MFT100.txt
+  #waitnwatch; ${bindir}/pgbench -c3 -j4 -P1 -p ${port}                -f ${q}    -T${w} -U ${dbuser} pgbench &>c3j4FT100.txt
+  #waitnwatch; ${bindir}/pgbench -c3 -j4 -P1 -p ${port}    -M prepared -f ${q}    -T${w} -U ${dbuser} pgbench &>c3j4MFT100.txt
 
-  #waitnwatch; ${bindir}/bin/pgbench -c4 -j4 -P1 -p ${port}                           -T${w} -U postgres pgbench &>c4j4T100.txt
-  #waitnwatch; ${bindir}/bin/pgbench -c4 -j4 -P1 -p ${port}                        -S -T${w} -U postgres pgbench &>c4j4ST100.txt
-  #waitnwatch; ${bindir}/bin/pgbench -c4 -j4 -P1 -p ${port}    -M prepared            -T${w} -U postgres pgbench &>c4j4MT100.txt
-  #waitnwatch; ${bindir}/bin/pgbench -c4 -j4 -P1 -p ${port}    -M prepared         -S -T${w} -U postgres pgbench &>c4j4MST100.txt
-  #waitnwatch; ${bindir}/bin/pgbench -c4 -j4 -P1 -p ${port}                -f ${q}    -T${w} -U postgres pgbench &>c4j4FT100.txt
-  #waitnwatch; ${bindir}/bin/pgbench -c4 -j4 -P1 -p ${port}                -f ${q} -S -T${w} -U postgres pgbench &>c4j4FST100.txt
-  #waitnwatch; ${bindir}/bin/pgbench -c4 -j4 -P1 -p ${port}    -M prepared -f ${q}    -T${w} -U postgres pgbench &>c4j4MFT100.txt
-  #waitnwatch; ${bindir}/bin/pgbench -c4 -j4 -P1 -p ${port}    -M prepared -f ${q} -S -T${w} -U postgres pgbench &>c4j4MFST100.txt
-  #waitnwatch; ${bindir}/bin/pgbench -c4 -j4 -P1 -p ${port} -C                        -T${w} -U postgres pgbench &>c4j4CT100.txt
-  #waitnwatch; ${bindir}/bin/pgbench -c4 -j4 -P1 -p ${port} -C                     -S -T${w} -U postgres pgbench &>c4j4CST100.txt
-  #waitnwatch; ${bindir}/bin/pgbench -c4 -j4 -P1 -p ${port} -C -M prepared            -T${w} -U postgres pgbench &>c4j4CMT100.txt
-  #waitnwatch; ${bindir}/bin/pgbench -c4 -j4 -P1 -p ${port} -C -M prepared         -S -T${w} -U postgres pgbench &>c4j4CMST100.txt
+  #waitnwatch; ${bindir}/pgbench -c4 -j4 -P1 -p ${port}                           -T${w} -U ${dbuser} pgbench &>c4j4T100.txt
+  #waitnwatch; ${bindir}/pgbench -c4 -j4 -P1 -p ${port}                        -S -T${w} -U ${dbuser} pgbench &>c4j4ST100.txt
+  #waitnwatch; ${bindir}/pgbench -c4 -j4 -P1 -p ${port}    -M prepared            -T${w} -U ${dbuser} pgbench &>c4j4MT100.txt
+  #waitnwatch; ${bindir}/pgbench -c4 -j4 -P1 -p ${port}    -M prepared         -S -T${w} -U ${dbuser} pgbench &>c4j4MST100.txt
+  #waitnwatch; ${bindir}/pgbench -c4 -j4 -P1 -p ${port}                -f ${q}    -T${w} -U ${dbuser} pgbench &>c4j4FT100.txt
+  #waitnwatch; ${bindir}/pgbench -c4 -j4 -P1 -p ${port}                -f ${q} -S -T${w} -U ${dbuser} pgbench &>c4j4FST100.txt
+  #waitnwatch; ${bindir}/pgbench -c4 -j4 -P1 -p ${port}    -M prepared -f ${q}    -T${w} -U ${dbuser} pgbench &>c4j4MFT100.txt
+  #waitnwatch; ${bindir}/pgbench -c4 -j4 -P1 -p ${port}    -M prepared -f ${q} -S -T${w} -U ${dbuser} pgbench &>c4j4MFST100.txt
+  #waitnwatch; ${bindir}/pgbench -c4 -j4 -P1 -p ${port} -C                        -T${w} -U ${dbuser} pgbench &>c4j4CT100.txt
+  #waitnwatch; ${bindir}/pgbench -c4 -j4 -P1 -p ${port} -C                     -S -T${w} -U ${dbuser} pgbench &>c4j4CST100.txt
+  #waitnwatch; ${bindir}/pgbench -c4 -j4 -P1 -p ${port} -C -M prepared            -T${w} -U ${dbuser} pgbench &>c4j4CMT100.txt
+  #waitnwatch; ${bindir}/pgbench -c4 -j4 -P1 -p ${port} -C -M prepared         -S -T${w} -U ${dbuser} pgbench &>c4j4CMST100.txt
 
-  #waitnwatch; ${bindir}/bin/pgbench -c8 -j4 -P1 -p ${port}                           -T${w} -U postgres pgbench &>c8j4T100.txt
-  #waitnwatch; ${bindir}/bin/pgbench -c8 -j4 -P1 -p ${port}                        -S -T${w} -U postgres pgbench &>c8j4ST100.txt
-  #waitnwatch; ${bindir}/bin/pgbench -c8 -j4 -P1 -p ${port}    -M prepared            -T${w} -U postgres pgbench &>c8j4MT100.txt
-  #waitnwatch; ${bindir}/bin/pgbench -c8 -j4 -P1 -p ${port}    -M prepared         -S -T${w} -U postgres pgbench &>c8j4MST100.txt
-  #waitnwatch; ${bindir}/bin/pgbench -c8 -j4 -P1 -p ${port}                -f ${q}    -T${w} -U postgres pgbench &>c8j4FT100.txt
-  #waitnwatch; ${bindir}/bin/pgbench -c8 -j4 -P1 -p ${port}                -f ${q} -S -T${w} -U postgres pgbench &>c8j4FST100.txt
-  #waitnwatch; ${bindir}/bin/pgbench -c8 -j4 -P1 -p ${port}    -M prepared -f ${q}    -T${w} -U postgres pgbench &>c8j4MFT100.txt
-  #waitnwatch; ${bindir}/bin/pgbench -c8 -j4 -P1 -p ${port}    -M prepared -f ${q} -S -T${w} -U postgres pgbench &>c8j4MFST100.txt
-  #waitnwatch; ${bindir}/bin/pgbench -c8 -j4 -P1 -p ${port} -C                        -T${w} -U postgres pgbench &>c8j4CT100.txt
-  #waitnwatch; ${bindir}/bin/pgbench -c8 -j4 -P1 -p ${port} -C                     -S -T${w} -U postgres pgbench &>c8j4CST100.txt
-  #waitnwatch; ${bindir}/bin/pgbench -c8 -j4 -P1 -p ${port} -C -M prepared            -T${w} -U postgres pgbench &>c8j4CMT100.txt
-  #waitnwatch; ${bindir}/bin/pgbench -c8 -j4 -P1 -p ${port} -C -M prepared         -S -T${w} -U postgres pgbench &>c8j4CMST100.txt
-  #waitnwatch; ${bindir}/bin/pgbench -c64 -j4 -P1 -p ${port}                           -T${w} -U postgres pgbench &>c64j4T100.txt
-  #waitnwatch; ${bindir}/bin/pgbench -c64 -j4 -P1 -p ${port}                        -S -T${w} -U postgres pgbench &>c64j4ST100.txt
-  #waitnwatch; ${bindir}/bin/pgbench -c64 -j4 -P1 -p ${port}    -M prepared            -T${w} -U postgres pgbench &>c64j4MT100.txt
-  #waitnwatch; ${bindir}/bin/pgbench -c64 -j4 -P1 -p ${port}    -M prepared         -S -T${w} -U postgres pgbench &>c64j4MST100.txt
-  #waitnwatch; ${bindir}/bin/pgbench -c64 -j4 -P1 -p ${port}                -f ${q}    -T${w} -U postgres pgbench &>c64j4FT100.txt
-  #waitnwatch; ${bindir}/bin/pgbench -c64 -j4 -P1 -p ${port}                -f ${q} -S -T${w} -U postgres pgbench &>c64j4FST100.txt
-  #waitnwatch; ${bindir}/bin/pgbench -c64 -j4 -P1 -p ${port}    -M prepared -f ${q}    -T${w} -U postgres pgbench &>c64j4MFT100.txt
-  #waitnwatch; ${bindir}/bin/pgbench -c64 -j4 -P1 -p ${port}    -M prepared -f ${q} -S -T${w} -U postgres pgbench &>c64j4MFST100.txt
-  #waitnwatch; ${bindir}/bin/pgbench -c64 -j4 -P1 -p ${port} -C                        -T${w} -U postgres pgbench &>c64j4CT100.txt
-  #waitnwatch; ${bindir}/bin/pgbench -c64 -j4 -P1 -p ${port} -C                     -S -T${w} -U postgres pgbench &>c64j4CST100.txt
-  #waitnwatch; ${bindir}/bin/pgbench -c64 -j4 -P1 -p ${port} -C -M prepared            -T${w} -U postgres pgbench &>c64j4CMT100.txt
-  #waitnwatch; ${bindir}/bin/pgbench -c64 -j4 -P1 -p ${port} -C -M prepared         -S -T${w} -U postgres pgbench &>c64j4CMST100.txt
+  #waitnwatch; ${bindir}/pgbench -c8 -j4 -P1 -p ${port}                           -T${w} -U ${dbuser} pgbench &>c8j4T100.txt
+  #waitnwatch; ${bindir}/pgbench -c8 -j4 -P1 -p ${port}                        -S -T${w} -U ${dbuser} pgbench &>c8j4ST100.txt
+  #waitnwatch; ${bindir}/pgbench -c8 -j4 -P1 -p ${port}    -M prepared            -T${w} -U ${dbuser} pgbench &>c8j4MT100.txt
+  #waitnwatch; ${bindir}/pgbench -c8 -j4 -P1 -p ${port}    -M prepared         -S -T${w} -U ${dbuser} pgbench &>c8j4MST100.txt
+  #waitnwatch; ${bindir}/pgbench -c8 -j4 -P1 -p ${port}                -f ${q}    -T${w} -U ${dbuser} pgbench &>c8j4FT100.txt
+  #waitnwatch; ${bindir}/pgbench -c8 -j4 -P1 -p ${port}                -f ${q} -S -T${w} -U ${dbuser} pgbench &>c8j4FST100.txt
+  #waitnwatch; ${bindir}/pgbench -c8 -j4 -P1 -p ${port}    -M prepared -f ${q}    -T${w} -U ${dbuser} pgbench &>c8j4MFT100.txt
+  #waitnwatch; ${bindir}/pgbench -c8 -j4 -P1 -p ${port}    -M prepared -f ${q} -S -T${w} -U ${dbuser} pgbench &>c8j4MFST100.txt
+  #waitnwatch; ${bindir}/pgbench -c8 -j4 -P1 -p ${port} -C                        -T${w} -U ${dbuser} pgbench &>c8j4CT100.txt
+  #waitnwatch; ${bindir}/pgbench -c8 -j4 -P1 -p ${port} -C                     -S -T${w} -U ${dbuser} pgbench &>c8j4CST100.txt
+  #waitnwatch; ${bindir}/pgbench -c8 -j4 -P1 -p ${port} -C -M prepared            -T${w} -U ${dbuser} pgbench &>c8j4CMT100.txt
+  #waitnwatch; ${bindir}/pgbench -c8 -j4 -P1 -p ${port} -C -M prepared         -S -T${w} -U ${dbuser} pgbench &>c8j4CMST100.txt
+  #waitnwatch; ${bindir}/pgbench -c64 -j4 -P1 -p ${port}                           -T${w} -U ${dbuser} pgbench &>c64j4T100.txt
+  #waitnwatch; ${bindir}/pgbench -c64 -j4 -P1 -p ${port}                        -S -T${w} -U ${dbuser} pgbench &>c64j4ST100.txt
+  #waitnwatch; ${bindir}/pgbench -c64 -j4 -P1 -p ${port}    -M prepared            -T${w} -U ${dbuser} pgbench &>c64j4MT100.txt
+  #waitnwatch; ${bindir}/pgbench -c64 -j4 -P1 -p ${port}    -M prepared         -S -T${w} -U ${dbuser} pgbench &>c64j4MST100.txt
+  #waitnwatch; ${bindir}/pgbench -c64 -j4 -P1 -p ${port}                -f ${q}    -T${w} -U ${dbuser} pgbench &>c64j4FT100.txt
+  #waitnwatch; ${bindir}/pgbench -c64 -j4 -P1 -p ${port}                -f ${q} -S -T${w} -U ${dbuser} pgbench &>c64j4FST100.txt
+  #waitnwatch; ${bindir}/pgbench -c64 -j4 -P1 -p ${port}    -M prepared -f ${q}    -T${w} -U ${dbuser} pgbench &>c64j4MFT100.txt
+  #waitnwatch; ${bindir}/pgbench -c64 -j4 -P1 -p ${port}    -M prepared -f ${q} -S -T${w} -U ${dbuser} pgbench &>c64j4MFST100.txt
+  #waitnwatch; ${bindir}/pgbench -c64 -j4 -P1 -p ${port} -C                        -T${w} -U ${dbuser} pgbench &>c64j4CT100.txt
+  #waitnwatch; ${bindir}/pgbench -c64 -j4 -P1 -p ${port} -C                     -S -T${w} -U ${dbuser} pgbench &>c64j4CST100.txt
+  #waitnwatch; ${bindir}/pgbench -c64 -j4 -P1 -p ${port} -C -M prepared            -T${w} -U ${dbuser} pgbench &>c64j4CMT100.txt
+  #waitnwatch; ${bindir}/pgbench -c64 -j4 -P1 -p ${port} -C -M prepared         -S -T${w} -U ${dbuser} pgbench &>c64j4CMST100.txt
 
 fi
 
   ${bindir}/psql -h localhost -U ${dbuser} -p ${port} -c 'SELECT version();' postgres > ${logdir}/version.txt
 
-#${bindir}/psql -1f ${scriptdir}/post.sql -U postgres -p ${port} pgbench
+#${bindir}/psql -1f ${scriptdir}/post.sql -U ${dbuser} -p ${port} pgbench
 
 log "RunTests completed. Exiting"

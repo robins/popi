@@ -38,7 +38,7 @@ log "Starting Script" && \
 	git checkout ${hash} . && \
 	git pull && \
 #	Only required if this is a new git repo
-#	./configure --prefix=${installdir} --enable-depend --with-pgport=${port} && \
+	./configure --prefix=${installdir} --enable-depend --with-pgport=${port} && \
 	${bindir}/pg_ctl -D ${datadir} stop
 
 
