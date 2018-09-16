@@ -1,0 +1,40 @@
+.
+├── catalog => Metadata folder to store current processed state
+│   └── master
+│       └── processed_hash.txt => File that contains git hash that was last successfully processed
+├── log
+│   ├── master
+│   │   ├── c1j1FT10.txt =>
+│   │   ├── history.log
+│   │   ├── run.log
+│   │   ├── runtests.log
+│   │   └── version.txt
+│   └── README.md
+├── obs
+│   ├── master
+│   │   └── 0
+│   ├── README.md
+│   └── results
+│       └── count_star_parallel_query.txt
+├── README.md
+├── repo => Source Repository
+├── script
+│   ├── a.sql
+│   ├── a.txt
+│   ├── post.sql
+│   ├── pre.sql
+│   ├── p.sh
+│   ├── README.md
+│   ├── runall.sh
+│   ├── run.sh
+│   └── runtests.sh
+├── stage => Staging folder for Postgres installations
+│   ├── log => logfile output for pg_ctl actions
+│   │   └── logfile_master
+│   ├── master
+│   │   └── install => Postgres Installation folder (including data)
+│   │   └── README.md
+│   └── readme.txt
+└── tree.txt
+
+13 directories, 23 files
