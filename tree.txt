@@ -1,23 +1,28 @@
 .
-├── catalog => Metadata folder to store current processed state
-│   └── master
-│       └── processed_hash.txt => File that contains git hash that was last successfully processed
+├── catalog
+│   ├── master
+│   │   └── processed_hash.txt
+│   └── README.md
 ├── log
 │   ├── master
 │   │   ├── history.log
+│   │   ├── logfile_master.txt
 │   │   ├── run.log
 │   │   ├── runtests.log
 │   │   └── version.txt
 │   └── README.md
 ├── obs
 │   ├── master
-│   │   └── 14ea36520389dbb1b48524223cf09389154a0f2e => Commit that was evaluated
-│   │       └── c1j1FT10.txt => Observations from evaluation (for that benchmark)
+│   │   ├── 14ea36520389dbb1b48524223cf09389154a0f2e
+│   │   │   └── c1j1FT10.txt
+│   │   └── 8f32bacc006692e63f137924d5849b3cb9f2d4d3
+│   │       ├── c1j1FT100.txt
+│   │       ├── c1j1FT10.txt
+│   │       └── c1j1FT20.txt
 │   ├── README.md
 │   └── results
 │       └── count_star_parallel_query.txt
 ├── README.md
-├── repo => Source Repository
 ├── script
 │   ├── a.sql
 │   ├── a.txt
@@ -28,13 +33,9 @@
 │   ├── runall.sh
 │   ├── run.sh
 │   └── runtests.sh
-├── stage => Staging folder for Postgres installations
-│   ├── log => logfile output for pg_ctl actions
-│   │   └── logfile_master
-│   ├── master
-│   │   └── install => Postgres Installation folder (including data)
-│   │   └── README.md
-│   └── readme.txt
-└── tree.txt
+└── stage
+    ├── master
+    │   └── README.md
+    └── README.md
 
-13 directories, 23 files
+12 directories, 26 files
