@@ -52,9 +52,7 @@ make -j4 install && \
 	sleep 5 && \
 	mkdir -p ${stagelogdir} && \
         ${bindir}/pg_ctl -D ${datadir} -l ${stagelogdir}/logfile_master.txt start && \
-	echo "DB Started" && \
-	sleep 5 && \
-	exit 1
+	sleep 5
 
 
 #Stop old instance before installing new version
@@ -67,4 +65,5 @@ make -j4 install && \
 #pg_start
 
 
+log "Setup done. Next calling RunTests to actually trigger the tests"
 bash ${scriptdir}/runtests.sh ${2} ${port} ${hash} &>${logdir}/runtests.log
