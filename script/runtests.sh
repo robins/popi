@@ -4,8 +4,8 @@
 #     irrespective of whether we eventually cycle T or not, we should be resetting the non-matching versions first, when re-running
 
 # lock the script so only one runs at a time
-exec 200<$0
-flock -n 200 || exit 1
+#exec 200<$0
+#flock -n 200 || exit 1
 
 if (( $# < 3 )); then
 # 1 -> folder
@@ -61,7 +61,7 @@ ${bindir}/psql -1f ${scriptdir}/pre.sql ${unlogged} -h localhost -U ${dbuser} -p
 
 q=${scriptdir}/a.sql
 s=1
-w=10
+w=20
 runtests=1
 
 
@@ -92,7 +92,7 @@ if [[ $runtests -eq 1 ]]; then
   echo "Runtest: Triggering pgbench instance at (`pwd`)" >> ${logdir}/history.log
 
 #  waitnwatch; 
-  ${bindir}/pgbench -n -c1 -j1 -P1 -p ${port}                -f ${q}    -T${w} -h localhost -U ${dbuser} pgbench &>${obsdir}/c1j1FT${w}.txt
+  ${bindir}/pgbench -n -c1 -j1 -P1 -p ${port} -T${w} -h localhost -U ${dbuser} pgbench &>${obsdir}/c1j1FT${w}.txt
   #waitnwatch; ${bindir}/bin/pgbench -n -c2 -j2 -P1 -p ${port}                -f ${q}    -T${w} -U postgres pgbench &>c2j2FT${w}.txt
   #waitnwatch; ${bindir}/bin/pgbench -n -c3 -j3 -P1 -p ${port}                -f ${q}    -T${w} -U postgres pgbench &>c3j3FT${w}.txt
   #waitnwatch; ${bindir}/bin/pgbench -n -c4 -j4 -P1 -p ${port}                -f ${q}    -T${w} -U postgres pgbench &>c4j4FT${w}.txt

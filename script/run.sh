@@ -1,12 +1,13 @@
 # lock the script so only one runs at a time
-exec 200<$0
-flock -n 200 || exit 1
+#exec 200<$0
+#flock -n 200 || exit 1
 
 # $1=branch
 # $2=folder
+# $3=hash
 
-if (( $# < 2 )); then
-echo "Need at least 2 arguments (branch folder). For e.g. master master"
+if (( $# < 3 )); then
+echo "Need at least 3 arguments (branch folder hash). For e.g. master master 14ea36520389dbb1b48524223cf09389154a0f2e"
 exit 1
 fi
 
@@ -16,25 +17,43 @@ basedir=/home/pi/projects/popi
 srcdir=${basedir}/repo
 scriptdir=${basedir}/script
 logdir=${basedir}/log/${2}
-installdir=${basedir}/stage/${2}/install
+
+stagedir=${basedir}/stage/${2}
+installdir=${stagedir}/install
 bindir=${installdir}/bin
 datadir=${installdir}/data
+stagelogdir=${stagedir}/log
+
+hash=${3}
+enable_logging=1
+
+log() {
+        if [[ ${enable_logging} -eq 1 ]]; then
+                echo ${1}
+        fi
+}
 
 cd ${srcdir}
-echo "Starting Script" && \
+log "Starting Script" && \
 	git checkout ${1} && \
+	git checkout ${hash} . && \
 	git pull && \
 #	Only required if this is a new git repo
-	./configure --prefix=${installdir} --enable-depend --with-pgport=${port} && \
-#	${bindir}/pg_ctl -D ${datadir} stop && \
-	make -j4 install && \
-	cd /home/pi/projects/popi/stage/master/ && \
-	rm -rf install/data && \
+#	./configure --prefix=${installdir} --enable-depend --with-pgport=${port} && \
+	${bindir}/pg_ctl -D ${datadir} stop
+
+
+cd ${stagedir}/ && \
+	rm -rf install/data
+
+make -j4 install && \
 	${bindir}/initdb -D ${datadir} && \
-        ${bindir}/pg_ctl -D ${datadir} start && \
 	#Wait 5 seconds. We don't want tests to fail because the IO couldnt keep up with recent DB start
 	sleep 5 && \
+	mkdir -p ${stagelogdir} && \
+        ${bindir}/pg_ctl -D ${datadir} -l ${stagelogdir}/logfile_master.txt start && \
 	echo "DB Started" && \
+	sleep 5 && \
 	exit 1
 
 
@@ -48,4 +67,4 @@ echo "Starting Script" && \
 #pg_start
 
 
-bash ${scriptdir}/runtests.sh $2 &>${logdir}/runtests.log
+bash ${scriptdir}/runtests.sh ${2} ${port} ${hash} &>${logdir}/runtests.log
