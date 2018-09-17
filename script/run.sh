@@ -42,7 +42,7 @@ log "Starting Script" && \
 	git checkout ${hash} . && \
 	git pull && \
 #	Only required if this is a new git repo
-#	./configure --prefix=${installdir} --enable-depend --with-pgport=${port} && \
+	./configure --prefix=${installdir} --enable-depend --with-pgport=${port} && \
 	${bindir}/pg_ctl -D ${datadir} stop
 
 
@@ -53,7 +53,8 @@ make -j4 install && \
 	${bindir}/initdb -D ${datadir} && \
 	#Wait 5 seconds. We don't want tests to fail because the IO couldnt keep up with recent DB start
 	sleep 5 && \
-	echo "cluster_name='popi${2}'" >> ${datadir}/postgresql.conf
+	echo "cluster_name='popi${2}'" >> ${datadir}/postgresql.conf && \
+	echo "listen_addresses='127.0.0.1'" >> ${datadir}/postgresql.conf && \
         ${bindir}/pg_ctl -D ${datadir} -l ${logdir}/logfile_master.txt start && \
 	sleep 5
 

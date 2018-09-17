@@ -49,7 +49,7 @@ ${bindir}/psql -1f ${scriptdir}/pre.sql ${unlogged} -h localhost -U ${dbuser} -p
 
 q=${scriptdir}/a.sql
 s=1
-w=5
+w=100
 runtests=1
 
 
@@ -97,7 +97,7 @@ runiteration() {
     fname="C${fname}"
   fi
 
-  fname="c${1}j${2}${fname}T${w}.txt"
+  fname="c${1}j${2}${fname}T${w}"
 
   ${bindir}/pgbench -n -c${1} -j${2} ${other_options} -P1 -p ${port} -T${w} -h localhost -U ${dbuser} pgbench &>${obsdir}/${fname}
 }

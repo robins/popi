@@ -1,6 +1,9 @@
 #XXX: Sometime add a cross-check that each folder grepped should be considered only
 #     when there exists a file with the fold name in it (basically is the same major version)
 
+basedir=/home/pi/projects/popi
+obsdir=${basedir}/obs
+
 # Get all active versions from the internet
 # Ensure slow internet connections don't hold up this run
 versions=( `timeout -s SIGTERM 10 curl -so - "http://www.postgresql.org/support/versioning/" | \
@@ -87,12 +90,10 @@ function iterateVer() {
 
 
 function iterateVar () {
-	metric=(c4j4ST100 c8j4ST100 c64j4ST100 c4j4CMST100 c4j4CMT100 c4j4CST100 c4j4CT100 c4j4FST100 c4j4FT100 c4j4MFST100 c4j4MFT100 c4j4MST100 c4j4MT100 c4j4T100 c64j4CMST100 c64j4CMT100 c64j4CST100 c64j4CT100 c64j4FST100 c64j4FT100 c64j4MFST100 c64j4MFT100 c64j4MST100 c64j4MT100 c64j4T100 c8j4CMST100 c8j4CMT100 c8j4CST100 c8j4CT100 c8j4FST100 c8j4FT100 c8j4MFST100 c8j4MFT100 c8j4MST100 c8j4MT100 c8j4T100)
-
-	n="${#metric[@]}"
-	for i in `seq $n`
-	do
-		iterateVer ${metric[$i-1]}
+	find ${obsdir}/master/* -regextype posix-extended -regex '.*c[0-9]+j[0-9]+.+T[0-9]+\.txt' | awk -F "/" '{print $9}' | awk -F "." '{print $1}' | while read -r line; do
+		echo ${line}
+		mkdir -p ${basedir}/obs/results/$line
+#		iterateVer ${metric[$i-1]}
 	done
 }
 
