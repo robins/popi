@@ -12,7 +12,7 @@ versions=( `timeout -s SIGTERM 10 curl -so - "http://www.postgresql.org/support/
         tr '\n' ' '` master)
 
 if [ ${#versions[@]} -le 2 ]; then
-        versions=(9.1 9.2 9.3 9.4 9.5 master)
+        versions=(9.4 9.5 9.6 10 master)
 fi
 
 echo "Versions:  ${versions[@]}"
