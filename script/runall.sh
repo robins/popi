@@ -42,8 +42,7 @@ get_latest_commit_for_branch() {
 
 mkdir -p ${logdir}
 
-logh "============="
-logh "Start  Script"
+logh "=== Start  Script ==="
 
 for s in $rev
 do
@@ -60,8 +59,8 @@ do
 	latest_commit_for_branch=$(get_latest_commit_for_branch ${s})
 
 	logh "Start run for $s branch"
-	bash ${scriptdir}/run.sh $s $folder ${latest_commit_for_branch} &>${logdir}/run.log
+	bash ${scriptdir}/run.sh $s $folder ${latest_commit_for_branch} &>${logdir}/history.log
 	logh "Stop  run for $s branch"
 
 done
-logh "Stop  Script"
+logh "--- Stop  Script ---"

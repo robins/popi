@@ -66,7 +66,7 @@ logh "Configuring Postgres" && \
 teardown
 
 logh "Compiling Postgres"
-make -j4 install && \
+make --silent -j4 install && \
 	${bindir}/initdb -D ${datadir} && \
 	#Wait 5 seconds. We don't want tests to fail because the IO couldnt keep up with recent DB start
 	sleep 5 && \
@@ -88,7 +88,7 @@ make -j4 install && \
 
 
 logh "Calling RunTest"
-bash ${scriptdir}/runtests.sh ${2} ${port} ${hash} &>${logdir}/runtests.log
+bash ${scriptdir}/runtests.sh ${2} ${port} ${hash} &>>${logdir}/history.log
 
 teardown
 
