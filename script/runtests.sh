@@ -36,7 +36,7 @@ logh() {
 }
 
 runsql() {
-  ${bindir}/psql -h localhost -U ${dbuser} -p ${port} -c "${1}" postgres &>> ${obsdir}/info.txt
+  ${bindir}/psql -h localhost -U ${dbuser} -p ${port} -c "${1}" postgres &>> ${logdir}/history.log
 }
 
 logh "Start Script"
