@@ -12,44 +12,53 @@ fi
 
 basedir=/home/pi/projects/popi
 scriptdir=${basedir}/script
-logdir=${basedir}/log/${1}
+logdir=${basedir}/log
 installdir=${basedir}/stage/${1}/install
 bindir=${installdir}/bin
 datadir=${installdir}/data
 obsdir=${basedir}/obs/${1}/${3}
+
 port=${2}
+branch=${1} # XXX: We're piggy backing the branch name on the folder name, ideally we need this done properly
 
 dbuser=pi
 enable_logging=1
 
 log() {
-        if [[ ${enable_logging} -eq 1 ]]; then
-                echo ${1}
-        fi
+  if [[ ${enable_logging} -eq 1 ]]; then
+    dt=`date '+%Y-%m-%d %H:%M:%S'`
+    echo "${dt}: ${1}"
+  fi
+}
+
+logh() {
+  log "RunTest (${branch} branch): ${1}" >> ${logdir}/history.log
 }
 
 runsql() {
   ${bindir}/psql -h localhost -U ${dbuser} -p ${port} -c "${1}" postgres &>> ${obsdir}/info.txt
 }
 
-log "Dropping old pgbench DB"
+logh "Start Script"
+
+logh "Dropping old pgbench DB"
 runsql "DROP DATABASE IF EXISTS pgbench;"
 
-log "Creating pgbench DB"
+logh "Creating pgbench DB"
 runsql "CREATE DATABASE pgbench;"
 
 # Disable Unlogged tables for now
 unlogged=""
 
-log "Creating pgbench tables"
+logh "Creating pgbench tables"
 ${bindir}/pgbench -i -h localhost -U ${dbuser} -p ${port} pgbench
 
-log "Runing Pre SQL"
+logh "Runing Pre SQL"
 ${bindir}/psql -1f ${scriptdir}/pre.sql ${unlogged} -h localhost -U ${dbuser} -p ${port} pgbench
 
 q=${scriptdir}/a.sql
 s=1
-w=100
+w=1
 runtests=1
 
 
@@ -106,7 +115,7 @@ runiteration() {
 
 if [[ $runtests -eq 1 ]]; then
 
-  echo "Runtest: Triggering pgbench instance at (`pwd`)" >> ${logdir}/history.log
+  logh "Triggering pgbench"
 
 #  waitnwatch; 
 #  ${bindir}/pgbench -n -c1 -j1 -P1 -p ${port} -T${w} -h localhost -U ${dbuser} pgbench &>${obsdir}/c1j1FT${w}.txt
@@ -123,7 +132,8 @@ for is_conn_included in 1 2;
       do
         for i in 1 2;
         do
-          runiteration $i $(($i<4?1:4)) ${is_prepared} ${is_select_only} ${is_conn_included}
+          logh "Iteration $i $is_conn_included $is_select_only $is_prepared for ${w} seconds" && \
+            runiteration $i $(($i<4?1:4)) ${is_prepared} ${is_select_only} ${is_conn_included}
         done
       done
     done
@@ -134,4 +144,4 @@ runsql 'SELECT now(), version();'
 
 #${bindir}/psql -1f ${scriptdir}/post.sql -U ${dbuser} -p ${port} pgbench
 
-log "RunTests completed. Exiting"
+logh "Stop  Script"

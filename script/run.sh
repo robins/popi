@@ -16,7 +16,7 @@ port=5433 #Currently we are not geared towards changing port
 basedir=/home/pi/projects/popi
 srcdir=${basedir}/repo
 scriptdir=${basedir}/script
-logdir=${basedir}/log/${2}
+logdir=${basedir}/log
 
 stagedir=${basedir}/stage/${2}
 installdir=${stagedir}/install
@@ -24,37 +24,55 @@ bindir=${installdir}/bin
 datadir=${installdir}/data
 
 hash=${3}
+branch=${1}
 enable_logging=1
 
 log() {
-        if [[ ${enable_logging} -eq 1 ]]; then
-                echo ${1}
-        fi
+  if [[ ${enable_logging} -eq 1 ]]; then
+    dt=`date '+%Y-%m-%d %H:%M:%S'`
+    echo "${dt}: ${1}"
+  fi
+}
+
+logh() {
+  log "Run (${branch} branch): ${1}" >> ${logdir}/history.log
+}
+
+teardown() {
+
+  logh "Stopping previous instance, if any" && \
+    ${bindir}/pg_ctl -D ${datadir} stop
+
+  logh "Removing previous data folder, if any" && \
+    cd ${stagedir}/ && \
+    rm -rf install/data
 }
 
 #check_if_db_down() {
 # if  `ps -ef | grep postgres | 
 #}
 
+logh "Start Script"
+
 cd ${srcdir}
-log "Starting Script" && \
+logh "Checkout commit" && \
 	git checkout ${1} && \
-	git checkout ${hash} . && \
-	git pull && \
+	git checkout ${hash} .
 #	Only required if this is a new git repo
-	./configure --prefix=${installdir} --enable-depend --with-pgport=${port} && \
-	${bindir}/pg_ctl -D ${datadir} stop
 
+logh "Configuring Postgres" && \
+# ./configure --prefix=${installdir} --enable-depend --with-pgport=${port} && \
 
-cd ${stagedir}/ && \
-	rm -rf install/data
+teardown
 
+logh "Compiling Postgres"
 make -j4 install && \
 	${bindir}/initdb -D ${datadir} && \
 	#Wait 5 seconds. We don't want tests to fail because the IO couldnt keep up with recent DB start
 	sleep 5 && \
 	echo "cluster_name='popi${2}'" >> ${datadir}/postgresql.conf && \
 	echo "listen_addresses='127.0.0.1'" >> ${datadir}/postgresql.conf && \
+  logh "Starting Postgres" && \
         ${bindir}/pg_ctl -D ${datadir} -l ${logdir}/logfile_master.txt start && \
 	sleep 5
 
@@ -69,5 +87,9 @@ make -j4 install && \
 #pg_start
 
 
-log "Setup done. Next calling RunTests to actually trigger the tests"
+logh "Calling RunTest"
 bash ${scriptdir}/runtests.sh ${2} ${port} ${hash} &>${logdir}/runtests.log
+
+teardown
+
+logh "Stop  Script"
