@@ -59,7 +59,7 @@ ${bindir}/psql -1f ${scriptdir}/pre.sql ${unlogged} -h localhost -U ${dbuser} -p
 
 q=${scriptdir}/a.sql
 s=1
-w=1
+w=100
 runtests=1
 
 
