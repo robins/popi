@@ -13,6 +13,7 @@ installdir=${stagedir}/${2}/master
 bindir=${installdir}/bin
 repodir=${basedir}/repo
 logdir=${basedir}/log
+historylog=${logdir}/history.log
 
 port=9999
 
@@ -28,7 +29,7 @@ log() {
 }
 
 logh() {
-  log "RunAll: ${1}" >> ${logdir}/history.log
+  log "RunAll: ${1}" >> ${historylog}
 }
 
 get_latest_commit_for_branch() {
@@ -59,7 +60,7 @@ do
 	latest_commit_for_branch=$(get_latest_commit_for_branch ${s})
 
 	logh "Start run for $s branch"
-	bash ${scriptdir}/run.sh $s $folder ${latest_commit_for_branch} &>${logdir}/history.log
+	bash ${scriptdir}/run.sh $s $folder ${latest_commit_for_branch} &>${historylog}
 	logh "Stop  run for $s branch"
 
 done

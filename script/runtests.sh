@@ -13,6 +13,7 @@ fi
 basedir=/home/pi/projects/popi
 scriptdir=${basedir}/script
 logdir=${basedir}/log
+historylog=${logdir}/history.log
 installdir=${basedir}/stage/${1}/install
 bindir=${installdir}/bin
 datadir=${installdir}/data
@@ -32,11 +33,11 @@ log() {
 }
 
 logh() {
-  log "RunTest (${branch} branch): ${1}" >> ${logdir}/history.log
+  log "RunTest (${branch} branch): ${1}" >> ${historylog}
 }
 
 runsql() {
-  ${bindir}/psql -h localhost -U ${dbuser} -p ${port} -c "${1}" postgres &>> ${logdir}/history.log
+  ${bindir}/psql -h localhost -U ${dbuser} -p ${port} -c "${1}" postgres &>> ${historylog}
 }
 
 logh "Start Script"

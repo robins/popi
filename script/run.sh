@@ -17,6 +17,7 @@ basedir=/home/pi/projects/popi
 srcdir=${basedir}/repo
 scriptdir=${basedir}/script
 logdir=${basedir}/log
+historylog=$logdir/history.log
 
 stagedir=${basedir}/stage/${2}
 installdir=${stagedir}/install
@@ -35,24 +36,28 @@ log() {
 }
 
 logh() {
-  log "Run (${branch} branch): ${1}" >> ${logdir}/history.log
+  log "Run (${branch} branch): ${1}" >> ${historylog}
 }
 
 teardown() {
 
+if [ -d "${datadir}" ]; then
   logh "Stopping previous instance, if any" && \
     ${bindir}/pg_ctl -D ${datadir} stop
 
   logh "Removing previous data folder, if any" && \
     cd ${stagedir}/ && \
     rm -rf install/data
+else
+  logh "Skipping Teardown. Previous installation doesn't exist"
+fi
 }
 
 #check_if_db_down() {
 # if  `ps -ef | grep postgres | 
 #}
 
-logh "Start Script"
+logh "=== Start Script ==="
 
 cd ${srcdir}
 logh "Checkout commit" && \
@@ -60,10 +65,10 @@ logh "Checkout commit" && \
 	git checkout ${hash} .
 #	Only required if this is a new git repo
 
+teardown
+
 logh "Configuring Postgres" && \
 # ./configure --prefix=${installdir} --enable-depend --with-pgport=${port} && \
-
-teardown
 
 logh "Compiling Postgres"
 make --silent -j4 install && \
@@ -88,8 +93,9 @@ make --silent -j4 install && \
 
 
 logh "Calling RunTest"
-bash ${scriptdir}/runtests.sh ${2} ${port} ${hash} &>>${logdir}/history.log
+
+bash ${scriptdir}/runtests.sh ${2} ${port} ${hash} &>>${historylog}
 
 teardown
 
-logh "Stop  Script"
+logh "Stop Script"
