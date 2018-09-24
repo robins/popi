@@ -1,8 +1,8 @@
 #XXX: See if we can keep separate folders for pg installed instead of reinstalling each time
 
 # lock the script so only one runs at a time
-#exec 200<$0
-#flock -n 200 || exit 1
+exec 200<$0
+flock -n 200 || exit 1
 
 enable_logging=1
 

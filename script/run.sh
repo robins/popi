@@ -1,6 +1,6 @@
 # lock the script so only one runs at a time
-#exec 200<$0
-#flock -n 200 || exit 1
+exec 200<$0
+flock -n 200 || exit 1
 
 # $1=branch
 # $2=folder
