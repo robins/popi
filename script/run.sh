@@ -74,7 +74,7 @@ fi
 
 logh "Compiling Postgres"
 make --silent -j4 install && \
-	${bindir}/initdb -D ${datadir} && \
+	${bindir}/initdb --nosync -D ${datadir} && \
 	#Wait 5 seconds. We don't want tests to fail because the IO couldnt keep up with recent DB start
 	sleep 5 && \
 	echo "cluster_name='popi${2}'" >> ${datadir}/postgresql.conf && \
