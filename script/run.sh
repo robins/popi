@@ -67,8 +67,10 @@ logh "Checkout commit" && \
 
 teardown
 
-logh "Configuring Postgres" && \
-# ./configure --prefix=${installdir} --enable-depend --with-pgport=${port} && \
+if [ ${port} -ne 5433 ]; then
+  logh "Configuring Postgres" && \
+  ./configure --prefix=${installdir} --enable-depend --with-pgport=${port}
+fi
 
 logh "Compiling Postgres"
 make --silent -j4 install && \

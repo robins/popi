@@ -59,8 +59,9 @@ do
 
 	latest_commit_for_branch=$(get_latest_commit_for_branch ${s})
 
+	truncate -s 0 ${historylog}
 	logh "Start run for $s branch"
-	bash ${scriptdir}/run.sh $s $folder ${latest_commit_for_branch} &>${historylog}
+	bash ${scriptdir}/run.sh $s $folder ${latest_commit_for_branch} &>>${historylog}
 	logh "Stop  run for $s branch"
 
 done
