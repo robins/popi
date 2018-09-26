@@ -5,7 +5,7 @@ basedir=/home/pi/projects/popi
 obsdir=${basedir}/obs
 
 # Get all active versions from the internet
-# Ensure slow internet connections don't hold up this run
+# XXX: Ensure slow internet connections don't hold up this run
 versions=( `timeout -s SIGTERM 10 curl -so - "http://www.postgresql.org/support/versioning/" | \
         grep -A100 "EOL" | \
         grep -B2 "Yes" | \
@@ -15,7 +15,8 @@ versions=( `timeout -s SIGTERM 10 curl -so - "http://www.postgresql.org/support/
         tr '\n' ' '` master)
 
 if [ ${#versions[@]} -le 2 ]; then
-        versions=(9.4 9.5 9.6 10 master)
+#        versions=(9.4 9.5 9.6 10 master)
+        versions=(master)
 fi
 
 echo "Versions:  ${versions[@]}"
@@ -74,29 +75,54 @@ function GetAverageTPSValue() {
 }
 
 
+
 function iterateVer() {
 
-	filename=$1.txt
+        filename=$1.txt
 
-	t=$(getDescription $1)
-	echo $t
+        t=$(getDescription $1)
+        echo $t
 
-	for i in "${versions[@]}"
-	do
-		tps=$(GetAverageTPSValue $i $filename)
-		echo ${tps}
-	done
+        for i in "${versions[@]}"
+        do
+                tps=$(GetAverageTPSValue $i $filename)
+                echo ${tps} 
+        done
+}
+
+function iterateCommit() {
+
+        output_filename=${basedir}/obs/results/$1.txt
+
+        git log --pretty=format:"%H" --after="2018-09-01" | tac | while read -r hash; do
+                f=${obsdir}/master/${test}.txt
+		if [ -f ${f} ]; then
+			tps=$(GetTPSValue $f)
+ 	                echo ${tps} >> ${output_filename}
+		fi
+        done
 }
 
 
-function iterateVar () {
-	find ${obsdir}/master/* -regextype posix-extended -regex '.*c[0-9]+j[0-9]+.+T[0-9]+\.txt' | awk -F "/" '{print $9}' | awk -F "." '{print $1}' | while read -r line; do
-		echo ${line}
-		mkdir -p ${basedir}/obs/results/$line
-#		iterateVer ${metric[$i-1]}
+
+
+function iterateTest () {
+        find ${obsdir}/master/* -name ${1} | while read -r filepath; do
+                filename=${1}
+                echo ${filepath} ${filename}
+                #mkdir -p ${basedir}/obs/results/$line
+#               iterateVer ${filepath} ${filename}
+        done
+}
+
+function iterateTests () {
+	find ${obsdir}/master/* -regextype posix-extended -regex '.*c[0-9]+j[0-9]+.+T[0-9]' | awk -F "/" '{print $9}' | while read -r test; do
+		echo ${test}
+		iterateTest ${test}
+exit 1
 	done
 }
 
-iterateVar
+iterateTests
 
 #iterateVer c4j4ST100
