@@ -107,7 +107,7 @@ exit 1
 }
 
 
-
+#sort -k2 c1j1MST1.txt | paste -s | awk -F " " '{if ($2 > $4*1.001) print "$1 is Faster than $3 by ",(($2-$4)/$4*100),"% (",$2," vs ",$4,")"; if ($4 > $2*1.001) print "$3 is Faster than $1 by ",(($4-$2)/$2*100),"% (",$4," vs ",$2,")";}'
 
 function iterateTest () {
 	output_filename=${basedir}/obs/results/$1.txt
