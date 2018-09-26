@@ -3,6 +3,8 @@
 
 basedir=/home/pi/projects/popi
 obsdir=${basedir}/obs
+repodir=${basedir}/repo
+
 
 # Get all active versions from the internet
 # XXX: Ensure slow internet connections don't hold up this run
@@ -36,10 +38,9 @@ function getDescription() {
 }
 
 function GetTPSValue() {
-	f=/home/robins/projects/pgbench/obs/$1/$2/$3
 
-	if [ -f "$f" ]; then
-		v=`grep "including connections" $f | awk '{print int($3)}'`
+	if [ -f ${1} ]; then
+		v=`grep "including connections" ${1} | awk '{print int($3)}'`
 	fi
 	if [[ "$v" =~ ^[0-9]+$ ]] && [ "$v" -ge 0 -a "$v" -le 1000000 ];
 	then
@@ -92,34 +93,41 @@ function iterateVer() {
 
 function iterateCommit() {
 
-		output_filename=${basedir}/obs/results/$1.txt
-
-		git log --pretty=format:"%H" --after="2018-09-01" | tac | while read -r hash; do
-				f=${obsdir}/master/${test}.txt
-		if [ -f ${f} ]; then
-			tps=$(GetTPSValue $f)
-					echo ${tps} >> ${output_filename}
+	git log --pretty=format:"%H" --after="2018-09-01" | tac | while read -r hash;
+	do
+		if [ -f ${hash} ]; then
+			tps=$(GetTPSValue $hash)
+			echo ${hash} ${tps} >> $3
+			echo "Trying ${hash} - Found"
+		else
+			echo Trying ${hash} - Not Found
 		fi
-		done
+	done
+exit 1
 }
 
 
 
 
 function iterateTest () {
-		find ${obsdir}/master/* -name ${1} | while read -r filepath; do
-				filename=${1}
-				echo ${filepath} ${filename}
-				iterateVer ${filepath} ${filename}
-exit 1
-		done
+	output_filename=${basedir}/obs/results/$1.txt
+	truncate -s 0 ${output_filename}
+	filename=${1}
+
+	find ${obsdir}/master/* -name ${filename} | while read -r filepath; do
+#			echo ${filepath} ${filename} ${output_filename}
+#			iterateCommit ${filepath} ${filename} ${output_filename}
+
+			hash=`echo "${filepath}" | grep -oe '[0-9a-f]\{40\}'`
+            tps=$(GetTPSValue $filepath)
+            echo "${hash} ${tps}" >> ${output_filename}
+	done
 }
 
 function iterateTests () {
 	find ${obsdir}/master/* -regextype posix-extended -regex '.*c[0-9]+j[0-9]+.+T[0-9]' | awk -F "/" '{print $9}' | while read -r test; do
 		echo ${test}
 		iterateTest ${test}
-exit 1
 	done
 }
 
