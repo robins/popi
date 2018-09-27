@@ -92,15 +92,18 @@ function iterateVer() {
 }
 
 function iterateCommit() {
+	new_out_file=${1}_sorted
+	truncate -s 0 ${new_out_file}
 
-	git log --pretty=format:"%H" --after="2018-09-01" | tac | while read -r hash;
+	git --git-dir ${repodir}/.git log --pretty=format:"%H %at %ad" --after="2018-09-01" --date=local| sort -k2 | while read -r line;
 	do
-		if [ -f ${hash} ]; then
-			tps=$(GetTPSValue $hash)
-			echo ${hash} ${tps} >> $3
-			echo "Trying ${hash} - Found"
-		else
-			echo Trying ${hash} - Not Found
+		githash=`echo $line | awk -F " " '{print $1;}'`
+		s=`grep ${githash} ${1} | awk -F ' ' '{print $2}'`
+		if [[ "$s" -gt 0 ]]; then
+			echo ${githash} ${s} >> ${new_out_file}
+	echo "Yes ${line}"
+#else
+#	echo "No  ${line}"
 		fi
 	done
 }
@@ -110,7 +113,7 @@ function iterateCommit() {
 # sort -k2 c1j1MST1.txt | paste -s | awk -F " " '{if ($2 > $4*1.001) print "$1 is Faster than $3 by ",(($2-$4)/$4*100),"% (",$2," vs ",$4,")"; if ($4 > $2*1.001) print "$3 is Faster than $1 by ",(($4-$2)/$2*100),"% (",$4," vs ",$2,")";}'
 
 function iterateOneTest () {
-	output_filename=${basedir}/obs/results/$1.txt
+	output_filename=${basedir}/obs/results/$1
 	truncate -s 0 ${output_filename}
 	filename=${1}
 
@@ -122,10 +125,12 @@ function iterateOneTest () {
             tps=$(GetTPSValue $filepath)
             echo "${hash} ${tps}" >> ${output_filename}
 	done
+
+	iterateCommit ${output_filename}
 }
 
 function iterateAllTests () {
-	find ${obsdir}/master/* -regextype posix-extended -regex '.*c[0-9]+j[0-9]+.+T[0-9]' | awk -F "/" '{print $9}' | while read -r test; do
+	find ${obsdir}/master/* -regextype posix-extended -regex '.*c[0-9]+j[0-9]+.+T[1-9][0-9]{2,5}' | awk -F "/" '{print $9}' | sort | uniq | while read -r test; do
 		echo ${test}
 		iterateOneTest ${test}
 	done
