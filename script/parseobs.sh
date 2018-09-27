@@ -103,13 +103,13 @@ function iterateCommit() {
 			echo Trying ${hash} - Not Found
 		fi
 	done
-exit 1
 }
 
+# Bash script to find the percentage difference between max / min. Doubt this'd be used once we have
+# ascending order of commit hash performance, but it's a good line to keep for now.
+# sort -k2 c1j1MST1.txt | paste -s | awk -F " " '{if ($2 > $4*1.001) print "$1 is Faster than $3 by ",(($2-$4)/$4*100),"% (",$2," vs ",$4,")"; if ($4 > $2*1.001) print "$3 is Faster than $1 by ",(($4-$2)/$2*100),"% (",$4," vs ",$2,")";}'
 
-#sort -k2 c1j1MST1.txt | paste -s | awk -F " " '{if ($2 > $4*1.001) print "$1 is Faster than $3 by ",(($2-$4)/$4*100),"% (",$2," vs ",$4,")"; if ($4 > $2*1.001) print "$3 is Faster than $1 by ",(($4-$2)/$2*100),"% (",$4," vs ",$2,")";}'
-
-function iterateTest () {
+function iterateOneTest () {
 	output_filename=${basedir}/obs/results/$1.txt
 	truncate -s 0 ${output_filename}
 	filename=${1}
@@ -124,13 +124,11 @@ function iterateTest () {
 	done
 }
 
-function iterateTests () {
+function iterateAllTests () {
 	find ${obsdir}/master/* -regextype posix-extended -regex '.*c[0-9]+j[0-9]+.+T[0-9]' | awk -F "/" '{print $9}' | while read -r test; do
 		echo ${test}
-		iterateTest ${test}
+		iterateOneTest ${test}
 	done
 }
 
-iterateTests
-
-#iterateVer c4j4ST100
+iterateAllTests
