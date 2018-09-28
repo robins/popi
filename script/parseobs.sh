@@ -99,13 +99,18 @@ function iterateCommit() {
 	do
 		githash=`echo $line | awk -F " " '{print $1;}'`
 		s=`grep ${githash} ${1} | awk -F ' ' '{print $2}'`
+		epoch=`echo ${line} | awk -F ' ' '{print $2}'`
 		if [[ "$s" -gt 0 ]]; then
-			echo ${githash} ${s} >> ${new_out_file}
+#			echo ${githash} ${epoch} ${s} >> ${new_out_file}
+			echo ${epoch} ${s} >> ${new_out_file}
 	echo "Yes ${line}"
 #else
 #	echo "No  ${line}"
 		fi
 	done
+
+	rm ${1}
+	mv ${new_out_file} ${1}
 }
 
 # Bash script to find the percentage difference between max / min. Doubt this'd be used once we have
