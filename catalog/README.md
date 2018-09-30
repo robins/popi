@@ -1,3 +1,3 @@
-Metadata folder to store current processed state
+Metadata folder to store future tasks
 
-master -> processed_hash.txt => File that contains git hash that was last successfully processed
+q => File that contains git hash that needs to be processed next

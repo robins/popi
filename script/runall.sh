@@ -32,6 +32,26 @@ logh() {
   log "RunAll: ${1}" >> ${historylog}
 }
 
+popFromQ() {
+	q=${basedir}/catalog/q
+
+	hash=$(head -n 1 ${q})
+
+	echo ${hash}
+}
+
+getFirstCommitFromQ() {
+	echo `popFromQ`
+}
+
+
+# XXX: We need to check if the first line is in fact ${1}
+removeFirstCommitFromQ() {
+	q=${basedir}/catalog/q
+
+	sed -i '1d' ${q}
+}
+
 get_latest_commit_for_branch() {
   logh "Update git repo"
   cd ${repodir}
@@ -40,16 +60,15 @@ get_latest_commit_for_branch() {
   git log -n 1 --pretty=format:"%H"
 }
 
+# XXX: This obviously needs work. git branch --contains e8fe426baa9c242d8dbd4eab1d963e952c9172f4 doesn't work always
+getBranchForCommit() {
+	echo "master"
+}
 
-mkdir -p ${logdir}
-
-logh "=== Start  Script ==="
-
-for s in $rev
-do
+getFolderForBranch() {
+	s=${1}
 	if [[ ${#s} -eq 'master' ]]; then
-		s1=${s}
-		# Do nothing
+		folder='master'
 	else
 		s1=${s#REL}
 		s2=${s1%_STABLE}
@@ -57,12 +76,39 @@ do
 		folder=$s3
 	fi
 
-	latest_commit_for_branch=$(get_latest_commit_for_branch ${s})
+	echo ${folder}
+}
 
-	truncate -s 0 ${historylog}
-	logh "Start run for $s branch"
-	bash ${scriptdir}/run.sh $s $folder ${latest_commit_for_branch} &>>${historylog}
-	logh "Stop  run for $s branch"
+mkdir -p ${logdir}
 
-done
+truncate -s 0 ${historylog}
+
+logh "=== Start  Script ==="
+
+
+hash=`getFirstCommitFromQ`
+
+if [ ${#hash} -gt 0 ]; then
+	logh "Found Commit in Q"
+	branch=`getBranchForCommit ${hash}`
+	folder=`getFolderForBranch ${branch}`
+
+    logh "Start run for ${branch} branch for Commit ${hash}"
+    bash ${scriptdir}/run.sh $branch $folder ${hash} &>>${historylog}
+    logh "Stop  run for ${branch} branch for Commit ${hash}"
+	removeFirstCommitFromQ ${hash}
+else
+	logh "Didn't find commit in Q"
+	for s in $rev
+	do
+		latest_commit_for_branch=$(get_latest_commit_for_branch ${s})
+		folder=`getFolderForBranch ${s}`
+
+		truncate -s 0 ${historylog}
+		logh "Start run for $s branch for Commit ${latest_commit_for_branch}"
+		bash ${scriptdir}/run.sh $s $folder ${latest_commit_for_branch} &>>${historylog}
+		logh "Stop  run for $s branch for Commit ${latest_commit_for_branch}"
+	done
+fi
+
 logh "--- Stop  Script ---"
