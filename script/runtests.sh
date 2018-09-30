@@ -58,22 +58,22 @@ logh "Runing Pre SQL"
 ${bindir}/psql -1f ${scriptdir}/pre.sql ${unlogged} -h localhost -U ${dbuser} -p ${port} pgbench
 
 q=${scriptdir}/a.sql
-s=1
+s=10
 w=100
 runtests=1
 
 
 function waitnwatch {
-  max=100
+  max=20
   while true; do
     upstr=$(uptime | grep -aob "average:" | grep -oE '[0-9]+')
     c1=$(uptime | cut -b ${upstr}- | awk '{print $2;}' | sed s/,//g)
           c=`echo $c1*100|bc`
           c=${c%.*}
 
-    echo "Current CPU (${c}) vs Allowed threshold (${max})"
+    logh "Current CPU (${c}) vs Allowed threshold (${max})"
     if [[ $c -le $max ]]; then
-      echo "Proceeding"
+      logh "Proceeding"
       break
     fi
 
@@ -133,8 +133,9 @@ for is_conn_included in 1 2;
       do
         for i in 1 2;
         do
-          logh "Iteration (\\\$i=$i) (\\\$is_conn_included=$is_conn_included) (\\\$is_select_only=$is_select_only) (\\\$is_prepared=$is_prepared) for ${w} seconds" && \
-            runiteration $i $(($i<4?1:4)) ${is_prepared} ${is_select_only} ${is_conn_included}
+			waitnwatch
+			logh "Iteration (\\\$i=$i) (\\\$is_conn_included=$is_conn_included) (\\\$is_select_only=$is_select_only) (\\\$is_prepared=$is_prepared) for ${w} seconds" && \
+				runiteration $i $(($i<4?1:4)) ${is_prepared} ${is_select_only} ${is_conn_included}
         done
       done
     done
