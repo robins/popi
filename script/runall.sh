@@ -62,7 +62,6 @@ get_latest_commit_for_branch() {
   logh "Update git repo"
   cd ${repodir}
   git checkout $1 &>> /dev/null
-  git pull &>>/dev/null
   git log -n 1 --pretty=format:"%H"
 }
 
