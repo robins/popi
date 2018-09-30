@@ -24,11 +24,11 @@ rev=$(echo ${revisions[@]} | tr " " "\n" | sort -R | tr "\n" " ")
 startScript() {
 	mkdir -p ${logdir}
 	truncate -s 0 ${historylog}
-	logh "=== Start  Script ==="
+	logh "=== Start RunAll Script ==="
 }
 
 stopScript() {
-	logh "--- Stop  Script ---"
+	logh "--- Stop RunAll Script ---"
 }
 
 log() {
@@ -91,14 +91,12 @@ hash=`getFirstCommitFromQ`
 
 if [ ${#hash} -gt 0 ]; then
 
-	logh "Found Commit in Q"
-
 	branch=`getBranchForCommit ${hash}`
 	folder=`getFolderForBranch ${branch}`
 
     logh "Start run for ${branch} branch for Commit ${hash}"
     bash ${scriptdir}/run.sh $branch $folder ${hash} &>>${historylog}
-    logh "Stop  run for ${branch} branch for Commit ${hash}"
+    logh "Stop run for ${branch} branch for Commit ${hash}"
 
 	removeFirstCommitFromQ ${hash}
 else

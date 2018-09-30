@@ -8,6 +8,28 @@ scriptdir=${basedir}/script
 resultdir=${basedir}/obs/results
 
 
+startScript() {
+    mkdir -p ${logdir}
+    truncate -s 0 ${historylog}
+    logh "=== Start ParseObservation Script ==="
+}
+
+stopScript() {
+    logh "--- Stop ParseObservation Script ---"
+}
+
+log() {
+  if [[ ${enable_logging} -eq 1 ]]; then
+    dt=`date '+%Y-%m-%d %H:%M:%S'`
+    echo "${dt}: ${1}"
+  fi
+}
+
+logh() {
+  log "ParseObs: ${1}" >> ${historylog}
+}
+
+
 # Get all active versions from the internet
 # XXX: Ensure slow internet connections don't hold up this run
 versions=( `timeout -s SIGTERM 10 curl -so - "http://www.postgresql.org/support/versioning/" | \
@@ -23,7 +45,7 @@ if [ ${#versions[@]} -le 2 ]; then
 		versions=(master)
 fi
 
-echo "Versions:  ${versions[@]}"
+logh "Versions:  ${versions[@]}"
 
 function getDescription() {
   s="${1/C/Newconn}"
@@ -145,7 +167,7 @@ function plotTest() {
 
 function iterateAllTests () {
 	find ${obsdir}/master/* -regextype posix-extended -regex '.*c[0-9]+j[0-9]+.+T[1-9][0-9]{2,5}' | awk -F "/" '{print $9}' | sort | uniq | while read -r test; do
-		echo ${test}
+		logh "Processing ${test}"
 		iterateOneTest ${test}
 		plotTest ${test}
 	done

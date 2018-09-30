@@ -28,6 +28,17 @@ hash=${3}
 branch=${1}
 enable_logging=1
 
+startScript() {
+    mkdir -p ${logdir}
+    truncate -s 0 ${historylog}
+    logh "=== Start Run Script ==="
+}
+
+stopScript() {
+    logh "--- Stop Run Script ---"
+	exit 0
+}
+
 log() {
   if [[ ${enable_logging} -eq 1 ]]; then
     dt=`date '+%Y-%m-%d %H:%M:%S'`
@@ -36,19 +47,14 @@ log() {
 }
 
 logh() {
-  log "Run (${branch} branch): ${1}" >> ${historylog}
-}
-
-shutdownScript() {
-	logh "--- Stop Script ---"
-	exit 0
+  log "Run (${branch}): ${1}" >> ${historylog}
 }
 
 isHashAlreadyProcessed() {
 	resultdir=${basedir}/obs/${branch}/${hash}
 	if [ -d "${resultdir}" ]; then
 		logh "Looks like we've already processed this Hash. Skipping"
-		shutdownScript
+		stopScript
 	fi
 }
 
@@ -70,7 +76,7 @@ fi
 # if  `ps -ef | grep postgres | 
 #}
 
-logh "=== Start Script ==="
+startScript
 
 isHashAlreadyProcessed
 
@@ -115,4 +121,4 @@ bash ${scriptdir}/runtests.sh ${2} ${port} ${hash} &>>${historylog}
 
 teardown
 
-shutdownScript
+stopScript

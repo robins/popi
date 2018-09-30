@@ -25,6 +25,16 @@ branch=${1} # XXX: We're piggy backing the branch name on the folder name, ideal
 dbuser=pi
 enable_logging=1
 
+startScript() {
+    mkdir -p ${logdir}
+    truncate -s 0 ${historylog}
+    logh "=== Start RunTest Script ==="
+}
+
+stopScript() {
+    logh "--- Stop RunTest Script ---"
+}
+
 log() {
   if [[ ${enable_logging} -eq 1 ]]; then
     dt=`date '+%Y-%m-%d %H:%M:%S'`
@@ -33,14 +43,14 @@ log() {
 }
 
 logh() {
-  log "RunTest (${branch} branch): ${1}" >> ${historylog}
+  log "RunTest (${branch}): ${1}" >> ${historylog}
 }
 
 runsql() {
   ${bindir}/psql -h localhost -U ${dbuser} -p ${port} -c "${1}" postgres &>> ${historylog}
 }
 
-logh "Start Script"
+startScript
 
 logh "Dropping old pgbench DB"
 runsql "DROP DATABASE IF EXISTS pgbench;"
@@ -54,7 +64,7 @@ unlogged=""
 logh "Creating pgbench tables"
 ${bindir}/pgbench -i -h localhost -U ${dbuser} -p ${port} pgbench
 
-logh "Runing Pre SQL"
+logh "Running Pre SQL"
 ${bindir}/psql -1f ${scriptdir}/pre.sql ${unlogged} -h localhost -U ${dbuser} -p ${port} pgbench
 
 q=${scriptdir}/a.sql
@@ -73,7 +83,7 @@ function waitnwatch {
 
     logh "Current CPU (${c}) vs Allowed threshold (${max})"
     if [[ $c -le $max ]]; then
-      logh "Proceeding"
+      logh "Condition satisfied. Going ahead with Test."
       break
     fi
 
@@ -118,10 +128,6 @@ if [[ $runtests -eq 1 ]]; then
 
   logh "Triggering pgbench"
 
-#  waitnwatch; 
-#  ${bindir}/pgbench -n -c1 -j1 -P1 -p ${port} -T${w} -h localhost -U ${dbuser} pgbench &>${obsdir}/c1j1FT${w}.txt
-  #waitnwatch; 
-
 runsql 'SELECT now(), version();'
 
 #for i in 1 2 3 4 8 12 16 32 64 ;
@@ -146,4 +152,4 @@ runsql 'SELECT now(), version();'
 
 #${bindir}/psql -1f ${scriptdir}/post.sql -U ${dbuser} -p ${port} pgbench
 
-logh "Stop  Script"
+stopScript
