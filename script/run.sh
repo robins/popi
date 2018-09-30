@@ -39,6 +39,19 @@ logh() {
   log "Run (${branch} branch): ${1}" >> ${historylog}
 }
 
+shutdownScript() {
+	logh "--- Stop Script ---"
+	exit 0
+}
+
+isHashAlreadyProcessed() {
+	resultdir=${basedir}/obs/${branch}/${hash}
+	if [ -d "${resultdir}" ]; then
+		logh "Looks like we've already processed this Hash. Skipping"
+		shutdownScript
+	fi
+}
+
 teardown() {
 
 if [ -d "${datadir}" ]; then
@@ -58,6 +71,8 @@ fi
 #}
 
 logh "=== Start Script ==="
+
+isHashAlreadyProcessed
 
 cd ${srcdir}
 logh "Checkout commit" && \
@@ -100,4 +115,4 @@ bash ${scriptdir}/runtests.sh ${2} ${port} ${hash} &>>${historylog}
 
 teardown
 
-logh "Stop Script"
+shutdownScript
