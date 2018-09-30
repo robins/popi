@@ -7,16 +7,6 @@ repodir=${basedir}/repo
 scriptdir=${basedir}/script
 resultdir=${basedir}/obs/results
 
-
-startScript() {
-    mkdir -p ${logdir}
-    logh "=== Start ParseObservation Script ==="
-}
-
-stopScript() {
-    logh "--- Stop ParseObservation Script ---"
-}
-
 log() {
   if [[ ${enable_logging} -eq 1 ]]; then
     dt=`date '+%Y-%m-%d %H:%M:%S'`
@@ -28,6 +18,14 @@ logh() {
   log "ParseObs: ${1}" >> ${historylog}
 }
 
+startScript() {
+    mkdir -p ${logdir}
+    logh "=== Start ParseObservation Script ==="
+}
+
+stopScript() {
+    logh "--- Stop ParseObservation Script ---"
+}
 
 function getDescription() {
   s="${1/C/Newconn}"

@@ -28,16 +28,6 @@ hash=${3}
 branch=${1}
 enable_logging=1
 
-startScript() {
-    mkdir -p ${logdir}
-    logh "=== Start Run Script ==="
-}
-
-stopScript() {
-    logh "--- Stop Run Script ---"
-	exit 0
-}
-
 log() {
   if [[ ${enable_logging} -eq 1 ]]; then
     dt=`date '+%Y-%m-%d %H:%M:%S'`
@@ -47,6 +37,16 @@ log() {
 
 logh() {
   log "Run (${branch}): ${1}" >> ${historylog}
+}
+
+startScript() {
+    mkdir -p ${logdir}
+    logh "=== Start Run Script ==="
+}
+
+stopScript() {
+    logh "--- Stop Run Script ---"
+	exit 0
 }
 
 isHashAlreadyProcessed() {

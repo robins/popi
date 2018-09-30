@@ -32,6 +32,18 @@ if [ ${#versions[@]} -le 2 ]; then
         versions=(master)
 fi
 
+
+log() {
+  if [[ ${enable_logging} -eq 1 ]]; then
+    dt=`date '+%Y-%m-%d %H:%M:%S'`
+    echo "${dt}: ${1}"
+  fi
+}
+
+logh() {
+  log "RunAll: ${1}" >> ${historylog}
+}
+
 logh "Versions:  ${versions[@]}"
 
 #versions="REL9_2_STABLE REL9_3_STABLE REL9_4_STABLE REL9_5_STABLE REL9_6_STABLE master"
@@ -46,17 +58,6 @@ startScript() {
 
 stopScript() {
 	logh "--- Stop RunAll Script ---"
-}
-
-log() {
-  if [[ ${enable_logging} -eq 1 ]]; then
-    dt=`date '+%Y-%m-%d %H:%M:%S'`
-    echo "${dt}: ${1}"
-  fi
-}
-
-logh() {
-  log "RunAll: ${1}" >> ${historylog}
 }
 
 getFirstCommitFromQ() {

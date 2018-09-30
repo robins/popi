@@ -21,15 +21,6 @@ port=9999
 revisions="master"
 rev=$(echo ${revisions[@]} | tr " " "\n" | sort -R | tr "\n" " ")
 
-startScript() {
-	mkdir -p ${logdir}
-	logh "=== Start GetCommits Script ==="
-}
-
-stopScript() {
-	logh "--- Stop GetCommits Script ---"
-}
-
 log() {
   if [[ ${enable_logging} -eq 1 ]]; then
     dt=`date '+%Y-%m-%d %H:%M:%S'`
@@ -39,6 +30,15 @@ log() {
 
 logh() {
   log "GetCommits: ${1}" >> ${historylog}
+}
+
+startScript() {
+	mkdir -p ${logdir}
+	logh "=== Start GetCommits Script ==="
+}
+
+stopScript() {
+	logh "--- Stop GetCommits Script ---"
 }
 
 appendCommitToQ() {

@@ -25,15 +25,6 @@ branch=${1} # XXX: We're piggy backing the branch name on the folder name, ideal
 dbuser=pi
 enable_logging=1
 
-startScript() {
-    mkdir -p ${logdir}
-    logh "=== Start RunTest Script ==="
-}
-
-stopScript() {
-    logh "--- Stop RunTest Script ---"
-}
-
 log() {
   if [[ ${enable_logging} -eq 1 ]]; then
     dt=`date '+%Y-%m-%d %H:%M:%S'`
@@ -43,6 +34,15 @@ log() {
 
 logh() {
   log "RunTest (${branch}): ${1}" >> ${historylog}
+}
+
+startScript() {
+    mkdir -p ${logdir}
+    logh "=== Start RunTest Script ==="
+}
+
+stopScript() {
+    logh "--- Stop RunTest Script ---"
 }
 
 runsql() {
