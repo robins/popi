@@ -24,11 +24,11 @@ rev=$(echo ${revisions[@]} | tr " " "\n" | sort -R | tr "\n" " ")
 startScript() {
 	mkdir -p ${logdir}
 	truncate -s 0 ${historylog}
-	logh "=== Start  Script ==="
+	logh "=== Start GetCommits Script ==="
 }
 
 stopScript() {
-	logh "--- Stop  Script ---"
+	logh "--- Stop GetCommits Script ---"
 }
 
 log() {
@@ -42,20 +42,13 @@ logh() {
   log "RunAll: ${1}" >> ${historylog}
 }
 
-getFirstCommitFromQ() {
+appendCommitToQ() {
 	q=${basedir}/catalog/q
-
-	hash=$(head -n 1 ${q})
-
-	echo ${hash}
-}
-
-
-# XXX: We need to check if the first line is in fact ${1}
-removeFirstCommitFromQ() {
-	q=${basedir}/catalog/q
-
-	sed -i '1d' ${q}
+	if [ `grep ${1} ${q}| wc -l` -eq 0 ]; then
+		echo ${1} >> ${q}
+	else
+		logh "Possibly commit ${1} already exists in Q"
+	fi
 }
 
 get_latest_commit_for_branch() {
@@ -66,43 +59,13 @@ get_latest_commit_for_branch() {
   git log -n 1 --pretty=format:"%H"
 }
 
-# XXX: This obviously needs work. git branch --contains e8fe426baa9c242d8dbd4eab1d963e952c9172f4 doesn't work always
-getBranchForCommit() {
-	echo "master"
-}
-
-getFolderForBranch() {
-	s=${1}
-	if [[ ${#s} -eq 'master' ]]; then
-		folder='master'
-	else
-		s1=${s#REL}
-		s2=${s1%_STABLE}
-		s3=${s2/\_/\.}
-		folder=$s3
-	fi
-
-	echo ${folder}
-}
-
 startScript
 
-hash=`getFirstCommitFromQ`
+	for s in $rev
+	do
+		latest_commit_for_branch=$(get_latest_commit_for_branch ${s})
 
-if [ ${#hash} -gt 0 ]; then
-
-	logh "Found Commit in Q"
-
-	branch=`getBranchForCommit ${hash}`
-	folder=`getFolderForBranch ${branch}`
-
-    logh "Start run for ${branch} branch for Commit ${hash}"
-    bash ${scriptdir}/run.sh $branch $folder ${hash} &>>${historylog}
-    logh "Stop  run for ${branch} branch for Commit ${hash}"
-
-	removeFirstCommitFromQ ${hash}
-else
-	logh "Didn't find commit in Q"
-fi
+		appendCommitToQ ${latest_commit_for_branch}
+	done
 
 stopScript
