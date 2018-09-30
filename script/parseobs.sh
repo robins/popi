@@ -97,9 +97,6 @@ function iterateCommit() {
 	new_out_file=${1}_sorted
 	truncate -s 0 ${new_out_file}
 
-	cnt=0
-	cntnp=0
-
 	git --git-dir ${repodir}/.git log --pretty=format:"%H %at %ad" --after="2018-09-01" --date=local| sort -k2 | while read -r line;
 	do
 		githash=`echo $line | awk -F " " '{print $1;}'`
@@ -108,17 +105,9 @@ function iterateCommit() {
 		if [[ "$s" -gt 0 ]]; then
 #			echo ${githash} ${epoch} ${s} >> ${new_out_file}
 			echo ${epoch} ${s} >> ${new_out_file}
-			cnt=$((cnt+1))
-			echo "Yes ${line} $cnt"
-		else
-			cntnp=$((cntnp+1))
-			echo "No  ${line} $cntnp"
 		fi
 	done
 
-	echo "$cnt Commits processed"
-	echo "$cntnp Commits Not processed"
-exit 1
 	rm ${1}
 	mv ${new_out_file} ${1}
 }
@@ -150,6 +139,8 @@ function plotTest() {
 	sed -i -e "s/XXXXXX/${1}/g" ${scriptdir}/resultplot.gp
 
 	gnuplot ${scriptdir}/resultplot.gp > ${resultdir}/${1}.png
+
+	sed -i -e "s/${1}/XXXXXX/g" ${scriptdir}/resultplot.gp
 }
 
 function iterateAllTests () {
