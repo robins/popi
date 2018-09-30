@@ -59,15 +59,12 @@ isHashAlreadyProcessed() {
 
 teardown() {
 
-if [ -d "${datadir}" ]; then
-  logh "Stopping previous instance, if any" && \
-    ${bindir}/pg_ctl -D ${datadir} stop
+pkill -o "postgres"
 
+if [ -d "${datadir}" ]; then
   logh "Removing previous data folder, if any" && \
     cd ${stagedir}/ && \
     rm -rf install/data
-else
-  logh "Skipping Teardown. Previous installation doesn't exist"
 fi
 }
 
