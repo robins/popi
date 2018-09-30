@@ -20,7 +20,7 @@ function iterateResults() {
 	find ${resultdir}/* -name "*.png" | while read -r filepath; do
 		testName=`getTestName ${filepath}`
 		fileName=${filepath##*/}
-		echo "<a href=\"${fileName}\">${testName}</a></br>" >> ${output_filename}
+		echo "<h2>${testName}</h2><img src=\"${fileName}\" alt=\"${testName}\"><hr>" >> ${output_filename}
 	done
 
 	echo "</BODY></HTML>" >> ${output_filename}
