@@ -27,7 +27,6 @@ enable_logging=1
 
 startScript() {
     mkdir -p ${logdir}
-    truncate -s 0 ${historylog}
     logh "=== Start RunTest Script ==="
 }
 

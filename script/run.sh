@@ -30,7 +30,6 @@ enable_logging=1
 
 startScript() {
     mkdir -p ${logdir}
-    truncate -s 0 ${historylog}
     logh "=== Start Run Script ==="
 }
 
@@ -72,6 +71,16 @@ else
 fi
 }
 
+isPostgresUp() {
+	while :
+	do
+		if [ `ps -ef | grep "postgres" | grep "popi" | wc -l` -gt 0 ]; then
+			break
+		fi
+		sleep 1
+	done
+}
+
 #check_if_db_down() {
 # if  `ps -ef | grep postgres | 
 #}
@@ -100,9 +109,9 @@ make --silent -j4 install && \
 	sleep 5 && \
 	echo "cluster_name='popi${2}'" >> ${datadir}/postgresql.conf && \
 	echo "listen_addresses='127.0.0.1'" >> ${datadir}/postgresql.conf && \
-  logh "Starting Postgres" && \
+  	logh "Starting Postgres" && \
         ${bindir}/pg_ctl -D ${datadir} -l ${logdir}/logfile_master.txt start && \
-	sleep 5
+	isPostgresUp
 
 
 #Stop old instance before installing new version

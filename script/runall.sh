@@ -23,7 +23,6 @@ rev=$(echo ${revisions[@]} | tr " " "\n" | sort -R | tr "\n" " ")
 
 startScript() {
 	mkdir -p ${logdir}
-	truncate -s 0 ${historylog}
 	logh "=== Start RunAll Script ==="
 }
 

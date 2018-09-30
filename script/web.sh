@@ -6,7 +6,6 @@ resultdir=${basedir}/obs/results
 
 startScript() {
     mkdir -p ${logdir}
-    truncate -s 0 ${historylog}
     logh "=== Start Web Script ==="
 }
 
