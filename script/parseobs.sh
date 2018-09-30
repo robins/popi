@@ -29,23 +29,6 @@ logh() {
 }
 
 
-# Get all active versions from the internet
-# XXX: Ensure slow internet connections don't hold up this run
-versions=( `timeout -s SIGTERM 10 curl -so - "http://www.postgresql.org/support/versioning/" | \
-		grep -A100 "EOL" | \
-		grep -B2 "Yes" | \
-		grep "colFirst" | \
-		cut --bytes=25-27 | \
-	sort | \
-		tr '\n' ' '` master)
-
-if [ ${#versions[@]} -le 2 ]; then
-#        versions=(9.4 9.5 9.6 10 master)
-		versions=(master)
-fi
-
-logh "Versions:  ${versions[@]}"
-
 function getDescription() {
   s="${1/C/Newconn}"
   s="${s/j4/Thread4}"
@@ -98,21 +81,6 @@ function GetAverageTPSValue() {
 #echo "done"
 }
 
-
-
-function iterateVer() {
-
-		filename=$1.txt
-
-		t=$(getDescription $1)
-		echo $t
-
-		for i in "${versions[@]}"
-		do
-				tps=$(GetAverageTPSValue $i $filename)
-				echo ${tps} 
-		done
-}
 
 function iterateCommit() {
 	new_out_file=${1}_sorted

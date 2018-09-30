@@ -17,9 +17,26 @@ historylog=${logdir}/history.log
 
 port=9999
 
-#revisions="REL9_2_STABLE REL9_3_STABLE REL9_4_STABLE REL9_5_STABLE REL9_6_STABLE master"
-revisions="master"
-rev=$(echo ${revisions[@]} | tr " " "\n" | sort -R | tr "\n" " ")
+# Get all active versions from the internet
+# XXX: Ensure slow internet connections don't hold up this run
+versions=( `timeout -s SIGTERM 10 curl -so - "http://www.postgresql.org/support/versioning/" | \
+        grep -A100 "EOL" | \
+        grep -B2 "Yes" | \
+        grep "colFirst" | \
+        cut --bytes=25-27 | \
+    sort | \
+        tr '\n' ' '` master)
+
+if [ ${#versions[@]} -le 2 ]; then
+#        versions=(9.4 9.5 9.6 10 master)
+        versions=(master)
+fi
+
+logh "Versions:  ${versions[@]}"
+
+#versions="REL9_2_STABLE REL9_3_STABLE REL9_4_STABLE REL9_5_STABLE REL9_6_STABLE master"
+#versions="master"
+rev=$(echo ${versions[@]} | tr " " "\n" | sort -R | tr "\n" " ")
 
 startScript() {
 	mkdir -p ${logdir}
