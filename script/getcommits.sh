@@ -38,7 +38,7 @@ log() {
 }
 
 logh() {
-  log "RunAll: ${1}" >> ${historylog}
+  log "GetCommits: ${1}" >> ${historylog}
 }
 
 appendCommitToQ() {
