@@ -44,19 +44,6 @@ startScript() {
     logh "=== Start Run Script ==="
 }
 
-stopScript() {
-    logh "--- Stop Run Script ---"
-	exit 0
-}
-
-isHashAlreadyProcessed() {
-	resultdir=${basedir}/obs/${branch}/${hash}
-	if [ -d "${resultdir}" ]; then
-		logh "Looks like we've already processed this Hash. Skipping"
-		stopScript
-	fi
-}
-
 teardown() {
 
 pkill -o "postgres"
@@ -66,6 +53,29 @@ if [ -d "${datadir}" ]; then
     cd ${stagedir}/ && \
     rm -rf install/data
 fi
+}
+
+stopScript() {
+    logh "--- Stop Run Script ---"
+	teardown
+	exit ${1}
+}
+
+isHashAlreadyProcessed() {
+	resultdir=${basedir}/obs/${branch}/${hash}
+	if [ -d "${resultdir}" ]; then
+		logh "Looks like we've already processed this Hash. Skipping"
+		stopScript 0
+	fi
+}
+
+appendCommitToQ2() {
+    q2=${basedir}/catalog/q2
+    if [ `grep ${1} ${q2}| wc -l` -eq 0 ]; then
+        echo ${1} >> ${q2}
+    else
+        logh "Possibly commit ${1} already exists in Q2"
+    fi
 }
 
 isPostgresUp() {
@@ -99,6 +109,8 @@ if [ ${port} -ne 5433 ]; then
   ./configure --prefix=${installdir} --enable-depend --with-pgport=${port}
 fi
 
+all_success=0
+
 logh "Compiling Postgres"
 #make --silent -j4 clean && \
 	make --silent -j4 install && \
@@ -111,8 +123,12 @@ logh "Compiling Postgres"
         ${bindir}/pg_ctl -D ${datadir} -l ${logdir}/logfile_master.txt start && \
 	isPostgresUp && \
 		logh "Calling RunTest" && \
-			bash ${scriptdir}/runtests.sh ${2} ${port} ${hash} &>>${historylog}
+			bash ${scriptdir}/runtests.sh ${2} ${port} ${hash} &>>${historylog} && \
+			all_success=1
 
-teardown
+if [ $all_success -eq 0 ]; then
+	appendCommitToQ2 ${hash}
+	stopScript 1
+fi
 
-stopScript
+stopScript 0
