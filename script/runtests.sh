@@ -73,7 +73,7 @@ runtests=1
 
 
 function waitnwatch {
-  max=20
+  max=50
   while true; do
     upstr=$(uptime | grep -aob "average:" | grep -oE '[0-9]+')
     c1=$(uptime | cut -b ${upstr}- | awk '{print $2;}' | sed s/,//g)
@@ -86,7 +86,6 @@ function waitnwatch {
       break
     fi
 
-    date
     sleep $s
   done
 }
