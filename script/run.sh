@@ -95,12 +95,13 @@ logh "Checkout commit" && \
 teardown
 
 if [ ${port} -ne 5433 ]; then
-  logh "Configuring Postgres" && \
+  logh "Configuring Postgres (Since port seems to have changed)" && \
   ./configure --prefix=${installdir} --enable-depend --with-pgport=${port}
 fi
 
 logh "Compiling Postgres"
-make --silent -j4 install && \
+#make --silent -j4 clean && \
+	make --silent -j4 install && \
 	${bindir}/initdb --nosync -D ${datadir} && \
 	#Wait 5 seconds. We don't want tests to fail because the IO couldnt keep up with recent DB start
 	sleep 5 && \
@@ -108,22 +109,9 @@ make --silent -j4 install && \
 	echo "listen_addresses='127.0.0.1'" >> ${datadir}/postgresql.conf && \
   	logh "Starting Postgres" && \
         ${bindir}/pg_ctl -D ${datadir} -l ${logdir}/logfile_master.txt start && \
-	isPostgresUp
-
-
-#Stop old instance before installing new version
-#sudo -u postgres -H sh -c "/bin/bash ${scriptdir}/pg_stop.sh ${2} ${port}"
-#pg_stop
-#/bin/bash ${scriptdir}/pg_stop.sh ${2} ${port}
-#sudo make -j4 install
-#sudo -u postgres -H sh -c "/bin/bash ${scriptdir}/pg_start.sh ${2} ${3}"
-#/bin/bash ${scriptdir}/pg_start.sh ${2} ${port}
-#pg_start
-
-
-logh "Calling RunTest"
-
-bash ${scriptdir}/runtests.sh ${2} ${port} ${hash} &>>${historylog}
+	isPostgresUp && \
+		logh "Calling RunTest" && \
+			bash ${scriptdir}/runtests.sh ${2} ${port} ${hash} &>>${historylog}
 
 teardown
 
