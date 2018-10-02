@@ -3,15 +3,10 @@ obsdir=${basedir}/obs
 repodir=${basedir}/repo
 scriptdir=${basedir}/script
 resultdir=${basedir}/obs/results
+logdir=${basedir}/log
+historylog=${logdir}/history.log
 
-startScript() {
-    mkdir -p ${logdir}
-    logh "=== Start Web Script ==="
-}
-
-stopScript() {
-    logh "--- Stop Web Script ---"
-}
+enable_logging=1
 
 log() {
   if [[ ${enable_logging} -eq 1 ]]; then
@@ -22,6 +17,15 @@ log() {
 
 logh() {
   log "Web: ${1}" >> ${historylog}
+}
+
+startScript() {
+    mkdir -p ${logdir}
+    logh "=== Start Web Script ==="
+}
+
+stopScript() {
+    logh "--- Stop Web Script ---"
 }
 
 function getTestName() {
