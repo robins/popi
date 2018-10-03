@@ -55,11 +55,11 @@ appendCommitToQ() {
 get_latest_commit_for_branch() {
 	logh "Update git repo"
 	cd ${repodir} && \
-		git reset --hard && \
+		git reset --hard &>> /dev/null && \
 		git checkout $1 &>> /dev/null && \
 		git pull &>>/dev/null && \
 		git log -n 1 --pretty=format:"%H" && \
-		logh "git repo Updated"
+		logh "git repo Updated" &>> /dev/null
 }
 
 startScript
