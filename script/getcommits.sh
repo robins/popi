@@ -48,8 +48,17 @@ appendCommitToQ() {
 	if [ `grep ${1} ${q}| wc -l` -eq 0 ]; then
 		echo ${1} >> ${q}
 	else
-		logh "Possibly commit ${1} already exists in Q"
+		logh "Commit ${1} already exists in Q"
 	fi
+}
+
+prependCommitToQ() {
+    q=${basedir}/catalog/q
+    if [ `grep ${1} ${q}| wc -l` -eq 0 ]; then
+        sed -i "1s;^;${1}\n;" ${q}
+    else
+        logh "Commit ${1} already exists in Q"
+    fi
 }
 
 get_latest_commit_for_branch() {
@@ -68,7 +77,7 @@ startScript
 	do
 		latest_commit_for_branch=$(get_latest_commit_for_branch ${s})
 
-		appendCommitToQ ${latest_commit_for_branch}
+		prependCommitToQ ${latest_commit_for_branch}
 	done
 
 stopScript
