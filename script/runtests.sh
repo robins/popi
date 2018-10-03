@@ -10,7 +10,9 @@ echo "Need at least 3 arguments (folder port hash). For e.g. master 5433 14ea365
 exit 1
 fi
 
-basedir=/home/pi/projects/popi
+tempdel="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
+basedir="$(dirname "$tempdel")"
+
 scriptdir=${basedir}/script
 logdir=${basedir}/log
 historylog=${logdir}/history.log

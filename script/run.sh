@@ -13,7 +13,9 @@ fi
 
 port=5433 #Currently we are not geared towards changing port
 
-basedir=/home/pi/projects/popi
+tempdel="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
+basedir="$(dirname "$tempdel")"
+
 srcdir=${basedir}/repo
 scriptdir=${basedir}/script
 logdir=${basedir}/log

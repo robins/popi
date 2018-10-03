@@ -1,7 +1,9 @@
 #XXX: Sometime add a cross-check that each folder grepped should be considered only
 #     when there exists a file with the fold name in it (basically is the same major version)
 
-basedir=/home/pi/projects/popi
+tempdel="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
+basedir="$(dirname "$tempdel")"
+
 obsdir=${basedir}/obs
 repodir=${basedir}/repo
 scriptdir=${basedir}/script
