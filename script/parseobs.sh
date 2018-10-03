@@ -98,7 +98,7 @@ function iterateCommit() {
 
 	git --git-dir ${repodir}/.git log --pretty=format:"%H %at %ad" --after="2018-09-01" --date=local| sort -k2 | while read -r line;
 	do
-echo $line
+#echo $line
 		githash=`echo $line | awk -F " " '{print $1;}'`
 		s=`grep ${githash} ${1} | awk -F ' ' '{print $2}'`
 		epoch=`echo ${line} | awk -F ' ' '{print $2}'`
