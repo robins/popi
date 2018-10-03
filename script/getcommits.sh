@@ -6,7 +6,9 @@ flock -n 200 || exit 1
 
 enable_logging=1
 
-basedir=/home/pi/projects/popi
+tempdel="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
+basedir="$(dirname "$tempdel")"
+
 scriptdir=${basedir}/script
 stagedir=${basedir}/stage
 installdir=${stagedir}/${2}/master
