@@ -106,10 +106,11 @@ logh "Checkout commit" && \
 
 teardown
 
-if [ ${port} -ne 5433 ]; then
-  logh "Configuring Postgres (Since port seems to have changed)" && \
-  ./configure --prefix=${installdir} --enable-depend --with-pgport=${port}
-fi
+#if [ ${port} -ne 5433 ]; then
+logh "Cleaning up and running a fresh copy of Configure" && \
+	make distclean && \
+	./configure --prefix=${installdir} --enable-depend --with-pgport=${port}
+#fi
 
 all_success=0
 
