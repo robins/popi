@@ -5,7 +5,7 @@ set terminal png
 
 set xdata time
 set timefmt "%s"
-set format x "%d"
+set format x "%d/%m"
 
 set xlabel "Date (day of month)"
 set ylabel "TPS as on that Commit"
