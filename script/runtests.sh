@@ -24,7 +24,7 @@ obsdir=${basedir}/obs/${1}/${3}
 port=${2}
 branch=${1} # XXX: We're piggy backing the branch name on the folder name, ideally we need this done properly
 
-dbuser=pi
+dbuser=`whoami`
 enable_logging=1
 
 log() {
