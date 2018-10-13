@@ -109,15 +109,15 @@ teardown
 #if [ ${port} -ne 5433 ]; then
 logh "Cleaning up and running a fresh copy of Configure" && \
 	make distclean && \
-	./configure --prefix=${installdir} --enable-depend --with-pgport=${port}
+	nice -n 19 ./configure --prefix=${installdir} --enable-depend --with-pgport=${port}
 #fi
 
 all_success=0
 
 logh "Compiling Postgres"
 #make --silent -j4 clean && \
-	make --silent -j4 install && \
-	${bindir}/initdb --nosync -D ${datadir} && \
+	nice -n 19 make --silent -j4 install && \
+	nice -n 19 ${bindir}/initdb --nosync -D ${datadir} && \
 	#Wait 5 seconds. We don't want tests to fail because the IO couldnt keep up with recent DB start
 	sleep 5 && \
 	echo "cluster_name='popi${2}'" >> ${datadir}/postgresql.conf && \
