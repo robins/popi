@@ -1,3 +1,7 @@
+# lock the script so only one runs at a time
+exec 200<$0
+flock -n 200 || exit 1
+
 #XXX: Sometime add a cross-check that each folder grepped should be considered only
 #     when there exists a file with the fold name in it (basically is the same major version)
 
@@ -123,7 +127,7 @@ function iterateOneTest () {
 
 	find ${obsdir}/master/* -name ${filename} | while read -r filepath; do
 #			echo ${filepath} ${filename} ${output_filename}
-#			iterateCommit ${filepath} ${filename} ${output_filename}
+			iterateCommit ${filepath} ${filename} ${output_filename}
 
 			hash=`echo "${filepath}" | grep -oe '[0-9a-f]\{40\}'`
             tps=$(GetTPSValue $filepath)
