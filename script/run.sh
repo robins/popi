@@ -116,11 +116,11 @@ all_success=0
 
 #logh "Compiling Postgres"
 nice -n 19 git reset --hard &>> /dev/null && \
-	nice -n 19 ./configure --prefix=${installdir} --enable-depend --with-pgport=${port} && \
+	nice -n 19 ./configure --prefix=${installdir} --enable-depend --with-pgport=${port} >> /dev/null && \
 	echo "Compiling complete" && \
-	nice -n 19 make -j4 clean && \
+	nice -n 19 make --silent -j4 clean && \
 	echo "Make clean complete" && \
-	nice -n 19 make install && \
+	nice -n 19 make --silent install && \
 	echo "Make install complete" && \
 	nice -n 19 ${bindir}/initdb --nosync -D ${datadir} && \
 	#Wait 5 seconds. We don't want tests to fail because the IO couldnt keep up with recent DB start
