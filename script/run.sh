@@ -42,6 +42,14 @@ logh() {
   log "Run (${branch}): ${1}" >> ${historylog}
 }
 
+checkIsRepoDirOkay() {
+    if [ -f ${srcdir}/README ]; then
+        #Postgres repo already exists
+        return 0
+    fi
+    return 1
+}
+
 startScript() {
     mkdir -p ${logdir}
     logh "=== Start Run Script ==="
@@ -108,21 +116,26 @@ logh "Checkout commit" && \
 teardown
 
 #if [ ${port} -ne 5433 ]; then
-logh "Cleaning up and running a fresh copy of Configure" && \
 #	make distclean
 #	nice -n 19 ./configure --prefix=${installdir} --enable-depend --with-pgport=${port}
 #fi
 
 all_success=0
 
-#logh "Compiling Postgres"
-nice -n 19 git reset --hard &>> /dev/null && \
+if ! $(checkIsRepoDirOkay) ; then
+	logh "Something wrong with Repo Dir. Exiting" 1
+	exit 1
+fi
+
+logh "Remove unrelated changes" && \
+	nice -n 19 git reset --hard &>> /dev/null && \
+	logh "Running a fresh copy of Configure" && \
 	nice -n 19 ./configure --prefix=${installdir} --enable-depend --with-pgport=${port} >> /dev/null && \
-	echo "Compiling complete" && \
+	logh "Cleaning up" && \
 	nice -n 19 make --silent -j4 clean && \
-	echo "Make clean complete" && \
+	logh "Compiling Postgres" && \
 	nice -n 19 make --silent install && \
-	echo "Make install complete" && \
+	logh "Starting up Database" && \
 	nice -n 19 ${bindir}/initdb --nosync -D ${datadir} && \
 	#Wait 5 seconds. We don't want tests to fail because the IO couldnt keep up with recent DB start
 	sleep 5 && \
