@@ -72,9 +72,9 @@ checkIsRepoDirOkay() {
 }
 
 prepareRepoDir() {
-	if ! $(checkIsRepoDirOkay) ; then
+	if $(checkIsRepoDirOkay) ; then
 		logh "Repo dir already exists. Nothing to do"
-		return
+		return 1
 	fi
 
 	logh "Looks like a new installation. Creating Repo directory"
@@ -105,10 +105,9 @@ get_latest_commit_for_branch() {
 		logh "Git repo updated" &>> /dev/null
 }
 
+startScript
 
 prepareRepoDir
-
-startScript
 
 	for s in $rev
 	do
