@@ -47,8 +47,6 @@ logh() {
   log "RunAll: ${1}" >> ${historylog}
 }
 
-logh "Versions:  ${versions[@]}"
-
 #versions="REL9_2_STABLE REL9_3_STABLE REL9_4_STABLE REL9_5_STABLE REL9_6_STABLE REL_10_STABLE REL_11_STABLE master"
 #versions="master"
 rev=$(echo ${versions[@]} | tr " " "\n" | sort -R | tr "\n" " ")
@@ -106,6 +104,8 @@ getFolderForBranch() {
 }
 
 startScript
+
+logh "Versions:  ${versions[@]}"
 
 hash=`getFirstCommitFromQ`
 
