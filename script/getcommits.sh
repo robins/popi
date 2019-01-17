@@ -16,6 +16,7 @@ bindir=${installdir}/bin
 repodir=${basedir}/repo
 logdir=${basedir}/log
 historylog=${logdir}/history.log
+postgresGitCloneURL=https://github.com/postgres/postgres.git
 
 port=9999
 
@@ -61,6 +62,25 @@ prependCommitToQ() {
     fi
 }
 
+prepareRepoDir() {
+	if [ -f ${repodir}/postgres/README ]; then
+		echo "Looks like Postgres repo already exists"
+		return
+	fi
+
+	echo "Looks like a new installation. Creating Repo directory"
+	mkdir -p ${repodir}
+
+	cd ${repodir}
+	echo "Checking out Postgres code"
+	git clone ${postgresGitCloneURL} &>> /dev/null
+
+	if [ ! -f ${repodir}/postgres/README ]; then
+		echo "Git Clone failed. Was trying at ${repodir}. Exiting"
+		exit 1
+	fi
+}
+
 get_latest_commit_for_branch() {
 	logh "Update git repo"
 	cd ${repodir} && \
@@ -70,6 +90,9 @@ get_latest_commit_for_branch() {
 		git log -n 1 --pretty=format:"%H" && \
 		logh "git repo Updated" &>> /dev/null
 }
+
+
+prepareRepoDir
 
 startScript
 
