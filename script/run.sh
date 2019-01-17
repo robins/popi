@@ -108,7 +108,7 @@ teardown
 
 #if [ ${port} -ne 5433 ]; then
 logh "Cleaning up and running a fresh copy of Configure" && \
-	make distclean && \
+	make distclean
 	nice -n 19 ./configure --prefix=${installdir} --enable-depend --with-pgport=${port}
 #fi
 
