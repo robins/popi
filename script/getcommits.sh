@@ -49,8 +49,9 @@ stopScript() {
 
 appendCommitToQ() {
 	q=${basedir}/catalog/q
-	if [ `grep ${1} ${q}| wc -l` -eq 0 ]; then
+	if ! grep -Fxq ${1} ${q} ; then
 		echo ${1} >> ${q}
+		logh "Appending ${1} to Q"
 	else
 		logh "Commit ${1} already exists in Q"
 	fi
@@ -58,17 +59,17 @@ appendCommitToQ() {
 
 prependCommitToQ() {
     q=${basedir}/catalog/q
-    if [ `grep ${1} ${q}| wc -l` -eq 0 ]; then
+    if ! grep -Fxq ${1} ${q} ; then
         sed -i "1s;^;${1}\n;" ${q}
+		logh "Prepending ${1} to Q"
     else
         logh "Commit ${1} already exists in Q"
     fi
-	logh "Commit ${1} prepended to Q"
 }
 
 prepareRepoDir() {
 	if [ -f ${repodir}/postgres/README ]; then
-		logh "Looks like Postgres repo already exists" >> /dev/null
+		#Postgres repo already exists. Nothing to do. Continue script
 		return
 	fi
 
@@ -87,7 +88,7 @@ prepareRepoDir() {
 
 get_latest_commit_for_branch() {
 	logh "Update git repo"
-	cd ${repodir} && \
+	cd ${repodir}/postgres/ && \
 		git reset --hard &>> /dev/null && \
 		git checkout $1 &>> /dev/null && \
 		git pull &>>/dev/null && \
