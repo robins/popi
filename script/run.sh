@@ -25,6 +25,7 @@ stagedir=${basedir}/stage/${2}
 installdir=${stagedir}/install
 bindir=${installdir}/bin
 datadir=${installdir}/data
+logprefixfile=${scriptdir}/logprefix
 
 hash=${3}
 branch=${1}
@@ -33,7 +34,7 @@ enable_logging=1
 log() {
   if [[ ${enable_logging} -eq 1 ]]; then
     dt=`date '+%Y-%m-%d %H:%M:%S'`
-    echo "${dt}: ${1}"
+    echo "${dt}: "`cat ${logprefixfile}`" :${1}"
   fi
 }
 

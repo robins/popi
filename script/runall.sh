@@ -17,6 +17,7 @@ repodir=${basedir}/repo
 srcdir=${repodir}/postgres
 logdir=${basedir}/log
 historylog=${logdir}/history.log
+logprefixfile=${scriptdir}/logprefix
 
 port=9999
 
@@ -35,16 +36,24 @@ if [ ${#versions[@]} -le 2 ]; then
         versions=(master)
 fi
 
-
 log() {
   if [[ ${enable_logging} -eq 1 ]]; then
     dt=`date '+%Y-%m-%d %H:%M:%S'`
-    echo "${dt}: ${1}"
+    echo "${dt}: "`cat ${logprefixfile}`" : ${1}"
   fi
 }
 
 logh() {
-  log "RunAll: ${1}" >> ${historylog}
+	log "RunAll: ${1}" >> ${historylog}
+}
+
+updateLogPrefix() {
+    logh "Generating log prefix"
+    head /dev/urandom | tr -dc A-Z0-9 | head -c 5 > ${logprefixfile}
+}
+
+removeLogPrefix() {
+	echo -n "" > ${logprefixfile}
 }
 
 #versions="REL9_2_STABLE REL9_3_STABLE REL9_4_STABLE REL9_5_STABLE REL9_6_STABLE REL_10_STABLE REL_11_STABLE master"
@@ -53,8 +62,10 @@ rev=$(echo ${versions[@]} | tr " " "\n" | sort -R | tr "\n" " ")
 
 startScript() {
 	mkdir -p ${logdir}
+	removeLogPrefix
 	logh "########################################################"
 	logh "=== Start RunAll Script ==="
+	updateLogPrefix
 }
 
 stopScript() {

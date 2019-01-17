@@ -20,6 +20,7 @@ installdir=${basedir}/stage/${1}/install
 bindir=${installdir}/bin
 datadir=${installdir}/data
 obsdir=${basedir}/obs/${1}/${3}
+logprefixfile=${scriptdir}/logprefix
 
 port=${2}
 branch=${1} # XXX: We're piggy backing the branch name on the folder name, ideally we need this done properly
@@ -30,7 +31,7 @@ enable_logging=1
 log() {
   if [[ ${enable_logging} -eq 1 ]]; then
     dt=`date '+%Y-%m-%d %H:%M:%S'`
-    echo "${dt}: ${1}"
+    echo "${dt}: "`cat ${logprefixfile}`" :${1}"
   fi
 }
 
