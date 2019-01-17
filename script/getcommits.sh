@@ -48,17 +48,12 @@ stopScript() {
 	logh "--- Stop GetCommits Script ---"
 }
 
-appendCommitToQ() {
-	q=${basedir}/catalog/q
-	if ! grep -Fxq ${1} ${q} ; then
-		echo ${1} >> ${q}
-		logh "Appending ${1} to Q"
-	else
-		logh "Commit ${1} already exists in Q"
-	fi
-}
-
 prependCommitToQ() {
+	if [ -z ${1} ]; then
+		logh "Can't prepend empty string to Q"
+		return 0
+	fi
+
     q=${basedir}/catalog/q
     if ! grep -Fxq ${1} ${q} ; then
         sed -i "1s;^;${1}\n;" ${q}
@@ -68,9 +63,17 @@ prependCommitToQ() {
     fi
 }
 
+checkIsRepoDirOkay() {
+    if [ -f ${srcdir}/README ]; then
+        #Postgres repo already exists
+        return 0
+    fi
+	return 1
+}
+
 prepareRepoDir() {
-	if [ -f ${srcdir}/README ]; then
-		#Postgres repo already exists. Nothing to do. Continue script
+	if ! $(checkIsRepoDirOkay) ; then
+		logh "Repo dir already exists. Nothing to do"
 		return
 	fi
 
@@ -88,6 +91,11 @@ prepareRepoDir() {
 }
 
 get_latest_commit_for_branch() {
+    if ! $(checkIsRepoDirOkay) ; then
+        logh "Something wrong with Repodir" &>> /dev/null
+        return 1
+    fi
+
 	logh "Update git repo"
 	cd ${srcdir} && \
 		git reset --hard &>> /dev/null && \
