@@ -25,14 +25,17 @@ revisions="master"
 rev=$(echo ${revisions[@]} | tr " " "\n" | sort -R | tr "\n" " ")
 
 log() {
-  if [[ ${enable_logging} -eq 1 ]]; then
-    dt=`date '+%Y-%m-%d %H:%M:%S'`
-    echo "${dt}: ${1}"
-  fi
+	if [[ ${enable_logging} -eq 1 ]]; then
+		dt=`date '+%Y-%m-%d %H:%M:%S'`
+		echo "${dt}: ${1}"
+	fi
 }
 
 logh() {
-  log "GetCommits: ${1}" >> ${historylog}
+	log "GetCommits: ${1}" >> ${historylog}
+	if [[ ${2} -eq 1 ]]; then
+		echo "GetCommits: ${1}"
+	fi
 }
 
 startScript() {
@@ -60,23 +63,24 @@ prependCommitToQ() {
     else
         logh "Commit ${1} already exists in Q"
     fi
+	logh "Commit ${1} prepended to Q"
 }
 
 prepareRepoDir() {
 	if [ -f ${repodir}/postgres/README ]; then
-		echo "Looks like Postgres repo already exists"
+		logh "Looks like Postgres repo already exists" >> /dev/null
 		return
 	fi
 
-	echo "Looks like a new installation. Creating Repo directory"
+	logh "Looks like a new installation. Creating Repo directory"
 	mkdir -p ${repodir}
 
 	cd ${repodir}
-	echo "Checking out Postgres code"
+	logh "Checking out Postgres code"
 	git clone ${postgresGitCloneURL} &>> /dev/null
 
 	if [ ! -f ${repodir}/postgres/README ]; then
-		echo "Git Clone failed. Was trying at ${repodir}. Exiting"
+		logh "Git Clone failed. Was trying at ${repodir}. Exiting" 1
 		exit 1
 	fi
 }
@@ -88,7 +92,7 @@ get_latest_commit_for_branch() {
 		git checkout $1 &>> /dev/null && \
 		git pull &>>/dev/null && \
 		git log -n 1 --pretty=format:"%H" && \
-		logh "git repo Updated" &>> /dev/null
+		logh "Git repo updated" &>> /dev/null
 }
 
 
