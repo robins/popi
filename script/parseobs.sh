@@ -10,6 +10,7 @@ basedir="$(dirname "$tempdel")"
 
 obsdir=${basedir}/obs
 repodir=${basedir}/repo
+srcdir=${repodir}/postgres
 scriptdir=${basedir}/script
 resultdir=${basedir}/obs/results
 logdir=${basedir}/log
@@ -100,7 +101,7 @@ function iterateCommit() {
 	new_out_file=${1}_sorted
 	truncate -s 0 ${new_out_file}
 
-	git --git-dir ${repodir}/.git log --pretty=format:"%H %at %ad" --after="2018-09-01" --date=local| sort -k2 | while read -r line;
+	git --git-dir ${srcdir}/.git log --pretty=format:"%H %at %ad" --after="2018-09-01" --date=local| sort -k2 | while read -r line;
 	do
 #echo $line
 		githash=`echo $line | awk -F " " '{print $1;}'`

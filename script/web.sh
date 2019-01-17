@@ -2,7 +2,6 @@ tempdel="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
 basedir="$(dirname "$tempdel")"
 
 obsdir=${basedir}/obs
-repodir=${basedir}/repo
 scriptdir=${basedir}/script
 resultdir=${basedir}/obs/results
 logdir=${basedir}/log

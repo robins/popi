@@ -16,7 +16,7 @@ port=5433 #Currently we are not geared towards changing port
 tempdel="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
 basedir="$(dirname "$tempdel")"
 
-srcdir=${basedir}/repo
+srcdir=${basedir}/repo/postgres
 scriptdir=${basedir}/script
 logdir=${basedir}/log
 historylog=$logdir/history.log

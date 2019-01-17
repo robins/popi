@@ -14,6 +14,7 @@ stagedir=${basedir}/stage
 installdir=${stagedir}/${2}/master
 bindir=${installdir}/bin
 repodir=${basedir}/repo
+srcdir=${repodir}/postgres
 logdir=${basedir}/log
 historylog=${logdir}/history.log
 postgresGitCloneURL=https://github.com/postgres/postgres.git
@@ -68,7 +69,7 @@ prependCommitToQ() {
 }
 
 prepareRepoDir() {
-	if [ -f ${repodir}/postgres/README ]; then
+	if [ -f ${srcdir}/README ]; then
 		#Postgres repo already exists. Nothing to do. Continue script
 		return
 	fi
@@ -80,7 +81,7 @@ prepareRepoDir() {
 	logh "Checking out Postgres code"
 	git clone ${postgresGitCloneURL} &>> /dev/null
 
-	if [ ! -f ${repodir}/postgres/README ]; then
+	if [ ! -f ${srcdir}/README ]; then
 		logh "Git Clone failed. Was trying at ${repodir}. Exiting" 1
 		exit 1
 	fi
@@ -88,7 +89,7 @@ prepareRepoDir() {
 
 get_latest_commit_for_branch() {
 	logh "Update git repo"
-	cd ${repodir}/postgres/ && \
+	cd ${srcdir} && \
 		git reset --hard &>> /dev/null && \
 		git checkout $1 &>> /dev/null && \
 		git pull &>>/dev/null && \

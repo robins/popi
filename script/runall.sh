@@ -14,6 +14,7 @@ stagedir=${basedir}/stage
 installdir=${stagedir}/${2}/master
 bindir=${installdir}/bin
 repodir=${basedir}/repo
+srcdir=${repodir}/postgres
 logdir=${basedir}/log
 historylog=${logdir}/history.log
 
@@ -79,8 +80,8 @@ removeFirstCommitFromQ() {
 }
 
 get_latest_commit_for_branch() {
-  logh "Update git repo"
-  cd ${repodir}
+  logh "Going to update Git repo"
+  cd ${srcdir}
   git checkout $1 &>> /dev/null
   git log -n 1 --pretty=format:"%H"
 }
