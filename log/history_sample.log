@@ -1,0 +1,175 @@
+2019-01-17 07:53:57: RunAll: ########################################################
+2019-01-17 07:53:57: RunAll: === Start RunAll Script ===
+2019-01-17 07:53:57: RunAll: Versions:  master
+2019-01-17 07:53:57: RunAll: Start run for master branch for Commit db37ab2c60b877b977f531bcd680848ee4511537
+2019-01-17 07:53:57: Run (master): === Start Run Script ===
+2019-01-17 07:53:57: Run (master): Checkout commit
+Already on 'master'
+Your branch is up-to-date with 'origin/master'.
+pkill: 14399 - Operation not permitted
+2019-01-17 07:53:58: Run (master): Cleaning up and running a fresh copy of Configure
+Compiling complete
+Make clean complete
+PostgreSQL installation complete.
+Make install complete
+The files belonging to this database system will be owned by user "ec2-user".
+This user must also own the server process.
+
+The database cluster will be initialized with locale "en_US.UTF-8".
+The default database encoding has accordingly been set to "UTF8".
+The default text search configuration will be set to "english".
+
+Data page checksums are disabled.
+
+creating directory /home/ec2-user/projects/popi/stage/master/install/data ... ok
+creating subdirectories ... ok
+selecting dynamic shared memory implementation ... posix
+selecting default max_connections ... 100
+selecting default shared_buffers ... 128MB
+selecting default timezone ... UTC
+creating configuration files ... ok
+running bootstrap script ... ok
+performing post-bootstrap initialization ... ok
+
+Sync to disk skipped.
+The data directory might become corrupt if the operating system crashes.
+
+WARNING: enabling "trust" authentication for local connections
+You can change this by editing pg_hba.conf or using the option -A, or
+--auth-local and --auth-host, the next time you run initdb.
+
+Success. You can now start the database server using:
+
+    /home/ec2-user/projects/popi/stage/master/install/bin/pg_ctl -D /home/ec2-user/projects/popi/stage/master/install/data -l logfile start
+
+2019-01-17 07:58:07: Run (master): Starting Postgres
+waiting for server to start.... done
+server started
+2019-01-17 07:58:07: Run (master): Calling RunTest
+2019-01-17 07:58:07: RunTest (master): === Start RunTest Script ===
+2019-01-17 07:58:07: RunTest (master): Dropping old pgbench DB
+NOTICE:  00000: database "pgbench" does not exist, skipping
+LOCATION:  dropdb, dbcommands.c:817
+DROP DATABASE
+2019-01-17 07:58:07: RunTest (master): Creating pgbench DB
+CREATE DATABASE
+2019-01-17 07:58:08: RunTest (master): Creating pgbench tables
+dropping old tables...
+NOTICE:  table "pgbench_accounts" does not exist, skipping
+NOTICE:  table "pgbench_branches" does not exist, skipping
+NOTICE:  table "pgbench_history" does not exist, skipping
+NOTICE:  table "pgbench_tellers" does not exist, skipping
+creating tables...
+generating data...
+100000 of 100000 tuples (100%) done (elapsed 0.03 s, remaining 0.00 s)
+vacuuming...
+creating primary keys...
+done.
+2019-01-17 07:58:08: RunTest (master): Running Pre SQL
+2019-01-17 07:58:08: RunTest (master): Triggering pgbench
+┌───────────────────────────────┬────────────────────────────────────────────────────────────────────────────────────────────────────────────┐
+│              now              │                                                  version                                                   │
+├───────────────────────────────┼────────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ 2019-01-17 06:55:38.665223+00 │ PostgreSQL 12devel on x86_64-pc-linux-gnu, compiled by gcc (GCC) 4.8.5 20150623 (Red Hat 4.8.5-28), 64-bit │
+└───────────────────────────────┴────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
+(1 row)
+
+2019-01-17 06:55:38: RunTest (master): Current CPU (94) vs Allowed threshold (80)
+2019-01-17 06:55:48: RunTest (master): Current CPU (80) vs Allowed threshold (80)
+2019-01-17 06:55:48: RunTest (master): Condition satisfied. Going ahead with Test.
+2019-01-17 06:55:48: RunTest (master): Iteration (\$i=1) (\$is_conn_included=1) (\$is_select_only=1) (\$is_prepared=1) for 100 seconds
+2019-01-17 06:57:28: RunTest (master): Current CPU (141) vs Allowed threshold (80)
+2019-01-17 06:57:38: RunTest (master): Current CPU (119) vs Allowed threshold (80)
+2019-01-17 06:57:48: RunTest (master): Current CPU (101) vs Allowed threshold (80)
+2019-01-17 06:57:58: RunTest (master): Current CPU (85) vs Allowed threshold (80)
+2019-01-17 06:58:08: RunTest (master): Current CPU (72) vs Allowed threshold (80)
+2019-01-17 06:58:08: RunTest (master): Condition satisfied. Going ahead with Test.
+2019-01-17 06:58:08: RunTest (master): Iteration (\$i=2) (\$is_conn_included=1) (\$is_select_only=1) (\$is_prepared=1) for 100 seconds
+2019-01-17 06:59:48: RunTest (master): Current CPU (116) vs Allowed threshold (80)
+2019-01-17 06:59:58: RunTest (master): Current CPU (98) vs Allowed threshold (80)
+2019-01-17 07:00:08: RunTest (master): Current CPU (83) vs Allowed threshold (80)
+2019-01-17 07:00:18: RunTest (master): Current CPU (70) vs Allowed threshold (80)
+2019-01-17 07:00:18: RunTest (master): Condition satisfied. Going ahead with Test.
+2019-01-17 07:00:18: RunTest (master): Iteration (\$i=1) (\$is_conn_included=1) (\$is_select_only=1) (\$is_prepared=2) for 100 seconds
+2019-01-17 07:01:58: RunTest (master): Current CPU (113) vs Allowed threshold (80)
+2019-01-17 07:02:08: RunTest (master): Current CPU (95) vs Allowed threshold (80)
+2019-01-17 07:02:18: RunTest (master): Current CPU (81) vs Allowed threshold (80)
+2019-01-17 07:02:28: RunTest (master): Current CPU (68) vs Allowed threshold (80)
+2019-01-17 07:02:28: RunTest (master): Condition satisfied. Going ahead with Test.
+2019-01-17 07:02:28: RunTest (master): Iteration (\$i=2) (\$is_conn_included=1) (\$is_select_only=1) (\$is_prepared=2) for 100 seconds
+2019-01-17 07:04:08: RunTest (master): Current CPU (172) vs Allowed threshold (80)
+2019-01-17 07:04:18: RunTest (master): Current CPU (146) vs Allowed threshold (80)
+2019-01-17 07:04:28: RunTest (master): Current CPU (123) vs Allowed threshold (80)
+2019-01-17 07:04:38: RunTest (master): Current CPU (104) vs Allowed threshold (80)
+2019-01-17 07:04:48: RunTest (master): Current CPU (88) vs Allowed threshold (80)
+2019-01-17 07:04:58: RunTest (master): Current CPU (75) vs Allowed threshold (80)
+2019-01-17 07:04:58: RunTest (master): Condition satisfied. Going ahead with Test.
+2019-01-17 07:04:58: RunTest (master): Iteration (\$i=1) (\$is_conn_included=1) (\$is_select_only=2) (\$is_prepared=1) for 100 seconds
+2019-01-17 07:06:38: RunTest (master): Current CPU (120) vs Allowed threshold (80)
+2019-01-17 07:06:48: RunTest (master): Current CPU (102) vs Allowed threshold (80)
+2019-01-17 07:06:58: RunTest (master): Current CPU (86) vs Allowed threshold (80)
+2019-01-17 07:07:08: RunTest (master): Current CPU (73) vs Allowed threshold (80)
+2019-01-17 07:07:08: RunTest (master): Condition satisfied. Going ahead with Test.
+2019-01-17 07:07:08: RunTest (master): Iteration (\$i=2) (\$is_conn_included=1) (\$is_select_only=2) (\$is_prepared=1) for 100 seconds
+2019-01-17 07:08:48: RunTest (master): Current CPU (181) vs Allowed threshold (80)
+2019-01-17 07:08:58: RunTest (master): Current CPU (154) vs Allowed threshold (80)
+2019-01-17 07:09:08: RunTest (master): Current CPU (130) vs Allowed threshold (80)
+2019-01-17 07:09:18: RunTest (master): Current CPU (110) vs Allowed threshold (80)
+2019-01-17 07:09:28: RunTest (master): Current CPU (93) vs Allowed threshold (80)
+2019-01-17 07:09:38: RunTest (master): Current CPU (79) vs Allowed threshold (80)
+2019-01-17 07:09:38: RunTest (master): Condition satisfied. Going ahead with Test.
+2019-01-17 07:09:38: RunTest (master): Iteration (\$i=1) (\$is_conn_included=1) (\$is_select_only=2) (\$is_prepared=2) for 100 seconds
+2019-01-17 07:11:18: RunTest (master): Current CPU (58) vs Allowed threshold (80)
+2019-01-17 07:11:18: RunTest (master): Condition satisfied. Going ahead with Test.
+2019-01-17 07:11:18: RunTest (master): Iteration (\$i=2) (\$is_conn_included=1) (\$is_select_only=2) (\$is_prepared=2) for 100 seconds
+2019-01-17 07:12:59: RunTest (master): Current CPU (146) vs Allowed threshold (80)
+2019-01-17 07:13:09: RunTest (master): Current CPU (124) vs Allowed threshold (80)
+2019-01-17 07:13:19: RunTest (master): Current CPU (105) vs Allowed threshold (80)
+2019-01-17 07:13:29: RunTest (master): Current CPU (89) vs Allowed threshold (80)
+2019-01-17 07:13:39: RunTest (master): Current CPU (75) vs Allowed threshold (80)
+2019-01-17 07:13:39: RunTest (master): Condition satisfied. Going ahead with Test.
+2019-01-17 07:13:39: RunTest (master): Iteration (\$i=1) (\$is_conn_included=2) (\$is_select_only=1) (\$is_prepared=1) for 100 seconds
+2019-01-17 07:15:19: RunTest (master): Current CPU (33) vs Allowed threshold (80)
+2019-01-17 07:15:19: RunTest (master): Condition satisfied. Going ahead with Test.
+2019-01-17 07:15:19: RunTest (master): Iteration (\$i=2) (\$is_conn_included=2) (\$is_select_only=1) (\$is_prepared=1) for 100 seconds
+2019-01-17 07:16:59: RunTest (master): Current CPU (154) vs Allowed threshold (80)
+2019-01-17 07:17:09: RunTest (master): Current CPU (130) vs Allowed threshold (80)
+2019-01-17 07:17:19: RunTest (master): Current CPU (110) vs Allowed threshold (80)
+2019-01-17 07:17:29: RunTest (master): Current CPU (93) vs Allowed threshold (80)
+2019-01-17 07:17:39: RunTest (master): Current CPU (79) vs Allowed threshold (80)
+2019-01-17 07:17:39: RunTest (master): Condition satisfied. Going ahead with Test.
+2019-01-17 07:17:39: RunTest (master): Iteration (\$i=1) (\$is_conn_included=2) (\$is_select_only=1) (\$is_prepared=2) for 100 seconds
+2019-01-17 07:19:19: RunTest (master): Current CPU (28) vs Allowed threshold (80)
+2019-01-17 07:19:19: RunTest (master): Condition satisfied. Going ahead with Test.
+2019-01-17 07:19:19: RunTest (master): Iteration (\$i=2) (\$is_conn_included=2) (\$is_select_only=1) (\$is_prepared=2) for 100 seconds
+2019-01-17 07:20:59: RunTest (master): Current CPU (120) vs Allowed threshold (80)
+2019-01-17 07:21:09: RunTest (master): Current CPU (102) vs Allowed threshold (80)
+2019-01-17 07:21:19: RunTest (master): Current CPU (86) vs Allowed threshold (80)
+2019-01-17 07:21:29: RunTest (master): Current CPU (73) vs Allowed threshold (80)
+2019-01-17 07:21:29: RunTest (master): Condition satisfied. Going ahead with Test.
+2019-01-17 07:21:29: RunTest (master): Iteration (\$i=1) (\$is_conn_included=2) (\$is_select_only=2) (\$is_prepared=1) for 100 seconds
+2019-01-17 07:23:09: RunTest (master): Current CPU (50) vs Allowed threshold (80)
+2019-01-17 07:23:09: RunTest (master): Condition satisfied. Going ahead with Test.
+2019-01-17 07:23:09: RunTest (master): Iteration (\$i=2) (\$is_conn_included=2) (\$is_select_only=2) (\$is_prepared=1) for 100 seconds
+2019-01-17 07:24:49: RunTest (master): Current CPU (118) vs Allowed threshold (80)
+2019-01-17 07:24:59: RunTest (master): Current CPU (100) vs Allowed threshold (80)
+2019-01-17 07:25:09: RunTest (master): Current CPU (84) vs Allowed threshold (80)
+2019-01-17 07:25:19: RunTest (master): Current CPU (71) vs Allowed threshold (80)
+2019-01-17 07:25:19: RunTest (master): Condition satisfied. Going ahead with Test.
+2019-01-17 07:25:19: RunTest (master): Iteration (\$i=1) (\$is_conn_included=2) (\$is_select_only=2) (\$is_prepared=2) for 100 seconds
+2019-01-17 07:26:59: RunTest (master): Current CPU (70) vs Allowed threshold (80)
+2019-01-17 07:26:59: RunTest (master): Condition satisfied. Going ahead with Test.
+2019-01-17 07:26:59: RunTest (master): Iteration (\$i=2) (\$is_conn_included=2) (\$is_select_only=2) (\$is_prepared=2) for 100 seconds
+┌───────────────────────────────┬────────────────────────────────────────────────────────────────────────────────────────────────────────────┐
+│              now              │                                                  version                                                   │
+├───────────────────────────────┼────────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ 2019-01-17 07:28:39.239728+00 │ PostgreSQL 12devel on x86_64-pc-linux-gnu, compiled by gcc (GCC) 4.8.5 20150623 (Red Hat 4.8.5-28), 64-bit │
+└───────────────────────────────┴────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
+(1 row)
+
+2019-01-17 07:28:39: RunTest (master): --- Stop RunTest Script ---
+2019-01-17 07:28:39: Run (master): --- Stop Run Script ---
+pkill: 14399 - Operation not permitted
+2019-01-17 07:28:39: Run (master): Removing previous data folder, if any
+2019-01-17 07:28:39: RunAll: Stop run for master branch for Commit 8f0de712c389df37d4db1fd439ede40189d75f60
+2019-01-17 07:28:39: RunAll: --- Stop RunAll Script ---
