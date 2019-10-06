@@ -25,7 +25,9 @@ stagedir=${basedir}/stage/${2}
 installdir=${stagedir}/install
 bindir=${installdir}/bin
 datadir=${installdir}/data
+
 logprefixfile=${scriptdir}/logprefix
+touch ${logprefixfile}
 
 hash=${3}
 branch=${1}
@@ -107,11 +109,18 @@ startScript
 
 isHashAlreadyProcessed
 
-cd ${srcdir}
-logh "Checkout commit" && \
-	git checkout ${1} && \
-	git checkout ${hash} .
-#	Only required if this is a new git repo
+if [ ! -d ${srcdir} ]
+then
+	logh "Need to clone Git repo first"
+	mkdir -p ${srcdir}
+	cd ${srcdir}
+	git clone https://github.com/postgres/postgres.git
+else
+	cd ${srcdir}
+	logh "Checkout commit at dir ${srcdir}" && \
+		git checkout ${1} && \
+		git checkout ${hash} .
+fi
 
 teardown
 
