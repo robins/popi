@@ -54,10 +54,18 @@ prependCommitToQ() {
 		return 0
 	fi
 
-    q=${basedir}/catalog/q
+    qDir=${basedir}/catalog
+    mkdir -p ${qDir}
+
+    q="${qDir}/q"
+    if [ ! -f ${q} ]; then
+		logh "Creating Q, since it didn't exist here ($q)"
+		touch ${q}
+    fi
+
     if ! grep -Fxq ${1} ${q} ; then
-        sed -i "1s;^;${1}\n;" ${q}
 		logh "Prepending ${1} to Q"
+        echo ${1} | cat - ${q} > temp && mv temp ${q}
     else
         logh "Commit ${1} already exists in Q"
     fi
