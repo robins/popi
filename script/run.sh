@@ -64,7 +64,7 @@ pkill -o "postgres"
 if [ -d "${datadir}" ]; then
   logh "Removing previous data folder, if any" && \
     cd ${stagedir}/ && \
-    rm -rf install/data
+    rm -rf ${stagedir}/install/data
 fi
 }
 
@@ -117,7 +117,7 @@ then
 	git clone https://github.com/postgres/postgres.git
 else
 	cd ${srcdir}
-	logh "Checkout commit at dir ${srcdir}" && \
+	logh "Checkout repo (at dir ${srcdir})" && \
 		git checkout ${1} && \
 		git checkout ${hash} .
 fi
