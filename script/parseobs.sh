@@ -17,6 +17,7 @@ logdir=${basedir}/log
 historylog=${logdir}/history.log
 
 enable_logging=1
+mkdir -p ${resultdir}
 
 log() {
   if [[ ${enable_logging} -eq 1 ]]; then
@@ -26,7 +27,7 @@ log() {
 }
 
 logh() {
-  log "ParseObs: ${1}" >> ${historylog}
+  log "ParseObs: ${FUNCNAME[ 1 ]}: ${1}" >> ${historylog}
 }
 
 lexit() {
@@ -99,22 +100,33 @@ function GetAverageTPSValue() {
 
 function iterateCommit() {
 	new_out_file=${1}_sorted
-	truncate -s 0 ${new_out_file}
-
-	git --git-dir ${srcdir}/.git log --pretty=format:"%H %at %ad" --after="2018-09-01" --date=local| sort -k2 | while read -r line;
+	if [ -f ${new_out_file} ]; then
+		truncate -s 0 ${new_out_file}
+	fi
+	
+	logh "Iterating Commit ${1} {$2}"
+	git --git-dir ${srcdir}/.git log --pretty=format:"%H %at %ad" --after="2019-09-01" --date=local| sort -k2 | while read -r line;
 	do
-#echo $line
-		githash=`echo $line | awk -F " " '{print $1;}'`
-		s=`grep ${githash} ${1} | awk -F ' ' '{print $2}'`
-		epoch=`echo ${line} | awk -F ' ' '{print $2}'`
+		logh "echo $line | awk -F ' ' '{print \$1;}'"
+		githash=`echo $line | awk -F " " '{print \$1;}'`
+		logh "grep ${githash} ${1} | awk -F ' ' '{print \$2}'"
+		s=`grep ${githash} ${1} | awk -F ' ' '{print \$2}'`
+		logh "echo ${line} | awk -F ' ' '{print \$2}'"
+		epoch=`echo ${line} | awk -F ' ' '{print \$2}'`
+exit
 		if [[ "$s" -gt 0 ]]; then
-#			echo ${githash} ${epoch} ${s} >> ${new_out_file}
+			logh "${githash} ${epoch} ${s} >> ${new_out_file}."
 			echo ${epoch} ${s} >> ${new_out_file}
 		fi
 	done
 
-	rm ${1}
-	mv ${new_out_file} ${1}
+	if [ -s ${new_out_file} ];
+	then
+		rm ${1}
+		mv ${new_out_file} ${1}
+	else
+		logh "Somehow the Sorted file (${new_out_file}) is empty. Skipping swap"
+	fi
 }
 
 # Bash script to find the percentage difference between max / min. Doubt this'd be used once we have
@@ -122,12 +134,14 @@ function iterateCommit() {
 # sort -k2 c1j1MST1.txt | paste -s | awk -F " " '{if ($2 > $4*1.001) print "$1 is Faster than $3 by ",(($2-$4)/$4*100),"% (",$2," vs ",$4,")"; if ($4 > $2*1.001) print "$3 is Faster than $1 by ",(($4-$2)/$2*100),"% (",$4," vs ",$2,")";}'
 
 function iterateOneTest () {
-	output_filename=${basedir}/obs/results/$1
-	truncate -s 0 ${output_filename}
+	output_filename=${resultdir}/$1
+	if [ -f ${output_filename} ]; then
+		truncate -s 0 ${output_filename}
+	fi
 	filename=${1}
 
 	find ${obsdir}/master/* -name ${filename} | while read -r filepath; do
-#			echo ${filepath} ${filename} ${output_filename}
+#			logh "${filepath} ${filename} ${output_filename}"
 			iterateCommit ${filepath} ${filename} ${output_filename}
 
 			hash=`echo "${filepath}" | grep -oe '[0-9a-f]\{40\}'`
@@ -140,7 +154,7 @@ function iterateOneTest () {
 
 function plotTest() {
 	inputFile=${resultdir}/$1
-
+	logh "Plotting ${1}"
 	sed -i -e "s/XXXXXX/${1}/g" ${scriptdir}/resultplot.gp
 
 	gnuplot ${scriptdir}/resultplot.gp > ${resultdir}/${1}.png
@@ -153,6 +167,8 @@ function iterateAllTests () {
 		logh "Processing ${test}"
 		iterateOneTest ${test}
 		plotTest ${test}
+		logh "Completed ${test}"
+		exit
 	done
 }
 
