@@ -53,7 +53,7 @@ runsql() {
 }
 
 ExitIfBinariesAreMissing() {
-  if [[ ! -d bindir ]]; then
+  if [[ ! -d ${bindir} ]]; then
     echo Are you sure that the Repository exists? Quitting.
     exit 1
   fi
@@ -86,7 +86,7 @@ runtests=1
 
 
 function waitnwatch {
-  max=80
+  max="$(( `nproc` * 75 ))"
   while true; do
     upstr=$(uptime | grep -aob "average:" | grep -oE '[0-9]+')
     c1=$(uptime | cut -b ${upstr}- | awk '{print $2;}' | sed s/,//g)
@@ -141,18 +141,17 @@ if [[ $runtests -eq 1 ]]; then
 
 runsql 'SELECT now(), version();'
 
-#for i in 1 2 3 4 8 12 16 32 64 ;
-for is_conn_included in 1 2;
+for is_conn_included in 2;
   do
-  for is_select_only in 1 2;
+  for is_select_only in 1;
     do
-    for is_prepared in 1 2;
+    for is_prepared in 1;
       do
-        for i in 1 2;
+        for i in 1 ; # 2 3 4; # 8 12 16 32 64 ;
         do
-			waitnwatch
-			logh "Iteration (\\\$i=$i) (\\\$is_conn_included=$is_conn_included) (\\\$is_select_only=$is_select_only) (\\\$is_prepared=$is_prepared) for ${w} seconds" && \
-				runiteration $i $(($i<4?1:4)) ${is_prepared} ${is_select_only} ${is_conn_included}
+          waitnwatch
+          logh "Iteration (\\\$i=$i) (\\\$is_conn_included=$is_conn_included) (\\\$is_select_only=$is_select_only) (\\\$is_prepared=$is_prepared) for ${w} seconds" && \
+          runiteration $i $(($i<4?1:4)) ${is_prepared} ${is_select_only} ${is_conn_included}
         done
       done
     done

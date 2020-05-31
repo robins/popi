@@ -1,28 +1,31 @@
-..
+.
 ├── catalog
-│   ├── master
-│   │   └── processed_hash.txt
+│   ├── q2_sample
+│   ├── q_sample
 │   └── README.md
 ├── log
+│   ├── history.log.sample
 │   └── README.md
 ├── obs
-│   ├── README.md
-│   └── results
-│       └── count_star_parallel_query.txt
+│   └── README.md
 ├── README.md
 ├── script
 │   ├── a.sql
+│   ├── getcommits.sh
+│   ├── misc.sh
 │   ├── parseobs.sh
 │   ├── post.sql
 │   ├── pre.sql
 │   ├── README.md
+│   ├── resultplot.gp
 │   ├── runall.sh
 │   ├── run.sh
 │   ├── runtests.sh
-│   └── tree.sh
-└── stage
-    ├── master
-    │   └── README.md
-    └── README.md
+│   └── web.sh
+├── stage
+│   ├── master
+│   │   └── README.md
+│   └── README.md
+└── tree.txt
 
-8 directories, 17 files
+6 directories, 22 files
