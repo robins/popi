@@ -52,6 +52,16 @@ runsql() {
   ${bindir}/psql -h localhost -U ${dbuser} -p ${port} -c "${1}" postgres &>> ${historylog}
 }
 
+ExitIfBinariesAreMissing() {
+  if [[ ! -d bindir ]]; then
+    echo Are you sure that the Repository exists? Quitting.
+    exit 1
+  fi
+}
+
+
+ExitIfBinariesAreMissing
+touch ${logprefixfile}
 startScript
 
 logh "Dropping old pgbench DB"
