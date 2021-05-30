@@ -65,9 +65,10 @@ startScript() {
 }
 
 teardown() {
-
+sync
 pkill -o "postgres"
-
+sleep 2
+sync
 if [ -d "${datadir}" ]; then
   logh "Removing previous data folder, if any" && \
     cd ${stagedir}/ && \
