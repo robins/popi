@@ -147,11 +147,11 @@ for is_conn_included in 2;
     do
     for is_prepared in 1;
       do
-        for i in 4 ; # 2 3 4; # 8 12 16 32 64 ;
+        for i in 2 ; # 3 4; # 8 12 16 32 64 ;
         do
           waitnwatch
           logh "Iteration (\\\$i=$i) (\\\$is_conn_included=$is_conn_included) (\\\$is_select_only=$is_select_only) (\\\$is_prepared=$is_prepared) for ${w} seconds" && \
-          runiteration $i $(($i<4?1:4)) ${is_prepared} ${is_select_only} ${is_conn_included}
+          runiteration $i 1 ${is_prepared} ${is_select_only} ${is_conn_included}
         done
       done
     done
