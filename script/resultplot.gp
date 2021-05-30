@@ -14,4 +14,4 @@ set title "TPS over time"
 set key below
 set grid
 
-plot "/home/pi/projects/popi/obs/results/XXXXXX" using 1:2 title "TPS"
+plot "/home/pi/proj/popi/obs/results/XXXXXX" using 1:2 pt 7 ps 2 title "TPS"
