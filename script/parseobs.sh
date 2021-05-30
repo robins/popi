@@ -105,7 +105,9 @@ function iterateCommit() {
 	fi
 	
 	logh "Iterating Commit ${1} {$2}"
-	git --git-dir ${srcdir}/.git log --pretty=format:"%H %at %ad" --after="2019-09-01" --date=local| sort -k2 | while read -r line;
+
+  #going through ALL commits since 1st Sept 2019 and sorting them in order
+	git --git-dir ${srcdir}/.git log --pretty=format:"%H %at %ad" --after="2021-05-01" --date=local| sort -k2 | while read -r line;
 	do
 		logh "echo $line | awk -F ' ' '{print \$1;}'"
 		githash=`echo $line | awk -F " " '{print \$1;}'`
@@ -113,7 +115,8 @@ function iterateCommit() {
 		s=`grep ${githash} ${1} | awk -F ' ' '{print \$2}'`
 		logh "echo ${line} | awk -F ' ' '{print \$2}'"
 		epoch=`echo ${line} | awk -F ' ' '{print \$2}'`
-exit
+logh "########################### ${epoch} ${s} ${githash} ${new_out_file}"
+#exit 1
 		if [[ "$s" -gt 0 ]]; then
 			logh "${githash} ${epoch} ${s} >> ${new_out_file}."
 			echo ${epoch} ${s} >> ${new_out_file}
@@ -134,6 +137,8 @@ exit
 # sort -k2 c1j1MST1.txt | paste -s | awk -F " " '{if ($2 > $4*1.001) print "$1 is Faster than $3 by ",(($2-$4)/$4*100),"% (",$2," vs ",$4,")"; if ($4 > $2*1.001) print "$3 is Faster than $1 by ",(($4-$2)/$2*100),"% (",$4," vs ",$2,")";}'
 
 function iterateOneTest () {
+
+  # Ensure that a file for this test-type exists
 	output_filename=${resultdir}/$1
 	if [ -f ${output_filename} ]; then
 		truncate -s 0 ${output_filename}
@@ -163,6 +168,7 @@ function plotTest() {
 }
 
 function iterateAllTests () {
+  # This processes all test result folders (and the files within them) and finds the uniq test types within them (across all commits)
 	find ${obsdir}/master/* -regextype posix-extended -regex '.*c[0-9]+j[0-9]+.+T[1-9][0-9]{2,5}' | awk -F "/" '{print $9}' | sort | uniq | while read -r test; do
 		logh "Processing ${test}"
 		iterateOneTest ${test}
