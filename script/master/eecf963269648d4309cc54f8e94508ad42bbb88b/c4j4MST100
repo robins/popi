@@ -1,0 +1,111 @@
+progress: 1.0 s, 4297.5 tps, lat 0.914 ms stddev 0.668
+progress: 2.0 s, 4907.7 tps, lat 0.813 ms stddev 0.133
+progress: 3.0 s, 4904.1 tps, lat 0.813 ms stddev 0.138
+progress: 4.0 s, 4899.0 tps, lat 0.814 ms stddev 0.144
+progress: 5.0 s, 4870.9 tps, lat 0.819 ms stddev 0.402
+progress: 6.0 s, 4904.0 tps, lat 0.813 ms stddev 0.140
+progress: 7.0 s, 4903.0 tps, lat 0.813 ms stddev 0.140
+progress: 8.0 s, 4907.0 tps, lat 0.813 ms stddev 0.140
+progress: 9.0 s, 4901.0 tps, lat 0.814 ms stddev 0.148
+progress: 10.0 s, 4907.4 tps, lat 0.813 ms stddev 0.135
+progress: 11.0 s, 4908.0 tps, lat 0.813 ms stddev 0.133
+progress: 12.0 s, 4864.0 tps, lat 0.820 ms stddev 0.269
+progress: 13.0 s, 4904.3 tps, lat 0.813 ms stddev 0.140
+progress: 14.0 s, 4896.2 tps, lat 0.814 ms stddev 0.147
+progress: 15.0 s, 4907.0 tps, lat 0.813 ms stddev 0.136
+progress: 16.0 s, 4903.2 tps, lat 0.813 ms stddev 0.139
+progress: 17.0 s, 4903.8 tps, lat 0.813 ms stddev 0.137
+progress: 18.0 s, 4912.3 tps, lat 0.813 ms stddev 0.130
+progress: 19.0 s, 4850.4 tps, lat 0.822 ms stddev 0.286
+progress: 20.0 s, 4949.6 tps, lat 0.806 ms stddev 0.136
+progress: 21.0 s, 4906.7 tps, lat 0.813 ms stddev 0.130
+progress: 22.0 s, 4849.5 tps, lat 0.823 ms stddev 0.366
+progress: 23.0 s, 4898.4 tps, lat 0.814 ms stddev 0.132
+progress: 24.0 s, 4899.0 tps, lat 0.814 ms stddev 0.140
+progress: 25.0 s, 4910.0 tps, lat 0.812 ms stddev 0.133
+progress: 26.0 s, 4907.4 tps, lat 0.813 ms stddev 0.266
+progress: 27.0 s, 4903.6 tps, lat 0.813 ms stddev 0.133
+progress: 28.0 s, 4906.2 tps, lat 0.813 ms stddev 0.138
+progress: 29.0 s, 4897.9 tps, lat 0.814 ms stddev 0.146
+progress: 30.0 s, 4901.9 tps, lat 0.814 ms stddev 0.144
+progress: 31.0 s, 4904.3 tps, lat 0.814 ms stddev 0.136
+progress: 32.0 s, 4902.6 tps, lat 0.813 ms stddev 0.135
+progress: 33.0 s, 4909.1 tps, lat 0.813 ms stddev 0.130
+progress: 34.0 s, 4902.3 tps, lat 0.814 ms stddev 0.140
+progress: 35.0 s, 4904.0 tps, lat 0.813 ms stddev 0.130
+progress: 36.0 s, 4908.0 tps, lat 0.813 ms stddev 0.139
+progress: 37.0 s, 4904.1 tps, lat 0.813 ms stddev 0.130
+progress: 38.0 s, 4907.8 tps, lat 0.813 ms stddev 0.133
+progress: 39.0 s, 4900.2 tps, lat 0.814 ms stddev 0.138
+progress: 40.0 s, 4903.7 tps, lat 0.813 ms stddev 0.132
+progress: 41.0 s, 4909.4 tps, lat 0.813 ms stddev 0.135
+progress: 42.0 s, 4903.7 tps, lat 0.814 ms stddev 0.139
+progress: 43.0 s, 4904.1 tps, lat 0.813 ms stddev 0.135
+progress: 44.0 s, 4901.0 tps, lat 0.814 ms stddev 0.135
+progress: 45.0 s, 4904.0 tps, lat 0.813 ms stddev 0.132
+progress: 46.0 s, 4912.2 tps, lat 0.813 ms stddev 0.132
+progress: 47.0 s, 4888.3 tps, lat 0.816 ms stddev 0.203
+progress: 48.0 s, 4903.3 tps, lat 0.813 ms stddev 0.138
+progress: 49.0 s, 4899.0 tps, lat 0.814 ms stddev 0.149
+progress: 50.0 s, 4906.4 tps, lat 0.813 ms stddev 0.133
+progress: 51.0 s, 4906.4 tps, lat 0.813 ms stddev 0.140
+progress: 52.0 s, 4902.2 tps, lat 0.813 ms stddev 0.142
+progress: 53.0 s, 4907.6 tps, lat 0.813 ms stddev 0.136
+progress: 54.0 s, 4876.4 tps, lat 0.817 ms stddev 0.190
+progress: 55.0 s, 4906.4 tps, lat 0.813 ms stddev 0.140
+progress: 56.0 s, 4907.0 tps, lat 0.813 ms stddev 0.138
+progress: 57.0 s, 4903.8 tps, lat 0.813 ms stddev 0.137
+progress: 58.0 s, 4904.7 tps, lat 0.813 ms stddev 0.130
+progress: 59.0 s, 4900.7 tps, lat 0.814 ms stddev 0.145
+progress: 60.0 s, 4900.7 tps, lat 0.814 ms stddev 0.138
+progress: 61.0 s, 4908.2 tps, lat 0.813 ms stddev 0.132
+progress: 62.0 s, 4905.8 tps, lat 0.813 ms stddev 0.131
+progress: 63.0 s, 4904.8 tps, lat 0.813 ms stddev 0.133
+progress: 64.0 s, 4900.4 tps, lat 0.815 ms stddev 0.148
+progress: 65.0 s, 4888.8 tps, lat 0.816 ms stddev 0.196
+progress: 66.0 s, 4909.1 tps, lat 0.813 ms stddev 0.130
+progress: 67.0 s, 4907.9 tps, lat 0.813 ms stddev 0.136
+progress: 68.0 s, 4904.5 tps, lat 0.813 ms stddev 0.129
+progress: 69.0 s, 4900.6 tps, lat 0.814 ms stddev 0.152
+progress: 70.0 s, 4888.8 tps, lat 0.816 ms stddev 0.153
+progress: 71.0 s, 4903.7 tps, lat 0.814 ms stddev 0.135
+progress: 72.0 s, 4904.9 tps, lat 0.813 ms stddev 0.131
+progress: 73.0 s, 4782.4 tps, lat 0.834 ms stddev 0.379
+progress: 74.0 s, 4896.7 tps, lat 0.815 ms stddev 0.145
+progress: 75.0 s, 4867.0 tps, lat 0.819 ms stddev 0.315
+progress: 76.0 s, 4892.8 tps, lat 0.815 ms stddev 0.160
+progress: 77.0 s, 4893.2 tps, lat 0.816 ms stddev 0.201
+progress: 78.0 s, 4894.1 tps, lat 0.814 ms stddev 0.167
+progress: 79.0 s, 4902.8 tps, lat 0.814 ms stddev 0.140
+progress: 80.0 s, 4907.4 tps, lat 0.813 ms stddev 0.141
+progress: 81.0 s, 4908.0 tps, lat 0.813 ms stddev 0.130
+progress: 82.0 s, 4898.0 tps, lat 0.814 ms stddev 0.146
+progress: 83.0 s, 4890.7 tps, lat 0.815 ms stddev 0.201
+progress: 84.0 s, 4902.9 tps, lat 0.814 ms stddev 0.148
+progress: 85.0 s, 4904.9 tps, lat 0.813 ms stddev 0.137
+progress: 86.0 s, 4895.1 tps, lat 0.815 ms stddev 0.265
+progress: 87.0 s, 4908.2 tps, lat 0.813 ms stddev 0.133
+progress: 88.0 s, 4909.0 tps, lat 0.812 ms stddev 0.131
+progress: 89.0 s, 4907.3 tps, lat 0.813 ms stddev 0.139
+progress: 90.0 s, 4907.7 tps, lat 0.813 ms stddev 0.131
+progress: 91.0 s, 4896.9 tps, lat 0.814 ms stddev 0.137
+progress: 92.0 s, 4906.0 tps, lat 0.813 ms stddev 0.138
+progress: 93.0 s, 4904.1 tps, lat 0.814 ms stddev 0.139
+progress: 94.0 s, 4903.0 tps, lat 0.814 ms stddev 0.140
+progress: 95.0 s, 4904.2 tps, lat 0.813 ms stddev 0.131
+progress: 96.0 s, 4912.8 tps, lat 0.813 ms stddev 0.131
+progress: 97.0 s, 4907.4 tps, lat 0.813 ms stddev 0.138
+progress: 98.0 s, 4907.6 tps, lat 0.813 ms stddev 0.134
+progress: 99.0 s, 4904.0 tps, lat 0.813 ms stddev 0.147
+progress: 100.0 s, 4907.6 tps, lat 0.813 ms stddev 0.140
+transaction type: <builtin: select only>
+scaling factor: 1
+query mode: prepared
+number of clients: 4
+number of threads: 4
+duration: 100 s
+number of transactions actually processed: 489428
+latency average = 0.815 ms
+latency stddev = 0.175 ms
+tps = 4894.223708 (including connections establishing)
+tps = 4894.917009 (excluding connections establishing)

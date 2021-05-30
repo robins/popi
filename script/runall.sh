@@ -19,21 +19,21 @@ logdir=${basedir}/log
 historylog=${logdir}/history.log
 logprefixfile=${scriptdir}/logprefix
 
+catalogdir=${basedir}/catalog
+q=${catalogdir}/q
+
 port=9999
 
 # Get all active versions from the internet
 # XXX: Ensure slow internet connections don't hold up this run
-versions=( `timeout -s SIGTERM 10 curl -so - "http://www.postgresql.org/support/versioning/" | \
-        grep -A100 "EOL" | \
-        grep -B2 "Yes" | \
-        grep "colFirst" | \
-        cut --bytes=25-27 | \
-    sort | \
+versions=( `timeout -s SIGTERM 10 curl -so - "https://www.postgresql.org/support/versioning/" | \
+        grep -A150 "EOL"  | grep -B1 ">Yes<" | \
+        cut --bytes=12-20 | fgrep "." | awk -F"<" '{print $1}' | sort | \
         tr '\n' ' '` master)
 
 if [ ${#versions[@]} -le 2 ]; then
-#        versions=(9.4 9.5 9.6 10 master)
-        versions=(master)
+        versions=(9.5 9.6 10 11 12 master)
+#        versions=(master)
 fi
 
 log() {
@@ -44,7 +44,7 @@ log() {
 }
 
 logh() {
-	log "RunAll: ${1}" >> ${historylog}
+        log "RunAll: ${1}" >> ${historylog}
 }
 
 updateLogPrefix() {
@@ -53,7 +53,7 @@ updateLogPrefix() {
 }
 
 removeLogPrefix() {
-	echo -n "" > ${logprefixfile}
+        echo -n "" > ${logprefixfile}
 }
 
 #versions="REL9_2_STABLE REL9_3_STABLE REL9_4_STABLE REL9_5_STABLE REL9_6_STABLE REL_10_STABLE REL_11_STABLE master"
@@ -61,31 +61,31 @@ removeLogPrefix() {
 rev=$(echo ${versions[@]} | tr " " "\n" | sort -R | tr "\n" " ")
 
 startScript() {
-	mkdir -p ${logdir}
-	removeLogPrefix
-	logh "########################################################"
-	logh "=== Start RunAll Script ==="
-	updateLogPrefix
+        mkdir -p ${logdir}
+        removeLogPrefix
+        logh "########################################################"
+        logh "=== Start RunAll Script ==="
+        updateLogPrefix
+
+        mkdir -p ${catalogdir}
+        touch $q
+
 }
 
 stopScript() {
-	logh "--- Stop RunAll Script ---"
+        logh "--- Stop RunAll Script ---"
 }
 
 getFirstCommitFromQ() {
-	q=${basedir}/catalog/q
-
-	hash=$(head -n 1 ${q})
-
-	echo ${hash}
+  echo $(head -n 1 ${q})
 }
 
 
 # XXX: We need to check if the first line is in fact ${1}
 removeFirstCommitFromQ() {
-	q=${basedir}/catalog/q
+        q=${basedir}/catalog/q
 
-	sed -i '1d' ${q}
+        sed -i '1d' ${q}
 }
 
 get_latest_commit_for_branch() {
@@ -97,21 +97,21 @@ get_latest_commit_for_branch() {
 
 # XXX: This obviously needs work. git branch --contains e8fe426baa9c242d8dbd4eab1d963e952c9172f4 doesn't work always
 getBranchForCommit() {
-	echo "master"
+        echo "master"
 }
 
 getFolderForBranch() {
-	s=${1}
-	if [[ ${#s} -eq 'master' ]]; then
-		folder='master'
-	else
-		s1=${s#REL}
-		s2=${s1%_STABLE}
-		s3=${s2/\_/\.}
-		folder=$s3
-	fi
+        s=${1}
+        if [[ ${#s} -eq 'master' ]]; then
+                folder='master'
+        else
+                s1=${s#REL}
+                s2=${s1%_STABLE}
+                s3=${s2/\_/\.}
+                folder=$s3
+        fi
 
-	echo ${folder}
+        echo ${folder}
 }
 
 startScript
@@ -120,18 +120,20 @@ logh "Versions:  ${versions[@]}"
 
 hash=`getFirstCommitFromQ`
 
-if [ ${#hash} -gt 0 ]; then
+while [ ${#hash} -gt 0 ]
+  do
 
-	branch=`getBranchForCommit ${hash}`
-	folder=`getFolderForBranch ${branch}`
+  branch=`getBranchForCommit ${hash}`
+  folder=`getFolderForBranch ${branch}`
 
-    logh "Start run for ${branch} branch for Commit ${hash}"
-    bash ${scriptdir}/run.sh $branch $folder ${hash} &>>${historylog}
-    logh "Stop run for ${branch} branch for Commit ${hash}"
+  logh "Start run for ${branch} branch for Commit ${hash}"
+  bash ${scriptdir}/run.sh $branch $folder ${hash} &>>${historylog}
+  logh "Stop run for ${branch} branch for Commit ${hash}"
 
-	removeFirstCommitFromQ ${hash}
-else
-	logh "Didn't find commit in Q"
-fi
+  removeFirstCommitFromQ ${hash}
 
+  hash=`getFirstCommitFromQ`
+  done
+
+logh "Q is empty. Nothing to do. Quitting"
 stopScript
