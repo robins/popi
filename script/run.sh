@@ -164,7 +164,7 @@ logh "Git reset" && \
         ${bindir}/pg_ctl -D ${datadir} -l ${logdir}/logfile_master.txt start && \
         isPostgresUp && \
                 logh "Calling RunTest" && \
-                        bash ${scriptdir}/runtests.sh ${2} ${port} ${hash} &>>${historylog} && \
+                        bash ${scriptdir}/runtest.sh ${2} ${port} ${hash} &>>${historylog} && \
                         all_success=1
 
 logh "Successfuly processed Commit: ${hash}"
