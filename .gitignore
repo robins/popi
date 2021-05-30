@@ -13,3 +13,4 @@ repo
 stage/master/*
 script/logprefix
 T.txt
+.vscode
