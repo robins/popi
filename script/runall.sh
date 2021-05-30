@@ -138,10 +138,11 @@ while [ ${#hash} -gt 0 ]
 
   removeFirstCommitFromQ ${hash}
 
-  if [[ $testmode eq 1 ]]; then
+  if [[ $testmode -eq 1 ]]; then
     hash=''
   else
     hash=`getFirstCommitFromQ`
+  fi
   done
 
 logh "Q is empty. Nothing to do. Quitting"
