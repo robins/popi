@@ -6,6 +6,12 @@ flock -n 200 || exit 1
 
 enable_logging=1
 
+# $1=test => Enable testmode
+
+if (( $# >= 1 )); then
+    testmode=1
+fi
+
 tempdel="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
 basedir="$(dirname "$tempdel")"
 
@@ -132,7 +138,10 @@ while [ ${#hash} -gt 0 ]
 
   removeFirstCommitFromQ ${hash}
 
-  hash=`getFirstCommitFromQ`
+  if [[ $testmode eq 1 ]]; then
+    hash=''
+  else
+    hash=`getFirstCommitFromQ`
   done
 
 logh "Q is empty. Nothing to do. Quitting"
