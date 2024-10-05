@@ -89,14 +89,12 @@ stopScript() {
 }
 
 getFirstCommitFromQ() {
-  echo $(head -n 1 ${q})
+  head -n 1 ${q}
 }
 
 
 # XXX: We need to check if the first line is in fact ${1}
 removeFirstCommitFromQ() {
-        q=${basedir}/catalog/q
-
         sed -i '1d' ${q}
 }
 
@@ -135,21 +133,21 @@ hash=`getFirstCommitFromQ`
 while [ ${#hash} -gt 0 ]
   do
 
-  branch=`getBranchForCommit ${hash}`
-  folder=`getFolderForBranch ${branch}`
+    branch=`getBranchForCommit ${hash}`
+    folder=`getFolderForBranch ${branch}`
 
-  logh "Start run for ${branch} branch for Commit ${hash}"
-  bash ${scriptdir}/run.sh $branch $folder ${hash} &>>${historylog}
-  logh "Stop run for ${branch} branch for Commit ${hash}"
+    logh "Start run for ${branch} branch for Commit ${hash}"
+    bash ${scriptdir}/run.sh $branch $folder ${hash} &>>${historylog}
+    logh "Stop run for ${branch} branch for Commit ${hash}"
 
-  removeFirstCommitFromQ ${hash}
+    removeFirstCommitFromQ ${hash}
 
-  if [[ $testmode -eq 1 ]]; then
-    hash=''
-  else
-    hash=`getFirstCommitFromQ`
-  fi
+    if [[ $testmode -eq 1 ]]; then
+      hash=''
+    else
+      hash=`getFirstCommitFromQ`
+    fi
   done
 
-logh "Q is empty. Nothing to do. Quitting"
+[ ${#hash} -eq 0 ] && logh "Q is empty. Nothing to do. Quitting"
 stopScript

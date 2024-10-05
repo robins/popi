@@ -125,7 +125,7 @@ then
         logh "Need to clone Git repo first"
         mkdir -p ${srcdir}
         cd ${srcdir}
-        git clone https://github.com/postgres/postgres.git .
+        git clone git@github.com:postgres/postgres.git .
         needconfigure=1
 else
         cd ${srcdir}
