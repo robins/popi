@@ -37,6 +37,8 @@ branch=${1}
 enable_logging=1
 needconfigure=0
 
+parallel=`nproc`
+
 log() {
   if [[ ${enable_logging} -eq 1 ]]; then
     dt=`date '+%Y-%m-%d %H:%M:%S'`
@@ -49,7 +51,7 @@ logh() {
 }
 
 checkIsRepoDirOkay() {
-    if [ -f ${srcdir}/README ]; then
+    if [ -f ${srcdir}/README.md ]; then
         #Postgres repo already exists
         return 0
     fi
@@ -122,7 +124,7 @@ then
         logh "Need to clone Git repo first"
         mkdir -p ${srcdir}
         cd ${srcdir}
-        git clone https://github.com/postgres/postgres.git .
+        git clone git@github.com:postgres/postgres.git .
         needconfigure=1
 else
         cd ${srcdir}
@@ -150,11 +152,11 @@ fi
 logh "Git reset" && \
         nice -n 19 git reset --hard &>> /dev/null && \
         logh "Cleaning up"
-        nice -n 19 make --silent -j4 clean
+        nice -n 19 make --silent -j${parallel} clean
         logh "Running Configure"
         nice -n 19 ./configure --prefix=${installdir} --enable-cassert --enable-depend --with-pgport=${port} >> /dev/null
         logh "Compiling Postgres" && \
-        nice -n 19 make --silent -j4 install &>> /dev/null && \
+        nice -n 19 make --silent -j${parallel} install &>> /dev/null && \
         logh "Starting up Database" && \
         nice -n 19 ${bindir}/initdb --nosync -D ${datadir} && \
         #Wait 5 seconds. We don't want tests to fail because the IO couldnt keep up with recent DB start

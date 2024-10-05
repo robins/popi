@@ -82,7 +82,7 @@ prependCommitToQ() {
 }
 
 checkIsRepoDirOkay() {
-    if [ -f ${srcdir}/README ]; then
+    if [ -f ${srcdir}/README.md ]; then
         #Postgres repo already exists
         return 0
     fi
@@ -160,6 +160,6 @@ UpdateRepo
 
 # XXX: Add an option that defaults to doing get_latest_commit_for_branch
 # XXX: Add this script to an hourly run
-fillQWithNDaysFromToday 200
+fillQWithNDaysFromToday 100
 
 stopScript
