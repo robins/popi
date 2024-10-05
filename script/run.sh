@@ -1,17 +1,19 @@
-# lock the script so only one runs at a time
-exec 200<$0
-flock -n 200 || exit 1
+#!/bin/bash
 
-# $1=branch
-# $2=folder
-# $3=hash
+# Abort, if another instance of this program is already running
+scriptname=$(basename "$0")
+n=`ps -ef | grep "$scriptname"| grep -v grep | grep -v "$$" | wc -l`
+[ "$n" -ge 1 ] && echo "$scriptname already running. Aborting" && exit 1
 
-if (( $# < 3 )); then
-echo "Need at least 3 arguments (branch folder hash). For e.g. master master 14ea36520389dbb1b48524223cf09389154a0f2e"
-exit 1
-fi
 
-port=5433 #Currently we are not geared towards changing port
+# $1=test
+# $2=commithash
+[[ $# -lt 2 ]] && echo "Need at least 2 arguments (test commithash). For e.g. select1 14ea36520389dbb1b48524223cf09389154a0f2e" && exit 1
+
+test=${1}
+hash=${2}
+
+port=5433
 
 tempdel="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
 basedir="$(dirname "$tempdel")"
@@ -21,21 +23,22 @@ scriptdir=${basedir}/script
 logdir=${basedir}/log
 historylog=$logdir/history.log
 
-stagedir=${basedir}/stage/${2}
+enable_logging=1
+needconfigure=0
+
+stagedir=${basedir}/stage/${stagefolder}
 installdir=${stagedir}/install
 bindir=${installdir}/bin
 datadir=${installdir}/data
 
-logprefixfile=${scriptdir}/logprefix
-touch ${logprefixfile}
+
+testdir=${basedir}/test/${test}
+logprefixfile=${testdir}/logprefix
+touch ${logprefixfile} || exit 1
 
 catalogdir=${basedir}/catalog
 q2=${catalogdir}/q2
-
-hash=${3}
-branch=${1}
-enable_logging=1
-needconfigure=0
+cpu=`nproc`
 
 log() {
   if [[ ${enable_logging} -eq 1 ]]; then
@@ -49,7 +52,7 @@ logh() {
 }
 
 checkIsRepoDirOkay() {
-    if [ -f ${srcdir}/README ]; then
+    if [ -f "${srcdir}/README.md" ]; then
         #Postgres repo already exists
         return 0
     fi
@@ -150,22 +153,22 @@ fi
 logh "Git reset" && \
         nice -n 19 git reset --hard &>> /dev/null && \
         logh "Cleaning up"
-        nice -n 19 make --silent -j4 clean
+        nice -n 19 make --silent -j${cpu} clean
         logh "Running Configure"
         nice -n 19 ./configure --prefix=${installdir} --enable-cassert --enable-depend --with-pgport=${port} >> /dev/null
         logh "Compiling Postgres" && \
-        nice -n 19 make --silent -j4 install &>> /dev/null && \
+        nice -n 19 make --silent -j${cpu} install &>> /dev/null && \
         logh "Starting up Database" && \
         nice -n 19 ${bindir}/initdb --nosync -D ${datadir} && \
         #Wait 5 seconds. We don't want tests to fail because the IO couldnt keep up with recent DB start
         sleep 5 && \
-        echo "cluster_name='popi${2}'" >> ${datadir}/postgresql.conf && \
+        echo "cluster_name='popi${stagefolder}'" >> ${datadir}/postgresql.conf && \
         echo "listen_addresses='127.0.0.1'" >> ${datadir}/postgresql.conf && \
         logh "Starting Postgres" && \
         ${bindir}/pg_ctl -D ${datadir} -l ${logdir}/logfile_master.txt start && \
         isPostgresUp && \
-                logh "Calling RunTest" && \
-                        bash ${scriptdir}/runtest.sh ${2} ${port} ${hash} &>>${historylog} && \
+                logh "Calling RunTest4Commit" && \
+                        bash ${scriptdir}/runtest4commit.sh ${stagefolder} ${port} ${hash} &>>${historylog} && \
                         all_success=1
 
 logh "Successfuly processed Commit: ${hash}"

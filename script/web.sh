@@ -1,3 +1,10 @@
+#!/bin/bash
+
+# Abort, if another instance of this program is already running
+scriptname=$(basename "$0")
+n=`ps -ef | grep "$scriptname"| grep -v grep | grep -v "$$" | wc -l`
+[ "$n" -ge 1 ] && echo "$scriptname already running. Aborting" && exit 1
+
 tempdel="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
 basedir="$(dirname "$tempdel")"
 
