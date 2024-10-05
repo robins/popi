@@ -1,8 +1,10 @@
+#!/bin/bash
 #XXX: See if we can keep separate folders for pg installed instead of reinstalling each time
 
-# lock the script so only one runs at a time
-exec 200<$0
-flock -n 200 || exit 1
+# Abort, if another instance of this program is already running
+scriptname=$(basename "$0")
+n=`ps -ef | grep "$scriptname"| grep -v grep | grep -v "$$" | wc -l`
+[ "$n" -ge 1 ] && echo "$scriptname already running. Aborting" && exit 1
 
 enable_logging=1
 
@@ -82,7 +84,7 @@ prependCommitToQ() {
 }
 
 checkIsRepoDirOkay() {
-    if [ -f ${srcdir}/README ]; then
+    if [ -f "${srcdir}/README.md" ]; then
         #Postgres repo already exists
         return 0
     fi
@@ -109,7 +111,7 @@ prepareRepoDir() {
         logh "Checking out Postgres code"
         git clone ${postgresGitCloneURL} &>> /dev/null
 
-        if [ ! -f ${srcdir}/README ]; then
+        if [ ! -f "${srcdir}/README.md" ]; then
                 logh "Git Clone failed. Was trying at ${repodir}. Exiting" 1
                 exit 1
         fi
@@ -160,6 +162,6 @@ UpdateRepo
 
 # XXX: Add an option that defaults to doing get_latest_commit_for_branch
 # XXX: Add this script to an hourly run
-fillQWithNDaysFromToday 200
+fillQWithNDaysFromToday 100
 
 stopScript

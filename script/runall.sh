@@ -1,8 +1,11 @@
+#!/bin/bash
+
 #XXX: See if we can keep separate folders for pg installed instead of reinstalling each time
 
-# lock the script so only one runs at a time
-exec 200<$0
-flock -n 200 || exit 1
+# Abort, if another instance of this program is already running
+scriptname=$(basename "$0")
+n=`ps -ef | grep "$scriptname"| grep -v grep | grep -v "$$" | wc -l`
+[ "$n" -ge 1 ] && echo "$scriptname already running. Aborting" && exit 1
 
 enable_logging=1
 
@@ -23,7 +26,10 @@ repodir=${basedir}/repo
 srcdir=${repodir}/postgres
 logdir=${basedir}/log
 historylog=${logdir}/history.log
-logprefixfile=${scriptdir}/logprefix
+
+test="select1"
+testdir=${basedir}/test/${test}
+logprefixfile=${testdir}/logprefix
 
 catalogdir=${basedir}/catalog
 q=${catalogdir}/q
@@ -38,7 +44,7 @@ versions=( `timeout -s SIGTERM 10 curl -so - "https://www.postgresql.org/support
         tr '\n' ' '` master)
 
 if [ ${#versions[@]} -le 2 ]; then
-        versions=(9.5 9.6 10 11 12 master)
+        versions=(master)
 #        versions=(master)
 fi
 
@@ -55,7 +61,7 @@ logh() {
 
 updateLogPrefix() {
     logh "Generating log prefix"
-    head /dev/urandom | tr -dc A-Z0-9 | head -c 5 > ${logprefixfile}
+    head /dev/urandom | tr -dc a-z0-9 | head -c 5 > ${logprefixfile}
 }
 
 removeLogPrefix() {
