@@ -17,9 +17,12 @@ obs/18
 obs/19
 obs/master
 obs/results
+obs/select1
 obs_old/
 repo
-stage/master/*
+stage/master/
+stage/install/
 script/logprefix
 T.txt
 .vscode
+test/
