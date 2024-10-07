@@ -30,7 +30,9 @@ historylog=${logdir}/history.log
 installdir=${basedir}/stage/${branch}/install
 bindir=${installdir}/bin
 datadir=${installdir}/data
-obsdir=${basedir}/obs/${test}/${commit}
+
+ts=$(p=`pwd` && cd /home/popi/proj/popi/repo/postgres && git show -s --date=format:'%Y%m%d' --format=%cd ${commit} && cd $p)
+obsdir=${basedir}/obs/${test}/${ts}_${commit}
 
 dbuser=`whoami`
 dbname="test_$test"
@@ -83,6 +85,13 @@ GetTestDetails() {
     parallelism=`cat ${parallelismfile}`
   else
     echo "Unable to locate parallelism file (${parallelismfile}). Using default ($parallelism)"
+  fi 
+
+  durationfile=${testdir}/duration
+  if [[ -f ${durationfile} ]]; then
+    pgbench_test_duration=`cat ${durationfile}`
+  else
+    echo "Unable to locate duration file (${durationfile}). Using default ($pgbench_test_duration)"
   fi 
 }
 
@@ -188,7 +197,7 @@ RunPgbenchWithFile() {
 
   conn="$1"
   script="$2"
-  obslogname="c${1}T${test}"
+  obslogname="c${1}T${test}D${pgbench_test_duration}"
 
   decho "Starting PgBench run"
   ${bindir}/pgbench -f "$script" -c${conn} -j${cpu} -P1 -p ${port} -T${pgbench_test_duration} -U ${dbuser} ${dbname} 2>&1 | tee -a ${obsdir}/${obslogname} || exit 1

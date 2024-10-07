@@ -6,12 +6,14 @@ n=`ps -ef | grep "$scriptname"| grep -v grep | grep -v "$$" | wc -l`
 [ "$n" -ge 1 ] && echo "$scriptname already running. Aborting" && exit 1
 
 
-# $1=test
-# $2=commithash
-[[ $# -lt 2 ]] && echo "Need at least 2 arguments (test commithash). For e.g. select1 14ea36520389dbb1b48524223cf09389154a0f2e" && exit 1
+# $1=branch
+# $2=test
+# $3=commithash
+[[ $# -lt 3 ]] && echo "Need at least 2 arguments (branch commithash test). For e.g. ./run.sh master 14ea36520389dbb1b48524223cf09389154a0f2e select1" && exit 1
 
-test=${1}
+branch=${1}
 hash=${2}
+test=${3}
 
 port=5433
 
@@ -33,6 +35,7 @@ datadir=${installdir}/data
 
 
 testdir=${basedir}/test/${test}
+mkdir -pv ${testdir}
 logprefixfile=${testdir}/logprefix
 touch ${logprefixfile} || exit 1
 
@@ -69,7 +72,7 @@ startScript() {
 
 teardown() {
 sync
-pkill -o "postgres"
+pkill -o "postgres" 2>/dev/null
 sleep 2
 sync
 if [ -d "${datadir}" ]; then
@@ -130,7 +133,7 @@ then
 else
         cd ${srcdir}
         logh "Checkout repo (at dir ${srcdir})" && \
-                git checkout ${1} && \
+                git checkout ${branch} && \
                 git checkout ${hash} .
 fi
 
@@ -168,7 +171,7 @@ logh "Git reset" && \
         ${bindir}/pg_ctl -D ${datadir} -l ${logdir}/logfile_master.txt start && \
         isPostgresUp && \
                 logh "Calling RunTest4Commit" && \
-                        bash ${scriptdir}/runtest4commit.sh ${stagefolder} ${port} ${hash} &>>${historylog} && \
+                        bash ${scriptdir}/runtest4commit.sh ${test} ${hash} &>>${historylog} && \
                         all_success=1
 
 logh "Successfuly processed Commit: ${hash}"

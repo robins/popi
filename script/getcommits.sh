@@ -7,6 +7,7 @@ n=`ps -ef | grep "$scriptname"| grep -v grep | grep -v "$$" | wc -l`
 [ "$n" -ge 1 ] && echo "$scriptname already running. Aborting" && exit 1
 
 enable_logging=1
+actually_make_changes=1
 
 tempdel="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
 basedir="$(dirname "$tempdel")"
@@ -22,6 +23,11 @@ historylog=${logdir}/history.log
 postgresGitCloneURL=https://github.com/postgres/postgres.git
 
 port=9999
+
+catalogdir=${basedir}/catalog
+q=${catalogdir}/q
+q2=${catalogdir}/q2
+
 
 #revisions="REL9_4_STABLE REL9_5_STABLE REL9_6_STABLE REL_10_STABLE REL_11_STABLE master"
 
@@ -61,26 +67,23 @@ stopScript() {
 }
 
 prependCommitToQ() {
-        if [ -z ${1} ]; then
-                logh "Can't prepend empty string to Q"
-                return 0
-        fi
+  if [ -z ${1} ]; then
+    logh "Can't prepend empty string to Q"
+    return 0
+  fi
 
-    qDir=${basedir}/catalog
-    mkdir -p ${qDir}
+  logh "Prepending ${1} to Q"
+  echo ${1} | cat - ${q} > temp && mv temp ${q}
+}
 
-    q="${qDir}/q"
-    if [ ! -f ${q} ]; then
-                logh "Creating Q, since it didn't exist here ($q)"
-                touch ${q}
-    fi
+appendCommitToQ() {
+  if [ -z ${1} ]; then
+    logh "Can't append empty string to Q"
+    return 0
+  fi
 
-    if ! grep -Fxq ${1} ${q} ; then
-                logh "Prepending ${1} to Q"
-        echo ${1} | cat - ${q} > temp && mv temp ${q}
-    else
-        logh "Commit ${1} already exists in Q"
-    fi
+  logh "Appending ${1} to Q"
+  echo "${1}" >> ${q}
 }
 
 checkIsRepoDirOkay() {
@@ -120,6 +123,7 @@ prepareRepoDir() {
 getCommitBeforeTS() {
   FailIfRepoNotOkay
 
+  logh "Looking for commit before ${1} - `date -d@${1}`"
   cd ${srcdir} && \
     git log -n 1 --before="${1}" --pretty=format:"%H"
 }
@@ -143,25 +147,62 @@ get_latest_commit_for_branch() {
     git log -n 1 --pretty=format:"%H"
 }
 
+checkIfCommitInQ2() {
+  grep -c "${1}" "${q2}"
+}
+
+checkIfCommitInQ() {
+  grep -c "${1}" "${q}"
+}
+
+prepareQDir() {
+  qDir=${basedir}/catalog
+  mkdir -p ${qDir}
+
+  q="${qDir}/q"
+  if [ ! -f ${q} ]; then
+    logh "Creating Q, since it didn't exist here ($q)"
+    touch ${q}
+  fi
+}
+
 fillQWithNDaysFromToday() {
   ts=`date +%s`
-  for i in `seq 1 ${1}`
+  n=${1}
+  i=1
+  while [ $i -le $n ]
     do
       commit=$(getCommitBeforeTS $ts)
-      echo ${commit}
-      prependCommitToQ ${commit}
       ts=$((ts-86400))
+
+      if [ "$(checkIfCommitInQ ${commit})" -gt 0 ]; then
+        logh "Skipping commit ${commit} - already in Q"
+        continue
+      fi
+      
+      if [ "$(checkIfCommitInQ2 ${commit})" -gt 0 ]; then
+        logh "Skipping commit ${commit} - already processed"
+        continue
+      fi
+      
+      if [ $actually_make_changes -eq 1 ]; then
+        appendCommitToQ ${commit}
+      fi
+    
+      i=$((i+1))
+      echo ${commit}
     done
 }
 
 startScript
 
+prepareQDir
 prepareRepoDir
 
 UpdateRepo
 
 # XXX: Add an option that defaults to doing get_latest_commit_for_branch
 # XXX: Add this script to an hourly run
-fillQWithNDaysFromToday 100
+fillQWithNDaysFromToday ${1:-5}
 
 stopScript

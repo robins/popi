@@ -33,6 +33,7 @@ logprefixfile=${testdir}/logprefix
 
 catalogdir=${basedir}/catalog
 q=${catalogdir}/q
+q2=${catalogdir}/q2
 
 port=9999
 
@@ -92,10 +93,17 @@ getFirstCommitFromQ() {
   head -n 1 ${q}
 }
 
-
 # XXX: We need to check if the first line is in fact ${1}
 removeFirstCommitFromQ() {
         sed -i '1d' ${q}
+}
+
+checkIfCommitInQ2() {
+  grep -c "${1}" "${q2}"
+}
+
+appendCommitToQ2() {
+  echo "${1}" >> ${q2}
 }
 
 get_latest_commit_for_branch() {
@@ -133,12 +141,20 @@ hash=`getFirstCommitFromQ`
 while [ ${#hash} -gt 0 ]
   do
 
-    branch=`getBranchForCommit ${hash}`
-    folder=`getFolderForBranch ${branch}`
+    if [ "$(checkIfCommitInQ2 ${hash})" -eq 0 ]; then
 
-    logh "Start run for ${branch} branch for Commit ${hash}"
-    bash ${scriptdir}/run.sh $branch $folder ${hash} &>>${historylog}
-    logh "Stop run for ${branch} branch for Commit ${hash}"
+      branch=`getBranchForCommit ${hash}`
+      folder=`getFolderForBranch ${branch}`
+
+      logh "Start run for ${branch} branch for Commit ${hash}"
+      #bash ${scriptdir}/run.sh $branch $folder ${hash} &>>${historylog}
+      bash ${scriptdir}/run.sh $branch ${hash} ${test} &>>${historylog}
+      logh "Stop run for ${branch} branch for Commit ${hash}"
+
+      appendCommitToQ2 ${hash}
+    else
+      logh "Skip Commit ${hash} - already processed."
+    fi
 
     removeFirstCommitFromQ ${hash}
 

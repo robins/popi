@@ -8,6 +8,7 @@ Libraries / software requirements:
 - datamash
 - gnuplot-x11
 - curl
+- moreutils (for ts)
 
 Sequence:
 - getcommits.sh -> clones / git pull and then populate catalog/q for commits to be tested
@@ -29,6 +30,9 @@ runtests.sh   | Run tests for 1 installation (triggered by run.sh) - Essentially
 web.sh
 
 ====
+
+popi@lenovo:~/proj/popi/script$ for f in `find /home/popi/proj/popi/obs/ -name c21Tselect1`; do echo -n "${f}: "; grep connection ${f} | grep tps; echo; done | grep tps
+/home/popi/proj/popi/obs/select1/f9ecb57a506ada358baa19287d2c438ad01cdbce/c21Tselect1: tps = 595437.728172 (without initial connection time)
 
 
 smith@dell:~/proj/popi/obs/master$ for f in `find /home/smith/proj/popi/obs/master -name c2j1MST100`; do echo -n "${f}: "; grep connection ${f} | grep tps; echo; done | grep tps
