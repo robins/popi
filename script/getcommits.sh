@@ -162,6 +162,6 @@ UpdateRepo
 
 # XXX: Add an option that defaults to doing get_latest_commit_for_branch
 # XXX: Add this script to an hourly run
-fillQWithNDaysFromToday 100
+fillQWithNDaysFromToday 10
 
 stopScript

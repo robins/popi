@@ -68,11 +68,11 @@ startScript() {
 }
 
 teardown() {
-sync
-pkill -o "postgres"
-sleep 2
-sync
 if [ -d "${datadir}" ]; then
+  sync
+  pkill -o "postgres"
+  sleep 2
+  sync
   logh "Removing previous data folder, if any" && \
     cd ${stagedir}/ && \
     rm -rf ${stagedir}/install/data
@@ -86,7 +86,7 @@ stopScript() {
 }
 
 isHashAlreadyProcessed() {
-        resultdir=${basedir}/obs/${branch}/${hash}
+        resultdir=${obsdir}/${test}/${hash}
         if [ -d "${resultdir}" ]; then
                 logh "Looks like we've already processed this Hash. Skipping"
                 stopScript 0
@@ -151,24 +151,24 @@ fi
 
 
 logh "Git reset" && \
-        nice -n 19 git reset --hard &>> /dev/null && \
+        nice -n 19 git reset --hard &> ${logdir}/git_reset.log && \
         logh "Cleaning up"
-        nice -n 19 make --silent -j${cpu} clean
+        nice -n 19 make --silent -j${cpu} clean &> ${logdir}/make_clean.log
         logh "Running Configure"
-        nice -n 19 ./configure --prefix=${installdir} --enable-cassert --enable-depend --with-pgport=${port} >> /dev/null
+        nice -n 19 ./configure --prefix=${installdir} --enable-cassert --enable-depend --with-pgport=${port} &> ${logdir}/configure.log
         logh "Compiling Postgres" && \
-        nice -n 19 make --silent -j${cpu} install &>> /dev/null && \
+        nice -n 19 make -j${cpu} install &> ${logdir}/make_install.log && \
         logh "Starting up Database" && \
-        nice -n 19 ${bindir}/initdb --nosync -D ${datadir} && \
+        nice -n 19 ${bindir}/initdb --nosync -D ${datadir} &> ${logdir}/initdb.log && \
         #Wait 5 seconds. We don't want tests to fail because the IO couldnt keep up with recent DB start
         sleep 5 && \
         echo "cluster_name='popi${stagefolder}'" >> ${datadir}/postgresql.conf && \
         echo "listen_addresses='127.0.0.1'" >> ${datadir}/postgresql.conf && \
         logh "Starting Postgres" && \
-        ${bindir}/pg_ctl -D ${datadir} -l ${logdir}/logfile_master.txt start && \
+        ${bindir}/pg_ctl -D ${datadir} -l ${logdir}/pgctl_start.log start && \
         isPostgresUp && \
                 logh "Calling RunTest4Commit" && \
-                        bash ${scriptdir}/runtest4commit.sh ${stagefolder} ${port} ${hash} &>>${historylog} && \
+                        bash ${scriptdir}/runtest4commit.sh ${test} ${hash} && \
                         all_success=1
 
 logh "Successfuly processed Commit: ${hash}"
