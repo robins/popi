@@ -1,0 +1,50 @@
+pgbench (17beta2)
+starting vacuum...end.
+progress: 1.0 s, 33145.8 tps, lat 0.030 ms stddev 0.003, 0 failed
+progress: 2.0 s, 33553.7 tps, lat 0.030 ms stddev 0.003, 0 failed
+progress: 3.0 s, 33454.6 tps, lat 0.030 ms stddev 0.003, 0 failed
+progress: 4.0 s, 33480.7 tps, lat 0.030 ms stddev 0.003, 0 failed
+progress: 5.0 s, 33409.7 tps, lat 0.030 ms stddev 0.003, 0 failed
+progress: 6.0 s, 33194.9 tps, lat 0.030 ms stddev 0.004, 0 failed
+progress: 7.0 s, 33356.2 tps, lat 0.030 ms stddev 0.003, 0 failed
+progress: 8.0 s, 33206.9 tps, lat 0.030 ms stddev 0.004, 0 failed
+progress: 9.0 s, 32867.0 tps, lat 0.030 ms stddev 0.004, 0 failed
+progress: 10.0 s, 33385.7 tps, lat 0.030 ms stddev 0.004, 0 failed
+transaction type: /home/smith/proj/popi/test/empty/query.sql
+scaling factor: 1
+query mode: simple
+number of clients: 1
+number of threads: 1
+maximum number of tries: 1
+duration: 10 s
+number of transactions actually processed: 333057
+number of failed transactions: 0 (0.000%)
+latency average = 0.030 ms
+latency stddev = 0.004 ms
+initial connection time = 1.741 ms
+tps = 33311.269644 (without initial connection time)
+pgbench (17beta2)
+starting vacuum...end.
+progress: 1.0 s, 33308.2 tps, lat 0.030 ms stddev 0.003, 0 failed
+progress: 2.0 s, 33380.4 tps, lat 0.030 ms stddev 0.003, 0 failed
+progress: 3.0 s, 33212.1 tps, lat 0.030 ms stddev 0.004, 0 failed
+progress: 4.0 s, 32861.9 tps, lat 0.030 ms stddev 0.003, 0 failed
+progress: 5.0 s, 33263.3 tps, lat 0.030 ms stddev 0.004, 0 failed
+progress: 6.0 s, 33145.9 tps, lat 0.030 ms stddev 0.004, 0 failed
+progress: 7.0 s, 33278.2 tps, lat 0.030 ms stddev 0.004, 0 failed
+progress: 8.0 s, 33121.8 tps, lat 0.030 ms stddev 0.004, 0 failed
+progress: 9.0 s, 33140.3 tps, lat 0.030 ms stddev 0.004, 0 failed
+progress: 10.0 s, 33068.7 tps, lat 0.030 ms stddev 0.004, 0 failed
+transaction type: /home/smith/proj/popi/test/empty/query.sql
+scaling factor: 1
+query mode: simple
+number of clients: 1
+number of threads: 1
+maximum number of tries: 1
+duration: 10 s
+number of transactions actually processed: 331782
+number of failed transactions: 0 (0.000%)
+latency average = 0.030 ms
+latency stddev = 0.004 ms
+initial connection time = 1.759 ms
+tps = 33183.814701 (without initial connection time)
