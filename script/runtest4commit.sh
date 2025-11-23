@@ -104,7 +104,8 @@ RunPreSQL() {
   # Abort, if somehow the Pre SQL doesn't exist
   [[ ! -f ${sqlfile} ]] && exit 1
 
-  ${bindir}/psql -1f "$sqlfile" -U ${dbuser} -p ${port} $dbname 2>&1 || exit 1
+  #cat ${sqlfile} | xargs -d\\n -i ${bindir}/psql -p ${port} -U ${dbuser} $dbname -c "{}"
+  ${bindir}/psql -f "$sqlfile" -U ${dbuser} -p ${port} $dbname 2>&1
 }
 
 RunPostSQL() {
@@ -197,7 +198,7 @@ RunPgbenchWithFile() {
 
   conn="$1"
   script="$2"
-  obslogname="c${1}T${test}D${pgbench_test_duration}"
+  obslogname="c${1}D${pgbench_test_duration}T${test}"
 
   decho "Starting PgBench run"
   ${bindir}/pgbench -f "$script" -c${conn} -j${cpu} -P1 -p ${port} -T${pgbench_test_duration} -U ${dbuser} ${dbname} 2>&1 | tee -a ${obsdir}/${obslogname} || exit 1

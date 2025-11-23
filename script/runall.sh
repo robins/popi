@@ -27,7 +27,7 @@ srcdir=${repodir}/postgres
 logdir=${basedir}/log
 historylog=${logdir}/history.log
 
-test="select1"
+test="20240819_scan_index_backward_matthias"
 testdir=${basedir}/test/${test}
 logprefixfile=${testdir}/logprefix
 
