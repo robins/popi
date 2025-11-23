@@ -1,6 +1,7 @@
 catalog/q
 catalog/q2
 log
+HEAD
 obs/9.1
 obs/9.2
 obs/9.3
@@ -15,6 +16,7 @@ obs/16
 obs/17
 obs/18
 obs/19
+obs/empty
 obs/master
 obs/results
 obs/select1
@@ -26,3 +28,5 @@ script/logprefix
 T.txt
 .vscode
 test/
+stage/
+test/select1/logprefix

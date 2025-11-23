@@ -163,6 +163,8 @@ while [ ${#hash} -gt 0 ]
     else
       hash=`getFirstCommitFromQ`
     fi
+
+    break
   done
 
 [ ${#hash} -eq 0 ] && logh "Q is empty. Nothing to do. Quitting"

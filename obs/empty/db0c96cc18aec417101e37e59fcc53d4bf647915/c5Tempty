@@ -1,0 +1,48 @@
+pgbench (17beta2)
+starting vacuum...end.
+progress: 1.0 s, 114144.1 tps, lat 0.040 ms stddev 0.029, 0 failed
+progress: 2.0 s, 114796.7 tps, lat 0.039 ms stddev 0.029, 0 failed
+progress: 3.0 s, 115247.3 tps, lat 0.039 ms stddev 0.023, 0 failed
+progress: 4.0 s, 114175.2 tps, lat 0.040 ms stddev 0.028, 0 failed
+progress: 5.0 s, 114294.3 tps, lat 0.040 ms stddev 0.035, 0 failed
+progress: 6.0 s, 115585.2 tps, lat 0.040 ms stddev 0.023, 0 failed
+progress: 7.0 s, 115087.3 tps, lat 0.040 ms stddev 0.030, 0 failed
+progress: 8.0 s, 113311.6 tps, lat 0.040 ms stddev 0.045, 0 failed
+progress: 9.0 s, 114600.2 tps, lat 0.040 ms stddev 0.023, 0 failed
+transaction type: /home/smith/proj/popi/test/empty/query.sql
+scaling factor: 1
+query mode: simple
+number of clients: 5
+number of threads: 4
+maximum number of tries: 1
+duration: 10 s
+number of transactions actually processed: 1141589
+number of failed transactions: 0 (0.000%)
+latency average = 0.040 ms
+latency stddev = 0.030 ms
+initial connection time = 3.518 ms
+tps = 114195.419695 (without initial connection time)
+pgbench (17beta2)
+starting vacuum...end.
+progress: 1.0 s, 116938.9 tps, lat 0.038 ms stddev 0.027, 0 failed
+progress: 2.0 s, 118063.9 tps, lat 0.038 ms stddev 0.036, 0 failed
+progress: 3.0 s, 117434.4 tps, lat 0.038 ms stddev 0.027, 0 failed
+progress: 4.0 s, 117843.5 tps, lat 0.038 ms stddev 0.028, 0 failed
+progress: 5.0 s, 116752.3 tps, lat 0.038 ms stddev 0.049, 0 failed
+progress: 6.0 s, 118347.1 tps, lat 0.038 ms stddev 0.031, 0 failed
+progress: 7.0 s, 117466.5 tps, lat 0.038 ms stddev 0.023, 0 failed
+progress: 8.0 s, 118076.1 tps, lat 0.038 ms stddev 0.036, 0 failed
+progress: 9.0 s, 117748.0 tps, lat 0.038 ms stddev 0.029, 0 failed
+transaction type: /home/smith/proj/popi/test/empty/query.sql
+scaling factor: 1
+query mode: simple
+number of clients: 5
+number of threads: 4
+maximum number of tries: 1
+duration: 10 s
+number of transactions actually processed: 1177098
+number of failed transactions: 0 (0.000%)
+latency average = 0.038 ms
+latency stddev = 0.032 ms
+initial connection time = 3.492 ms
+tps = 117748.456818 (without initial connection time)

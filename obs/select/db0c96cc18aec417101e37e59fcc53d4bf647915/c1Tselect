@@ -1,0 +1,25 @@
+pgbench (17beta2)
+starting vacuum...end.
+progress: 1.0 s, 24910.0 tps, lat 0.040 ms stddev 0.005, 0 failed
+progress: 2.0 s, 25101.6 tps, lat 0.040 ms stddev 0.004, 0 failed
+progress: 3.0 s, 25228.6 tps, lat 0.040 ms stddev 0.004, 0 failed
+progress: 4.0 s, 25409.5 tps, lat 0.039 ms stddev 0.004, 0 failed
+progress: 5.0 s, 25284.7 tps, lat 0.039 ms stddev 0.004, 0 failed
+progress: 6.0 s, 25457.6 tps, lat 0.039 ms stddev 0.004, 0 failed
+progress: 7.0 s, 25084.8 tps, lat 0.040 ms stddev 0.004, 0 failed
+progress: 8.0 s, 25260.8 tps, lat 0.039 ms stddev 0.004, 0 failed
+progress: 9.0 s, 25394.1 tps, lat 0.039 ms stddev 0.004, 0 failed
+progress: 10.0 s, 25424.8 tps, lat 0.039 ms stddev 0.004, 0 failed
+transaction type: /home/smith/proj/popi/test/select/query.sql
+scaling factor: 1
+query mode: simple
+number of clients: 1
+number of threads: 1
+maximum number of tries: 1
+duration: 10 s
+number of transactions actually processed: 252558
+number of failed transactions: 0 (0.000%)
+latency average = 0.039 ms
+latency stddev = 0.004 ms
+initial connection time = 1.606 ms
+tps = 25259.677360 (without initial connection time)
